@@ -28,7 +28,7 @@
 #
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
 
-from manip_loco_config import ManipLocoCfg, ManipLocoCfgPPO
+from .manip_loco_config import ManipLocoCfg, ManipLocoCfgPPO
 import numpy as np
 
 class B1Z1RoughCfg( ManipLocoCfg ):

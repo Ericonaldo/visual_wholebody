@@ -16,13 +16,13 @@ pip install torch torchvision torchaudio
 cd third_party/isaacgym/python && pip install -e .
 
 cd ../../..
-cd third_party/rsl_rl && pip install -e .
+cd rsl_rl && pip install -e .
 
 cd ../..
-cd third_party/skrl && pip install -e .
+cd skrl && pip install -e .
 
 cd ../..
-cd low-level/legged_gym && pip install -e .
+cd low-level && pip install -e .
 
 pip install numpy pydelatin tqdm imageio-ffmpeg opencv-python wandb
 ```
