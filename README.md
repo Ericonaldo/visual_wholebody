@@ -5,7 +5,7 @@ https://wholebody-b1.github.io/
 Related to paper <[Visual Whole-Body Control for Legged Loco-Manipulation](https://arxiv.org/abs/2403.16967)>
 
 <p align="center">
-<img src="./images/teaser.jpg" width="80%"/>
+<img src="./teaser.jpg" width="80%"/>
 </p>
 
 ## Set up the environment
@@ -35,7 +35,7 @@ pip install numpy pydelatin tqdm imageio-ffmpeg opencv-python wandb
 
 ## Structure
 
-- `high-level`: codes and environments related to the visuomotor high-level policy, task relevant
+- `high-level`: codes and environments related to the visuomotor high-level policy, task-relevant
 
 - `low-level`: codes and environments related to the general low-level controller for the quadruped and the arm, the only task is to learn to walk while tracking the target ee pose and the robot velocities.
 
@@ -47,7 +47,7 @@ Detailed code structures can be found in these directories.
 
 - Put the low-level policy checkpoint into somewhere.
 
-- Train the high-level policy using codes and follow the descriptions in `high-level`, while assign the low-level model in the config yaml file.
+- Train the high-level policy using codes and follow the descriptions in `high-level`, while assigning the low-level model in the config yaml file.
 
 ## Acknowledgements (third-party dependencies)
 
@@ -58,10 +58,10 @@ Detailed code structures can be found in these directories.
 
 ## Codebase Contributions
 
-- [Minghuan Liu](minghuanliu.com) made efforts on improving the training efficiency, reward engineering, filling sim2real gaps and reach expected behaviors, while cleaning and integrating the whole codebase for simplicity.
-- [Zixuan Chen](zixuan417.github.io) initialized the code base and made early progress on reward design, training and testing, along with some baselines.
-- [Xuxin Cheng](https://chengxuxin.github.io/) shared a lot on several domain knowledge and reward experience on locomotion and low-level policy training, and helped debugging the code.
-- [Yandong Ji](https://yandongji.github.io/) provided several suggestions and helped debugging the code.
+- [Minghuan Liu](minghuanliu.com) made efforts on improving the training efficiency, reward engineering, filling sim2real gaps, and reach expected behaviors, while cleaning and integrating the whole codebase for simplicity.
+- [Zixuan Chen](zixuan417.github.io) initialized the code base and made early progress on reward design, training, and testing, along with some baselines.
+- [Xuxin Cheng](https://chengxuxin.github.io/) shared a lot of domain knowledge and reward experience on locomotion and low-level policy training, and helped debug the code.
+- [Yandong Ji](https://yandongji.github.io/) provided several suggestions and helped debug the code.
 
 ## Citation
 If you find the code base helpful, consider to cite
