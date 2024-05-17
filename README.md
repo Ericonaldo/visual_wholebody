@@ -2,7 +2,7 @@
 
 https://wholebody-b1.github.io/
 
-Related to paper [<Visual Whole-Body Control for Legged Loco-Manipulation>](https://arxiv.org/abs/2403.16967)
+Related to paper <[Visual Whole-Body Control for Legged Loco-Manipulation](https://arxiv.org/abs/2403.16967)>
 
 ## Set up the environment
 ```bash
