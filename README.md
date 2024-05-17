@@ -1,8 +1,12 @@
-# Visual Whole-Body for Loco-Manipution
+# Visual Whole-Body for Loco-Manipulation
 
 https://wholebody-b1.github.io/
 
 Related to paper <[Visual Whole-Body Control for Legged Loco-Manipulation](https://arxiv.org/abs/2403.16967)>
+
+<p align="center">
+<img src="./images/teaser.jpg" width="80%"/>
+</p>
 
 ## Set up the environment
 ```bash
