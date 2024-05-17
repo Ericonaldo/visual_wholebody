@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python Enums &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Python Constants and Flags" href="const_py.html" />
+    <link rel="prev" title="Python Structures" href="struct_py.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Isaac Gym
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../programming/index.html">Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../programming/simsetup.html">Simulation Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../programming/assets.html">Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../programming/physics.html">Physics Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../programming/tensors.html">Tensor API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../programming/forcesensors.html">Force Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../programming/tuning.html">Simulation Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../programming/math.html">Math Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../programming/graphics.html">Graphics and Camera Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../programming/terrain.html">Terrains</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Python API</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="gym_py.html">Python Gym API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_py.html">Python Structures</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Python Enums</a></li>
+<li class="toctree-l4"><a class="reference internal" href="const_py.html">Python Constants and Flags</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../programming/index.html">Programming</a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="index.html">Python API</a> &raquo;</li>
+      <li>Python Enums</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="python-enums">
+<h1>Python Enums<a class="headerlink" href="#python-enums" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.SimType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">SimType</span></span><a class="headerlink" href="#isaacgym.gymapi.SimType" title="Permalink to this definition"></a></dt>
+<dd><p>Simulation Backend type</p>
+<p>Members:</p>
+<blockquote>
+<div><p>SIM_PHYSX : PhysX Backend</p>
+<p>SIM_FLEX : Flex Backend</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.UpAxis">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">UpAxis</span></span><a class="headerlink" href="#isaacgym.gymapi.UpAxis" title="Permalink to this definition"></a></dt>
+<dd><p>Up axis</p>
+<p>Members:</p>
+<blockquote>
+<div><p>UP_AXIS_Y : Y axis points up</p>
+<p>UP_AXIS_Z : Z axis points up</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.ContactCollection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">ContactCollection</span></span><a class="headerlink" href="#isaacgym.gymapi.ContactCollection" title="Permalink to this definition"></a></dt>
+<dd><p>Contact collection mode.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>CC_NEVER : Don’t collect any contacts (value = 0).</p>
+<p>CC_LAST_SUBSTEP : Collect contacts for last substep only (value = 1).</p>
+<p>CC_ALL_SUBSTEPS : Collect contacts for all substeps (value = 2) (default).</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.JointType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">JointType</span></span><a class="headerlink" href="#isaacgym.gymapi.JointType" title="Permalink to this definition"></a></dt>
+<dd><p>Types of Joint supported by the simulator</p>
+<p>Members:</p>
+<blockquote>
+<div><p>JOINT_INVALID : invalid/unknown/uninitialized joint type.</p>
+<p>JOINT_FIXED : Fixed joint. Bodies will move together.</p>
+<p>JOINT_REVOLUTE : Revolute or Hinge Joint. Bodies will rotate on one defined axis.</p>
+<p>JOINT_PRISMATIC : Prismatic Joints. Bodies will move linearly on one axis.</p>
+<p>JOINT_BALL : Ball Joint. Bodies will rotate on all directions on point of reference.</p>
+<p>JOINT_PLANAR : Planar Joint. Bodies will move on defined plane.</p>
+<p>JOINT_FLOATING : Floating Joint. No constraints added between bodies.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.DofType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">DofType</span></span><a class="headerlink" href="#isaacgym.gymapi.DofType" title="Permalink to this definition"></a></dt>
+<dd><p>Types of degree of freedom supported by the simulator</p>
+<p>Members:</p>
+<blockquote>
+<div><p>DOF_INVALID : invalid/unknown/uninitialized DOF type</p>
+<p>DOF_ROTATION : The degrees of freedom correspond to a rotation between bodies</p>
+<p>DOF_TRANSLATION : The degrees of freedom correspond to a translation between bodies.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.DofDriveMode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">DofDriveMode</span></span><a class="headerlink" href="#isaacgym.gymapi.DofDriveMode" title="Permalink to this definition"></a></dt>
+<dd><p>Possible drive modes used to control actor DoFs.  A DoF that is set to a specific drive mode will ignore drive commands for other modes.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>DOF_MODE_NONE : The DOF is free to move without any controls.</p>
+<p>DOF_MODE_POS : The DOF will respond to position target commands.</p>
+<p>DOF_MODE_VEL : The DOF will respond to velocity target commands.</p>
+<p>DOF_MODE_EFFORT : The DOF will respond to effort (force or torque) commands.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.TendonType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">TendonType</span></span><a class="headerlink" href="#isaacgym.gymapi.TendonType" title="Permalink to this definition"></a></dt>
+<dd><p>Tendon type</p>
+<p>Members:</p>
+<blockquote>
+<div><p>TENDON_FIXED : Fixed tendon</p>
+<p>TENDON_SPATIAL : Spatial tendon</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.TensorDataType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">TensorDataType</span></span><a class="headerlink" href="#isaacgym.gymapi.TensorDataType" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the data type of tensors.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>DTYPE_FLOAT32 : float32</p>
+<p>DTYPE_UINT32 : uint32</p>
+<p>DTYPE_UINT64 : uint64</p>
+<p>DTYPE_UINT8 : uint8</p>
+<p>DTYPE_INT16 : int16</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.CoordinateSpace">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">CoordinateSpace</span></span><a class="headerlink" href="#isaacgym.gymapi.CoordinateSpace" title="Permalink to this definition"></a></dt>
+<dd><p>Coordinate system for positions.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>ENV_SPACE</p>
+<p>LOCAL_SPACE</p>
+<p>GLOBAL_SPACE</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.MeshType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">MeshType</span></span><a class="headerlink" href="#isaacgym.gymapi.MeshType" title="Permalink to this definition"></a></dt>
+<dd><p>Types of mesh used by the simulator</p>
+<p>Members:</p>
+<blockquote>
+<div><p>MESH_NONE</p>
+<p>MESH_COLLISION : Collision mesh. Mesh is used only for Collision checks and calculations of inertia. For improved performance, it should be an approximation of the body volume by a coarse, convex mesh.</p>
+<p>MESH_VISUAL : Visual mesh. Mesh is used only for rendering purposes.</p>
+<p>MESH_VISUAL_AND_COLLISION : Visual and Collision Mesh. Mesh is used for both rendering and collision checks</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.ImageType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">ImageType</span></span><a class="headerlink" href="#isaacgym.gymapi.ImageType" title="Permalink to this definition"></a></dt>
+<dd><p>Types of image generated by the sensors</p>
+<p>Members:</p>
+<blockquote>
+<div><p>IMAGE_COLOR : Image RGB. Regular image as a camera sensor would generate. Each pixel is made of three values of the selected data type GymTensorDataType, representing the intensity of Red, Green and Blue.</p>
+<p>IMAGE_DEPTH : Depth Image. Each pixel is one value of the selected data type GymTensorDataType, representing how far that point is from the center of the camera.</p>
+<p>IMAGE_SEGMENTATION : Segmentation Image. Each pixel is one integer value from the selected data type GymTensorDataType, that represents the class of the object that is displayed on that pixel</p>
+<p>IMAGE_OPTICAL_FLOW : Optical Flow image - each pixel is a 2D vector of the screen-space velocity of the bodies visible in that pixel</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.IndexDomain">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">IndexDomain</span></span><a class="headerlink" href="#isaacgym.gymapi.IndexDomain" title="Permalink to this definition"></a></dt>
+<dd><p>Domain type for indexing into component buffers.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>DOMAIN_ACTOR</p>
+<p>DOMAIN_ENV</p>
+<p>DOMAIN_SIM</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.SoftMaterialType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">SoftMaterialType</span></span><a class="headerlink" href="#isaacgym.gymapi.SoftMaterialType" title="Permalink to this definition"></a></dt>
+<dd><p>Types of soft material supported in simulation</p>
+<p>Members:</p>
+<blockquote>
+<div><p>MAT_COROTATIONAL : Lagrange co-rotational formulation of finite elements</p>
+<p>MAT_NEOHOOKEAN : Neo-Hookean formulation of finite elements</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.CameraFollowMode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">CameraFollowMode</span></span><a class="headerlink" href="#isaacgym.gymapi.CameraFollowMode" title="Permalink to this definition"></a></dt>
+<dd><p>Camera follow mode</p>
+<p>Members:</p>
+<blockquote>
+<div><p>FOLLOW_POSITION : Camera attached to a rigid body follows only its position</p>
+<p>FOLLOW_TRANSFORM : Camera attached to a rigid body follows its transform (both position and orientation)</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.KeyboardInput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">KeyboardInput</span></span><a class="headerlink" href="#isaacgym.gymapi.KeyboardInput" title="Permalink to this definition"></a></dt>
+<dd><p>Members:</p>
+<p>KEY_SPACE</p>
+<p>KEY_APOSTROPHE</p>
+<p>KEY_COMMA</p>
+<p>KEY_MINUS</p>
+<p>KEY_PERIOD</p>
+<p>KEY_SLASH</p>
+<p>KEY_0</p>
+<p>KEY_1</p>
+<p>KEY_2</p>
+<p>KEY_3</p>
+<p>KEY_4</p>
+<p>KEY_5</p>
+<p>KEY_6</p>
+<p>KEY_7</p>
+<p>KEY_8</p>
+<p>KEY_9</p>
+<p>KEY_SEMICOLON</p>
+<p>KEY_EQUAL</p>
+<p>KEY_A</p>
+<p>KEY_B</p>
+<p>KEY_C</p>
+<p>KEY_D</p>
+<p>KEY_E</p>
+<p>KEY_F</p>
+<p>KEY_G</p>
+<p>KEY_H</p>
+<p>KEY_I</p>
+<p>KEY_J</p>
+<p>KEY_K</p>
+<p>KEY_L</p>
+<p>KEY_M</p>
+<p>KEY_N</p>
+<p>KEY_O</p>
+<p>KEY_P</p>
+<p>KEY_Q</p>
+<p>KEY_R</p>
+<p>KEY_S</p>
+<p>KEY_T</p>
+<p>KEY_U</p>
+<p>KEY_V</p>
+<p>KEY_W</p>
+<p>KEY_X</p>
+<p>KEY_Y</p>
+<p>KEY_Z</p>
+<p>KEY_LEFT_BRACKET</p>
+<p>KEY_BACKSLASH</p>
+<p>KEY_RIGHT_BRACKET</p>
+<p>KEY_GRAVE_ACCENT</p>
+<p>KEY_ESCAPE</p>
+<p>KEY_TAB</p>
+<p>KEY_ENTER</p>
+<p>KEY_BACKSPACE</p>
+<p>KEY_INSERT</p>
+<p>KEY_DEL</p>
+<p>KEY_RIGHT</p>
+<p>KEY_LEFT</p>
+<p>KEY_DOWN</p>
+<p>KEY_UP</p>
+<p>KEY_PAGE_UP</p>
+<p>KEY_PAGE_DOWN</p>
+<p>KEY_HOME</p>
+<p>KEY_END</p>
+<p>KEY_CAPS_LOCK</p>
+<p>KEY_SCROLL_LOCK</p>
+<p>KEY_NUM_LOCK</p>
+<p>KEY_PRINT_SCREEN</p>
+<p>KEY_PAUSE</p>
+<p>KEY_F1</p>
+<p>KEY_F2</p>
+<p>KEY_F3</p>
+<p>KEY_F4</p>
+<p>KEY_F5</p>
+<p>KEY_F6</p>
+<p>KEY_F7</p>
+<p>KEY_F8</p>
+<p>KEY_F9</p>
+<p>KEY_F10</p>
+<p>KEY_F11</p>
+<p>KEY_F12</p>
+<p>KEY_NUMPAD_0</p>
+<p>KEY_NUMPAD_1</p>
+<p>KEY_NUMPAD_2</p>
+<p>KEY_NUMPAD_3</p>
+<p>KEY_NUMPAD_4</p>
+<p>KEY_NUMPAD_5</p>
+<p>KEY_NUMPAD_6</p>
+<p>KEY_NUMPAD_7</p>
+<p>KEY_NUMPAD_8</p>
+<p>KEY_NUMPAD_9</p>
+<p>KEY_NUMPAD_DEL</p>
+<p>KEY_NUMPAD_DIVIDE</p>
+<p>KEY_NUMPAD_MULTIPLY</p>
+<p>KEY_NUMPAD_SUBTRACT</p>
+<p>KEY_NUMPAD_ADD</p>
+<p>KEY_NUMPAD_ENTER</p>
+<p>KEY_NUMPAD_EQUAL</p>
+<p>KEY_LEFT_SHIFT</p>
+<p>KEY_LEFT_CONTROL</p>
+<p>KEY_LEFT_ALT</p>
+<p>KEY_LEFT_SUPER</p>
+<p>KEY_RIGHT_SHIFT</p>
+<p>KEY_RIGHT_CONTROL</p>
+<p>KEY_RIGHT_ALT</p>
+<p>KEY_RIGHT_SUPER</p>
+<p>KEY_MENU</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="isaacgym.gymapi.MouseInput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">isaacgym.gymapi.</span></span><span class="sig-name descname"><span class="pre">MouseInput</span></span><a class="headerlink" href="#isaacgym.gymapi.MouseInput" title="Permalink to this definition"></a></dt>
+<dd><p>Members:</p>
+<p>MOUSE_LEFT_BUTTON</p>
+<p>MOUSE_RIGHT_BUTTON</p>
+<p>MOUSE_MIDDLE_BUTTON</p>
+<p>MOUSE_FORWARD_BUTTON</p>
+<p>MOUSE_BACK_BUTTON</p>
+<p>MOUSE_SCROLL_RIGHT</p>
+<p>MOUSE_SCROLL_LEFT</p>
+<p>MOUSE_SCROLL_UP</p>
+<p>MOUSE_SCROLL_DOWN</p>
+<p>MOUSE_MOVE_RIGHT</p>
+<p>MOUSE_MOVE_LEFT</p>
+<p>MOUSE_MOVE_UP</p>
+<p>MOUSE_MOVE_DOWN</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="struct_py.html" class="btn btn-neutral float-left" title="Python Structures" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="const_py.html" class="btn btn-neutral float-right" title="Python Constants and Flags" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

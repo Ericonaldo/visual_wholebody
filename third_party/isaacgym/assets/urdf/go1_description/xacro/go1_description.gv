@@ -1,0 +1,119 @@
+digraph G {
+node [shape=box];
+"world" [label="world"];
+"base" [label="base"];
+"trunk" [label="trunk"];
+"FL_hip" [label="FL_hip"];
+"FL_thigh_shoulder" [label="FL_thigh_shoulder"];
+"FL_thigh" [label="FL_thigh"];
+"FL_calf" [label="FL_calf"];
+"FL_foot" [label="FL_foot"];
+"FR_hip" [label="FR_hip"];
+"FR_thigh_shoulder" [label="FR_thigh_shoulder"];
+"FR_thigh" [label="FR_thigh"];
+"FR_calf" [label="FR_calf"];
+"FR_foot" [label="FR_foot"];
+"RL_hip" [label="RL_hip"];
+"RL_thigh_shoulder" [label="RL_thigh_shoulder"];
+"RL_thigh" [label="RL_thigh"];
+"RL_calf" [label="RL_calf"];
+"RL_foot" [label="RL_foot"];
+"RR_hip" [label="RR_hip"];
+"RR_thigh_shoulder" [label="RR_thigh_shoulder"];
+"RR_thigh" [label="RR_thigh"];
+"RR_calf" [label="RR_calf"];
+"RR_foot" [label="RR_foot"];
+"camera_chin" [label="camera_chin"];
+"camera_optical_chin" [label="camera_optical_chin"];
+"camera_face" [label="camera_face"];
+"camera_optical_face" [label="camera_optical_face"];
+"camera_left" [label="camera_left"];
+"camera_laserscan_link_left" [label="camera_laserscan_link_left"];
+"camera_optical_left" [label="camera_optical_left"];
+"camera_rearDown" [label="camera_rearDown"];
+"camera_optical_rearDown" [label="camera_optical_rearDown"];
+"camera_right" [label="camera_right"];
+"camera_laserscan_link_right" [label="camera_laserscan_link_right"];
+"camera_optical_right" [label="camera_optical_right"];
+"imu_link" [label="imu_link"];
+"ultraSound_face" [label="ultraSound_face"];
+"ultraSound_left" [label="ultraSound_left"];
+"ultraSound_right" [label="ultraSound_right"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"world" -> "base_static_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"base_static_joint" -> "base"
+"base" -> "floating_base" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"floating_base" -> "trunk"
+"trunk" -> "FL_hip_joint" [label="xyz: 0.1881 0.04675 0 \nrpy: 0 -0 0"]
+"FL_hip_joint" -> "FL_hip"
+"FL_hip" -> "FL_hip_fixed" [label="xyz: 0 0.08 0 \nrpy: 0 -0 0"]
+"FL_hip_fixed" -> "FL_thigh_shoulder"
+"FL_hip" -> "FL_thigh_joint" [label="xyz: 0 0.08 0 \nrpy: 0 -0 0"]
+"FL_thigh_joint" -> "FL_thigh"
+"FL_thigh" -> "FL_calf_joint" [label="xyz: 0 0 -0.213 \nrpy: 0 -0 0"]
+"FL_calf_joint" -> "FL_calf"
+"FL_calf" -> "FL_foot_fixed" [label="xyz: 0 0 -0.213 \nrpy: 0 -0 0"]
+"FL_foot_fixed" -> "FL_foot"
+"trunk" -> "FR_hip_joint" [label="xyz: 0.1881 -0.04675 0 \nrpy: 0 -0 0"]
+"FR_hip_joint" -> "FR_hip"
+"FR_hip" -> "FR_hip_fixed" [label="xyz: 0 -0.08 0 \nrpy: 0 -0 0"]
+"FR_hip_fixed" -> "FR_thigh_shoulder"
+"FR_hip" -> "FR_thigh_joint" [label="xyz: 0 -0.08 0 \nrpy: 0 -0 0"]
+"FR_thigh_joint" -> "FR_thigh"
+"FR_thigh" -> "FR_calf_joint" [label="xyz: 0 0 -0.213 \nrpy: 0 -0 0"]
+"FR_calf_joint" -> "FR_calf"
+"FR_calf" -> "FR_foot_fixed" [label="xyz: 0 0 -0.213 \nrpy: 0 -0 0"]
+"FR_foot_fixed" -> "FR_foot"
+"trunk" -> "RL_hip_joint" [label="xyz: -0.1881 0.04675 0 \nrpy: 0 -0 0"]
+"RL_hip_joint" -> "RL_hip"
+"RL_hip" -> "RL_hip_fixed" [label="xyz: 0 0.08 0 \nrpy: 0 -0 0"]
+"RL_hip_fixed" -> "RL_thigh_shoulder"
+"RL_hip" -> "RL_thigh_joint" [label="xyz: 0 0.08 0 \nrpy: 0 -0 0"]
+"RL_thigh_joint" -> "RL_thigh"
+"RL_thigh" -> "RL_calf_joint" [label="xyz: 0 0 -0.213 \nrpy: 0 -0 0"]
+"RL_calf_joint" -> "RL_calf"
+"RL_calf" -> "RL_foot_fixed" [label="xyz: 0 0 -0.213 \nrpy: 0 -0 0"]
+"RL_foot_fixed" -> "RL_foot"
+"trunk" -> "RR_hip_joint" [label="xyz: -0.1881 -0.04675 0 \nrpy: 0 -0 0"]
+"RR_hip_joint" -> "RR_hip"
+"RR_hip" -> "RR_hip_fixed" [label="xyz: 0 -0.08 0 \nrpy: 0 -0 0"]
+"RR_hip_fixed" -> "RR_thigh_shoulder"
+"RR_hip" -> "RR_thigh_joint" [label="xyz: 0 -0.08 0 \nrpy: 0 -0 0"]
+"RR_thigh_joint" -> "RR_thigh"
+"RR_thigh" -> "RR_calf_joint" [label="xyz: 0 0 -0.213 \nrpy: 0 -0 0"]
+"RR_calf_joint" -> "RR_calf"
+"RR_calf" -> "RR_foot_fixed" [label="xyz: 0 0 -0.213 \nrpy: 0 -0 0"]
+"RR_foot_fixed" -> "RR_foot"
+"trunk" -> "camera_joint_chin" [label="xyz: 0.2522 0.0125 -0.0436 \nrpy: 0 1.5708 -3.14159"]
+"camera_joint_chin" -> "camera_chin"
+"camera_chin" -> "camera_optical_joint_chin" [label="xyz: 0 0 0 \nrpy: -1.5708 -0 -1.5708"]
+"camera_optical_joint_chin" -> "camera_optical_chin"
+"trunk" -> "camera_joint_face" [label="xyz: 0.2785 0.0125 0.0167 \nrpy: 3.14159 -0 0"]
+"camera_joint_face" -> "camera_face"
+"camera_face" -> "camera_optical_joint_face" [label="xyz: 0 0 0 \nrpy: -1.5708 -0 -1.5708"]
+"camera_optical_joint_face" -> "camera_optical_face"
+"trunk" -> "camera_joint_left" [label="xyz: -0.066 0.082 -0.0176 \nrpy: 3.14159 0.2618 1.5708"]
+"camera_joint_left" -> "camera_left"
+"camera_left" -> "camera_laserscan_joint_left" [label="xyz: 0 0 0 \nrpy: 0 0.2618 0"]
+"camera_laserscan_joint_left" -> "camera_laserscan_link_left"
+"camera_left" -> "camera_optical_joint_left" [label="xyz: 0 0 0 \nrpy: -1.5708 -0 -1.5708"]
+"camera_optical_joint_left" -> "camera_optical_left"
+"trunk" -> "camera_joint_rearDown" [label="xyz: -0.0825 0.0125 -0.04365 \nrpy: 0 1.5708 -3.14159"]
+"camera_joint_rearDown" -> "camera_rearDown"
+"camera_rearDown" -> "camera_optical_joint_rearDown" [label="xyz: 0 0 0 \nrpy: -1.5708 -0 -1.5708"]
+"camera_optical_joint_rearDown" -> "camera_optical_rearDown"
+"trunk" -> "camera_joint_right" [label="xyz: -0.041 -0.082 -0.0176 \nrpy: 3.14159 0.2618 -1.5708"]
+"camera_joint_right" -> "camera_right"
+"camera_right" -> "camera_laserscan_joint_right" [label="xyz: 0 0 0 \nrpy: 0 0.2618 0"]
+"camera_laserscan_joint_right" -> "camera_laserscan_link_right"
+"camera_right" -> "camera_optical_joint_right" [label="xyz: 0 0 0 \nrpy: -1.5708 -0 -1.5708"]
+"camera_optical_joint_right" -> "camera_optical_right"
+"trunk" -> "imu_joint" [label="xyz: -0.01592 -0.06659 -0.00617 \nrpy: 0 -0 0"]
+"imu_joint" -> "imu_link"
+"trunk" -> "ultraSound_joint_face" [label="xyz: 0.2747 0 -0.0088 \nrpy: 0 -0 0"]
+"ultraSound_joint_face" -> "ultraSound_face"
+"trunk" -> "ultraSound_joint_left" [label="xyz: -0.0535 0.0826 0.00868 \nrpy: 0 0.2618 1.5708"]
+"ultraSound_joint_left" -> "ultraSound_left"
+"trunk" -> "ultraSound_joint_right" [label="xyz: -0.0535 -0.0826 0.00868 \nrpy: 0 0.2618 -1.5708"]
+"ultraSound_joint_right" -> "ultraSound_right"
+}

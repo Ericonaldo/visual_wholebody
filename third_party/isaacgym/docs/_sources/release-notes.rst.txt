@@ -1,0 +1,234 @@
+Release Notes
+##############
+
+1.0.preview4
+=============
+
+General
+-------
+
+- This release aligns the PhysX implementation in standalone Preview Isaac Gym with Omniverse Isaac Sim 2022.1 to simplify migration to Omniverse for RL workloads
+
+New Features
+-------------
+
+- PhysX backend: Added support for SDF collisions with a nut & bolt example.
+- PhysX backend: Enabled gyroscopic forces by default to improve simulation (can disable with ``asset_options.enable_gyroscopic_forces = False``).
+- PhysX backend: Allow customizing ``rest_offset`` and ``contact_offset`` per asset and per individual shape.
+- Added parsing of spherical (ball) joints support in URDF importer.
+
+Bug fixes and improvements
+---------------------------
+
+- PhysX: Improved elastic collision behaviour.
+- PhysX: Fixed a bug when resetting some fixe-base actors.
+- Fixed an issue with PhysX material property caching affecting dynamically changing friction properties, such as during domain randomization.
+- Fixed an issue with friction mode for triangle meshes and heightfields; in previous releases this was incorrectly set to multiply mode. With this release we use average mode, like all other shapes in the simulation.
+
+
+1.0.preview3
+=============
+
+Driver Requirement
+------------------
+
+- NVIDIA Driver version 470+ is now required. 
+
+API Changes
+------------
+
+- Force sensors are now defined on assets, not individual actors (see force sensor documentation).
+- Added optional ForceSensorProperties to fine-tune how forces are reported (see force sensor documentation).
+- Added GPU mass-matrices API.
+- Added API to create non-even terrain.
+- Changed default contact collection mode from CC_LAST_SUBSTEP to CC_ALL_SUBSTEPS, which is more accurate but may be slower when running with multiple substeps.  It can be overriden by ``SimParams.physx.contact_collection``.
+
+RL Environment Changes
+----------------------
+- RL framework and all RL environments are moved to https://github.com/NVIDIA-Omniverse/IsaacGymEnvs.
+- RL docs can now be found at https://github.com/NVIDIA-Omniverse/IsaacGymEnvs/blob/main/README.md and in the docs folder. Please refer to the framework docs for changes required to update existing RL environments.
+
+Bug fixes and improvements
+---------------------------
+
+- Increased the limits on the number of actor bodies and joints with PhysX.
+- Fixed a bug with randomization of rigid body properties with the GPU pipeline.
+- Fixed a bug with setting DOF position targets with the GPU pipeline.
+- Fixed inclined plane rendering.
+- Updated docker base image to https://docs.nvidia.com/deeplearning/frameworks/pytorch-release-notes/rel_21-09.html
+- Added viewer support when running in docker.
+- Fixed instabilities related to actor scaling in GPU simulations.  There are still some limitation with changing mass properties when running with the GPU pipeline, see :ref:`actor scaling <actor_scaling>`.
+
+
+1.0.preview2
+=============
+
+API + Command Line Parameter Changes
+------------------------------------
+
+- Command line arguments for simulation API and device selection have changed, and are now aligned between the RL examples and general programming examples:
+  
+  + ``--physx_gpu`` command line option has been removed.
+  + ``--sim_device`` is used to specify a device for simulation. It can take either ``cpu`` or ``cuda:n`` as options.
+  + ``--pipeline`` is used to explicitly choose either the ``cpu`` or ``gpu`` tensor pipeline API.
+- Command line arguments for setting the experiment name were improved and extended:
+  
+  + ``--experiment`` command line option replaced ``--experiment_name``.
+  + ``--metadata`` flag was added. When used with ``--experiment <experiment name>`` additional information about the physics engine, sim device, pipeline and domain randomization is added to the experiment name.
+- Refactored the API for applying rigid body forces:
+  
+  + The new body force API allows applying torques and using different coordinate spaces for force, torque, and position vectors.
+  + The ``apply_body_force`` function was replaced by ``apply_body_forces`` and ``apply_body_force_at_pos`` (see API docs).
+  + The ``apply_rigid_body_force_tensor`` function was replaced by ``apply_rigid_body_force_tensors`` and ``apply_rigid_body_force_at_pos_tensors`` (see tensor API docs).
+- Simulation determinism has been improved: 
+
+  + A ``--seed`` parameter can be set in RL examples to specify what random seed to use. Explicitly setting a seed should produce deterministic results between runs.
+  + By default, the seed is set to *-1*, which will generate a random seed for each run.
+  + The ``--torch_deterministic`` parameter can now be set to force additional determinism in PyTorch operations, at the expense of performance. 
+  + For more details, please refer to the Reproducibility section on the Reinforcement Learning Examples page.
+- The base RL task class has been updated to prepare for future multi-gpu training support:
+
+  + Any user environment inherited from the RL base task class should be updated as well
+- Asset root and file paths can now be read in from cfg files.
+- The method ``attach_camera_to_body`` now takes named enums instead of an integer argument for the camera attachment mode.
+- Contents in docker image are now placed under ``/opt`` instead of ``/workspace``.
+
+New Features
+------------
+
+- Asset handling
+
+  + Added support for convex decomposition of collision meshes during asset import.
+  + Now uses Assimp for mesh loading. This means that many different types of meshes can be specified in MJCF or URDF assets (including .dae, .stl, .obj, etc.).
+  + Added support for loading materials and (embedded and non-embedded) textures from meshes in URDF and MJCF files.
+  + Added support for overriding normals loaded from meshes with either smooth vertex normals or face normals.
+  + Added flags for explicitly overriding inertia tensors and center of mass in AssetOptions.
+  + Added support for visual boxes and material loading from MJCF.
+  + See :doc:`/programming/assets` for additional information
+- Updated graphical user interface and visualization options
+
+  + Added API support for getting mouse position and window size from the viewer
+  + See :doc:`/programming/simsetup` for additional information
+- Updates related to Shadow Hand Environment and RL framework features
+
+  + Added adaptive KL scheduling to the default rl-pytorch RL framework. This was previously available only in the rl_games RL framework.
+  + Added different observation variants in the Shadow Hand environment for a closer match to OpenAI's Learning Dexterity project: https://openai.com/blog/learning-dexterity/
+  + Added support of asymmetric observations and Shadow Hand training examples using them.
+  + Added examples of training with LSTM policy and value functions with rl_games.
+  + Added support of setting control frequency to be lower than a simulation frequency and `controlFrequencyInv` parameter to the yaml configs to specify how many simulation steps per one control step should be performed.
+  + Added correlated noise to Domain Randomization options.
+  + Added support for custom distributions of actor parameters for domain randomization.
+- Other Asset and Example updates:
+
+  + Added new training environments: ANYmal quadruped robot, Quadcopter and NASA Ingenuity helicopter.
+- Scalability related containerization updates:
+
+  + Added support for Python 3.8.
+  + Added support for headless rendering in docker with available graphics driver.
+  + Improved CUDA context handling to prepare for multi-GPU training support
+- Additional new features:
+
+  + Added support for runtime scaling of actors.
+  + Added support for recomputing the inertia tensors of rigid bodies when their mass is changed.
+  + Added support for specifying position offset when applying force to bodies.
+  + Changed the default values of max_depenetration_velocity and bounce_threshold_velocity.
+  + Added CoordinateSpace enum to specify position offsets in local, env, or global space.
+
+Bug Fixes
+----------
+
+- Fixed issue with observation and action noise.
+- Fixed joint limit ranges for CMU and NV humanoids.
+- Fixed axes bug for humanoid training.
+- Fixed incorrect visualization of collision meshes with PhysX backend.
+- Fixed a bug with env spacing in z-up simulations.
+- Fixed a bug where meshes, cylinders, or ellipsoids imported from MJCF could have incorrect friction properties.
+- Fixed a bug where primitive shapes created procedurally could have incorrect thickness in Flex.
+- Fixed a possible crash when getting net contact force tensor on GPU.
+- Fixed submitting mixed control tensors in GPU pipeline.
+- Fixed issues with z-up camera view matrix calculation, lookAt function, and mouse drag direction.
+- Fixed rigid body property getter that was returning erroneous inertia tensors.
+- PhysX: Fixed occasional crash with aggregates on GPU.
+- PhysX: Fixed possible buffer overflow in convex-capsule collision on GPU.
+- PhysX: Fixed stability issues with small meshes.
+- PhysX: Improvements to TGS restitution.
+- PhysX: Fixed issue with applying body forces in GPU pipeline.
+- PhysX: Fixed issue with applying body torques in GPU pipeline.
+- PhysX: Fixed various issues causing non-determinism.
+- Fixed synchronization issues in GPU pipeline.
+- Fixed issue with z-up camera view matrix calculation.
+- Fixed issues with setting the rigid shape properties of an actor.
+- Improved error checking for input tensors.
+- Improved error reporting when CPU-only functions get called during simulation with the GPU pipeline.
+- Fixed a bug in computing transform inverse.
+- Fixed a Flex crash on startup caused by a driver bug.
+- Fixed a bug with ground plane friction in the body_physics_props example. 
+
+
+1.0.preview1
+=============
+
+New Features
+-------------
+
+- Implemented end-to-end GPU pipeline for physics simulation, which allows interacting with simulations on the GPU without copying data to or from the host.
+- Added new Tensor API for physics state and control, on both CPU and GPU.
+- Added Pytorch interop utilities for the Tensor API.
+- Added a new simple framework for reinforcement learning and a collection of sample tasks.
+- Added new configurable domain randomization features.
+- Added support for fixed and spatial tendons with PhysX.
+- Added support for user-defined force sensors attached to articulation links with PhysX.
+- Exposed DOF forces in PhysX.
+- Added Jacobian and generalized mass matrices with PhysX.
+- Improved PVD support - can connect to PVD remotely or log to file.
+- Improved contact handling with multiple substeps.
+- Added support for multiple subscenes to parallelize computations with CPU PhysX.
+- Improved contact handling performance in PhysX.
+- Support for rigid dynamic actors in PhysX to increase performance with single-body actors.
+- Support for custom aggregates with PhysX.
+- Exposed joint armature and joint friction in PhysX.
+- Added support for soft contacts with Flex.
+- Added stress tensors with Flex.
+- Added pneumatic pressure/target tensors with Flex.
+- Added soft materials with Flex.
+- Added new simulation and asset/actor options for Flex and PhysX.
+- Parsing tendon definitions from MJCF.
+- Loading cylinder geometry from MJCF.
+- Loading visual meshes from MJCF.
+- Generating filters from contact specification in MJCF.
+- Improved support for multiple sensor cameras per env.
+- Improved Z-up simulation support.
+- Updated PhysX and FleX versions.
+- Viewer sync can be toggled by pressing V (disabling sync increases performance, especially with the GPU pipeline).
+- Improved setup scripts.
+- Updated documentation and examples.
+- Updated docker images.
+
+Removed Features
+-----------------
+
+- Removed Python multiprocessing support, which is superseded by the new Tensor API.
+- Removed old ``rlbase`` module and examples, which are replaced by the new RL framework designed around the Tensor API.
+- Removed old RTX renderer.
+
+Changes
+--------
+
+- Renamed package from ``carbongym`` to ``isaacgym``.
+- Improved quaternion-Euler conversion utilities.
+
+Bug Fixes
+----------
+
+- Numerous physics bug fixes and simulation stability improvements.
+- Fixes and improvements to URDF and MJCF importers.
+- Fixes and improvements to camera sensors.
+
+Known Issues and Limitations
+============================
+
+- Most of the rigid body tensor API is only available with PhysX.
+- Soft body support is currently only available with FleX.
+- Missing tensor API for setting all rigid body states: root and DOF state tensors can be used instead.
+- Missing API for configuring properties of spatial tendons.
+- When using the GPU pipeline, DOF states don't refresh in the viewer.

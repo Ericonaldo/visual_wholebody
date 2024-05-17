@@ -1,0 +1,135 @@
+Installation
+############
+
+Prerequisites
+=============
+
+- Ubuntu 18.04 or 20.04.
+- Python 3.6, 3.7 or 3.8.
+- Minimum NVIDIA driver version:
+
+  + Linux: 470
+
+Set up the Python package
+=========================
+
+Setting up Gym will automatically install all of the Python package dependencies, including numpy and PyTorch.  You can install everything in an existing Python environment or create a brand new conda environment.  Creating a new conda environment is a safer option, because all of the packages will be installed with versions that are known to work, and there is no risk of messing up your existing Python environments with incompatible package versions.
+
+Install in an existing Python environment
+-----------------------------------------
+
+In the ``python`` subdirectory, run::
+
+    pip install -e .
+
+This will install the ``isaacgym`` package and all of its dependencies in the active Python environment.  If your have more than one Python environment where you want to use Gym, you will need to run this command in each of them.  To verify the details of the installed package, run::
+
+    pip show isaacgym
+
+To uninstall, run::
+
+    pip uninstall isaacgym
+
+Install in a new conda environment
+----------------------------------
+
+In the root directory, run::
+
+    ./create_conda_env_rlgpu.sh
+
+This will create a new conda env called ``rlgpu``, which you can activate by running::
+
+    conda activate rlgpu
+
+If you wish to change the name of the env, you can edit ``python/rlgpu_conda_env.yml``, then update the ``ENV_NAME`` variable in the ``create_conda_env_rlgpu.sh`` script to match.
+
+To uninstall, run::
+
+    conda remove --name rlgpu --all
+
+Install in a Docker container
+-----------------------------
+
+This installation method is experimental, but may be useful for running RL training in certain environments.
+
+Follow `these instructions <https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker>`_ to install the NVIDIA Container Toolkit on your system. In the root directory, run::
+
+    bash docker/build.sh
+
+This will build a Docker image, which you can run interactively as follows::
+
+    bash docker/run.sh <display>
+
+Note that you can pass in an optional <display> argument to the ``run.sh`` script, which will allow viewer support when running from inside the docker container. To retrieve the name of your display, refer to the output from ``xdpyinfo``.
+
+Install Example RL Environments
+-------------------------------
+
+We provide example reinforcement learning environments that can be trained with Isaac Gym. For more details, please visit https://github.com/NVIDIA-Omniverse/IsaacGymEnvs and follow the setup instructions in the README.
+
+Simply clone the IsaacGymEnvs repository and run::
+
+    pip install -e .
+
+Testing the installation
+========================
+
+Simple example
+--------------
+
+To test the installation, you can run the examples from the ``python/examples`` subdirectory, like this::
+
+    python joint_monkey.py
+
+It is important to run from that directory, because the example scripts assume that assets can be found relative to that location.
+
+The joint monkey example loads an asset and animates all of its degrees-of-freedom through their full range of motion.
+
+.. image:: images/joint_monkey.png
+
+Reinforcement learning example
+------------------------------
+
+You can also run a reinforcement learning task to test GPU simulation and Pytorch integration. 
+This requires setting up the IsaacGymEnvs repository (https://github.com/NVIDIA-Omniverse/IsaacGymEnvs). Please follow instructions in the README for setting up the IsaacGymEnvs repository and for launching a reinforcement learning task.
+The "Cartpole" task is a good simple environment to test and should train in less than 5 seconds in headless mode.
+
+.. image:: images/cartpole.png
+
+
+Troubleshooting
+===============
+
+Isaac Gym is under intense development and things break occasionally.
+
+If you run into crashes or other problems when running the examples:
+
+- Make sure your system meets the requirements listed at the top.
+
+- Verify that the correct package is being used (``pip show isaacgym``).  If the package was installed more than once, check that the reported location points to the version you want to use.
+
+- On systems with integrated Intel graphics, make sure that the NVIDIA GPU is selected.  For example, on Ubuntu 18.04, you can run ``sudo prime-select nvidia``. If you have multiple Vulkan devices visible when running ``vulkaninfo``, you may need to explicitly force use of your NVIDIA GPU. You can do this as follows: ``export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/nvidia_icd.json``
+
+For Anaconda Users
+------------------
+
+If you see an error like this::
+
+    ImportError: libpython3.7m.so.1.0: cannot open shared object file: No such file or directory
+
+Installing the corresponding Python lib should fix that problem::
+
+    sudo apt install libpython3.7
+
+If you are running Ubuntu 20.04, which does not have a libpython3.7 package, you will instead need to set the LD_LIBRARY_PATH variable appropriately::
+
+    export LD_LIBRARY_PATH=/home/xyz/anaconda3/envs/rlgpu/lib
+
+If you see an error like this::
+
+    ImportError: /home/xyz/anaconda3/bin/../lib/libstdc++.so.6: version `GLIBCXX_3.4.20` not found (required by /home/xyz/carbgym/python/isaacgym/_bindings/linux64/gym_36.so)
+
+That means that the ``libstdc++`` version distributed with Anaconda is different than the one used on your system to build Isaac Gym.  Anaconda does some environment shenanigans that masks the system ``libstdc++`` with the one it installed, but it may be incompatible with how Isaac Gym was built on your system.  There's a number of ways this can be fixed and none of them are pretty.  The simplest would be to "hide" the conflicting ``libstdc++`` files that Anaconda installed by moving them to a different directory::
+
+    mkdir ${YOUR_CONDA_ENV}/lib/_unused
+    mv ${YOUR_CONDA_ENV}/lib/libstdc++* ${YOUR_CONDA_ENV}/lib/_unused

@@ -1,0 +1,21 @@
+Terrains
+########
+
+In addition to the API provided for adding flat ground planes into simulation environments, we also provide APIs and utilities for generating uneven terrains. 
+Terrains can be added as static triangle meshes using ``gym.add_triangle_mesh()``. We provide utilities to generate some simple terrains in ``isaacgym/terrain_utils.py``.
+Different heightfield terrain types can be generated using: ``random_uniform_terrain()``, ``sloped_terrain()``, ``pyramid_sloped_terrain()``, ``discrete_obstacles_terrain()``, ``wave_terrain()``, ``stairs_terrain()``, ``pyramid_stairs_terrain()``, and ``stepping_stones_terrain()``.
+They can then be converted to a triangle mesh using ``convert_heightfield_to_trimesh()`` and added to the simulation.
+ 
+Please see ``examples/terrain_creation.py`` for more details.
+
+.. image:: ../images/terrain.png
+
+We also showcase an example of Reinforcement Learning with uneven terrain in our AnymalTerrain environment, which can be found at https://github.com/NVIDIA-Omniverse/IsaacGymEnvs.
+
+.. image:: ../images/anymal_on_terrain.png
+
+Net Contact Force Issue
+-------------------------
+The net contact force reporting (``gym.acquire_net_contact_force_tensor()``) of rigid bodies colliding with triangle meshes is known to be unreliable at the moment.
+Due to interactions with triangle edges the reported forces can be largely reduced or even completely missed at some timesteps.
+The net contact force reporting will be improved in the future. As a workaround we propose to use force sensors (``gym.create_asset_force_sensor()``) or filter the reported contact net contact forces in the environment.

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Physics Simulation &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tensor API" href="tensors.html" />
+    <link rel="prev" title="Assets" href="assets.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Isaac Gym
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simsetup.html">Simulation Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assets.html">Assets</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Physics Simulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-actors">Creating Actors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#aggregates">Aggregates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#actor-components">Actor Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#rigid-bodies">Rigid Bodies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#joints">Joints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#degrees-of-freedom">Degrees-of-Freedom</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#controlling-actors">Controlling Actors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scaling-actors">Scaling Actors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dof-properties-and-drive-modes">DOF Properties and Drive Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tensor-control-api">Tensor Control API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#physics-state">Physics State</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#rigid-body-states">Rigid Body States</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dof-states">DOF States</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physics-state-tensor-api">Physics State Tensor API</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tensors.html">Tensor API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forcesensors.html">Force Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tuning.html">Simulation Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html">Math Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics and Camera Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terrain.html">Terrains</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Programming</a> &raquo;</li>
+      <li>Physics Simulation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="physics-simulation">
+<h1>Physics Simulation<a class="headerlink" href="#physics-simulation" title="Permalink to this heading"></a></h1>
+<section id="creating-actors">
+<h2>Creating Actors<a class="headerlink" href="#creating-actors" title="Permalink to this heading"></a></h2>
+<p>An actor is an instance of a <a class="reference internal" href="assets.html"><span class="doc">GymAsset</span></a>.  The function <code class="docutils literal notranslate"><span class="pre">create_actor</span></code> adds an actor to an environment and returns an actor handle that can be used to interact with that actor later.  For performance reasons, it is a good practice to save the handles during actor creation rather than looking them up every time while the simulation is running.  Many of the accompanying examples do something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># cache useful handles</span>
+<span class="n">envs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">actor_handles</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating </span><span class="si">%d</span><span class="s2"> environments&quot;</span> <span class="o">%</span> <span class="n">num_envs</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_envs</span><span class="p">):</span>
+    <span class="c1"># create env</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_env</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">env_lower</span><span class="p">,</span> <span class="n">env_upper</span><span class="p">,</span> <span class="n">num_per_row</span><span class="p">)</span>
+    <span class="n">envs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+
+    <span class="c1"># add actor</span>
+    <span class="n">actor_handle</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_actor</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">asset</span><span class="p">,</span> <span class="n">pose</span><span class="p">,</span> <span class="s2">&quot;actor&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">actor_handles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">actor_handle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Actor handles are specific to the environment that the actor was created in.  API functions that operate on actors require both the environment reference and actor handle, so those are commonly cached together.</p>
+<p>There are quite a few functions that operate on actors.  They are named <code class="docutils literal notranslate"><span class="pre">get_actor_*</span></code>, <code class="docutils literal notranslate"><span class="pre">set_actor_*</span></code>, or <code class="docutils literal notranslate"><span class="pre">apply_actor_*</span></code>.  Use the API reference for a complete listing.</p>
+<section id="aggregates">
+<h3>Aggregates<a class="headerlink" href="#aggregates" title="Permalink to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Aggregates are available only with the PhysX backend.  Creating aggregates will have no effect with Flex.</p>
+</div>
+<p>An aggregate is a collection of actors.  Aggregates do not provide extra simulation functionality, but allow you to tell PhysX that a set of actors will be clustered together, which in turn allows PhysX to optimize its spatial data operations.  It is not necessary to create aggregates, but doing so can provide a modest performance boost.  To place multiple actors into an aggregate, you should enclose the calls to <code class="docutils literal notranslate"><span class="pre">create_actor</span></code> in between calls to <code class="docutils literal notranslate"><span class="pre">begin_aggregate</span></code> and <code class="docutils literal notranslate"><span class="pre">end_aggregate</span></code>, like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">begin_aggregate</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">max_bodies</span><span class="p">,</span> <span class="n">max_shapes</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">create_actor</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">create_actor</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">create_actor</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">end_aggregate</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Only actors from the same env can be included in an aggregate.  When creating an aggregate, it is necessary to specify the maximum number of rigid bodies and shapes, which should be the total number of bodies and shapes in all the actors that will get placed in the aggregate.  This information can be obtained from the assets used to create the actors (<code class="docutils literal notranslate"><span class="pre">get_asset_rigid_body_count</span></code> and <code class="docutils literal notranslate"><span class="pre">get_asset_rigid_shape_count</span></code>).</p>
+<p>For an example of using aggregates, take a look at <code class="docutils literal notranslate"><span class="pre">python/rlgpu/tasks/franka.py</span></code>.</p>
+</section>
+</section>
+<section id="actor-components">
+<h2>Actor Components<a class="headerlink" href="#actor-components" title="Permalink to this heading"></a></h2>
+<p>Each actor has an array of rigid bodies, joints, and DOFs.  You can get the counts like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">num_bodies</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_rigid_body_count</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">)</span>
+<span class="n">num_joints</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_joint_count</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">)</span>
+<span class="n">num_dofs</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_dof_count</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is not possible, at this time, to add or remove actor components once an actor gets created.</p>
+<section id="rigid-bodies">
+<h3>Rigid Bodies<a class="headerlink" href="#rigid-bodies" title="Permalink to this heading"></a></h3>
+<p>Each rigid body constists of one or more rigid shapes.  You can customize rigid body and shape properties per actor, as shown in the <code class="docutils literal notranslate"><span class="pre">body_physics_props.py</span></code> example.</p>
+</section>
+<section id="joints">
+<h3>Joints<a class="headerlink" href="#joints" title="Permalink to this heading"></a></h3>
+<p>The Gym importers preserves the joints as defined in URDF and MJCF models.  Fixed, revolute, and prismatic joints are well-tested and fully supported.  Using these joint types, a wide variety of models can be created.  Additional support for spherical and planar joints is planned.</p>
+</section>
+<section id="degrees-of-freedom">
+<h3>Degrees-of-Freedom<a class="headerlink" href="#degrees-of-freedom" title="Permalink to this heading"></a></h3>
+<p>Each degree of freedom can be independently actuated.  You can apply controls to individual DOFs or use arrays to work with all the actor DOFs at once, as described in the next section.</p>
+</section>
+</section>
+<section id="controlling-actors">
+<h2>Controlling Actors<a class="headerlink" href="#controlling-actors" title="Permalink to this heading"></a></h2>
+<p>Controlling actors is done using the degrees-of-freedom.  For each DOF, you can set the drive mode, limits, stiffness, damping, and targets.  You can set these values per actor and override the default settings loaded from the asset.</p>
+</section>
+<section id="scaling-actors">
+<span id="actor-scaling"></span><h2>Scaling Actors<a class="headerlink" href="#scaling-actors" title="Permalink to this heading"></a></h2>
+<p>Actors can have their size scaled at runtime. Scaling an actor will change its collision geometry, mass properties, joint positions, and prismatic joint limits. See <code class="docutils literal notranslate"><span class="pre">examples/actor_scaling.py</span></code> for sample usage.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Actor scaling has known limitations when using the GPU pipeline.  The center-of-mass of rigid bodies is not updated,
+which only affects bodies with center-of-mass not at the body origin.  Also, resetting transforms and velocities or applying forces in the same simulation step as scaling may yield incorrect results.  We expect these limitation to be resolved in the future.</p>
+</div>
+<p>After scaling an actor, some of its properties may have to be manually tuned to get the desired results. For example, its DOF properties (stiffness, damping, max force, armature, etc.), actuation forces, tendon properties etc. may have to be adjusted.</p>
+<section id="dof-properties-and-drive-modes">
+<h3>DOF Properties and Drive Modes<a class="headerlink" href="#dof-properties-and-drive-modes" title="Permalink to this heading"></a></h3>
+<p>DOF property arrays can be accessed for assets (<code class="docutils literal notranslate"><span class="pre">get_asset_dof_properties</span></code>) and individual actors (<code class="docutils literal notranslate"><span class="pre">get_actor_dof_properties</span></code>/<code class="docutils literal notranslate"><span class="pre">set_actor_dof_properties</span></code>).  The getters return structured Numpy arrays with the following fields:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Data type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hasLimits</p></td>
+<td><p>bool</p></td>
+<td><p>Whether the DOF has limits or has unlimited motion.</p></td>
+</tr>
+<tr class="row-odd"><td><p>lower</p></td>
+<td><p>float32</p></td>
+<td><p>Lower limit.</p></td>
+</tr>
+<tr class="row-even"><td><p>upper</p></td>
+<td><p>float32</p></td>
+<td><p>Upper limit.</p></td>
+</tr>
+<tr class="row-odd"><td><p>driveMode</p></td>
+<td><p>gymapi.DofDriveMode</p></td>
+<td><p>DOF drive mode, see below.</p></td>
+</tr>
+<tr class="row-even"><td><p>stiffness</p></td>
+<td><p>float32</p></td>
+<td><p>Drive stiffness.</p></td>
+</tr>
+<tr class="row-odd"><td><p>damping</p></td>
+<td><p>float32</p></td>
+<td><p>Drive damping.</p></td>
+</tr>
+<tr class="row-even"><td><p>velocity</p></td>
+<td><p>float32</p></td>
+<td><p>Maximum velocity.</p></td>
+</tr>
+<tr class="row-odd"><td><p>effort</p></td>
+<td><p>float32</p></td>
+<td><p>Maximum effort (force or torque).</p></td>
+</tr>
+<tr class="row-even"><td><p>friction</p></td>
+<td><p>float32</p></td>
+<td><p>DOF friction.</p></td>
+</tr>
+<tr class="row-odd"><td><p>armature</p></td>
+<td><p>float32</p></td>
+<td><p>DOF armature.</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">DOF_MODE_NONE</span></code> lets the joints move freely within their range of motion:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">props</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_dof_properties</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;driveMode&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">gymapi</span><span class="o">.</span><span class="n">DOF_MODE_NONE</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;stiffness&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;damping&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_dof_properties</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is used in the <code class="docutils literal notranslate"><span class="pre">projectiles.py</span></code> example, where the ant actors are essentially ragdolls.</p>
+<p><code class="docutils literal notranslate"><span class="pre">DOF_MODE_EFFORT</span></code> lets you apply efforts to the DOF using <code class="docutils literal notranslate"><span class="pre">apply_actor_dof_efforts</span></code>.  If the DOF is linear, the effort is a force in Newtons.  If the DOF is angular, the effort is a torque in Nm.  The DOF properties need to be set only once, but efforts must be applied every frame.  Applying efforts multiple times during each frame is cumulative, but they are reset to zero at the beginning of the next frame:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure the joints for effort control mode (once)</span>
+<span class="n">props</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_dof_properties</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;driveMode&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">gymapi</span><span class="o">.</span><span class="n">DOF_MODE_EFFORT</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;stiffness&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;damping&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_dof_properties</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+
+<span class="c1"># apply efforts (every frame)</span>
+<span class="n">efforts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">num_dofs</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">apply_actor_dof_efforts</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">efforts</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">DOF_MODE_POS</span></code> and <code class="docutils literal notranslate"><span class="pre">DOF_MODE_VEL</span></code> engage a PD controller that can be tuned using stiffness and damping parameters.  The controller will apply DOF forces that are proportional to <code class="docutils literal notranslate"><span class="pre">posError</span> <span class="pre">*</span> <span class="pre">stiffness</span> <span class="pre">+</span> <span class="pre">velError</span> <span class="pre">*</span> <span class="pre">damping</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">DOF_MODE_POS</span></code> is used for position control, typically with both stiffness and damping set to non-zero values:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">props</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_dof_properties</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;driveMode&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">gymapi</span><span class="o">.</span><span class="n">DOF_MODE_POS</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;stiffness&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">1000.0</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;damping&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">200.0</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_dof_properties</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can set the position targets using <code class="docutils literal notranslate"><span class="pre">set_actor_dof_position_targets</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_dofs</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_dof_position_targets</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the DOF is linear, the target is in meters.  If the DOF is angular, the target is in radians.</p>
+<p>Here’s a more interesting example that sets random positions within the limits defined for each DOF:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dof_props</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_dof_properties</span><span class="p">(</span><span class="n">envs</span><span class="p">,</span> <span class="n">actor_handles</span><span class="p">)</span>
+<span class="n">lower_limits</span> <span class="o">=</span> <span class="n">dof_props</span><span class="p">[</span><span class="s1">&#39;lower&#39;</span><span class="p">]</span>
+<span class="n">upper_limits</span> <span class="o">=</span> <span class="n">dof_props</span><span class="p">[</span><span class="s1">&#39;upper&#39;</span><span class="p">]</span>
+<span class="n">ranges</span> <span class="o">=</span> <span class="n">upper_limits</span> <span class="o">-</span> <span class="n">lower_limits</span>
+
+<span class="n">pos_targets</span> <span class="o">=</span> <span class="n">lower_limits</span> <span class="o">+</span> <span class="n">ranges</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">num_dofs</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_dof_position_targets</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">pos_targets</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">DOF_MODE_VEL</span></code> is used for velocity control.  The stiffness parameter should be set to zero.  The torques applied by the PD controller will be proportional to the damping parameter:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">props</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_dof_properties</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;driveMode&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">gymapi</span><span class="o">.</span><span class="n">DOF_MODE_VEL</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;stiffness&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">props</span><span class="p">[</span><span class="s2">&quot;damping&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">600.0</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_dof_properties</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can set the velocity targets using <code class="docutils literal notranslate"><span class="pre">set_actor_dof_velocity_targets</span></code>.  If the DOF is linear, the target is in meters per second.  If the DOF is angular, the target is in radians per second:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vel_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">num_dofs</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_dof_velocity_targets</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">vel_targets</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Unlike efforts, position and velocity targets don’t need to be set every frame, only when changing targets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When applying controls using <code class="docutils literal notranslate"><span class="pre">apply_actor_dof_efforts</span></code>, <code class="docutils literal notranslate"><span class="pre">set_actor_dof_position_targets</span></code>, and <code class="docutils literal notranslate"><span class="pre">set_actor_dof_velocity_targets</span></code>, you must always pass arrays of length <code class="docutils literal notranslate"><span class="pre">num_dofs</span></code>.  A control value from the array will only be applied to its corresponding DOF if that DOF was configured to use that drive mode.  For example, if you call <code class="docutils literal notranslate"><span class="pre">set_actor_dof_position_targets</span></code> but one of the DOFs was configured to use <code class="docutils literal notranslate"><span class="pre">DOF_MODE_EFFORT</span></code>, then that DOF will remain in effort mode and its position target value will be ignored.</p>
+</div>
+<p>In addition to working with actor DOF arrays, each DOF can be controlled independently, as shown in the <code class="docutils literal notranslate"><span class="pre">dof_controls.py</span></code> example.  Working with individual DOFs is more flexible, but can be less efficient due to the overhead of multiple API calls from Python.</p>
+</section>
+<section id="tensor-control-api">
+<h3>Tensor Control API<a class="headerlink" href="#tensor-control-api" title="Permalink to this heading"></a></h3>
+<p>The new tensor API provides alternative ways of <a class="reference internal" href="tensors.html#control-tensors"><span class="std std-ref">applying controls</span></a>.  The API for setting up DOF properties remains the same, but you can apply forces or set PD targets using CPU or GPU tensors.  This makes it possible to run simulations entirely on the GPU, without copying data between the host and the device.</p>
+</section>
+</section>
+<section id="physics-state">
+<h2>Physics State<a class="headerlink" href="#physics-state" title="Permalink to this heading"></a></h2>
+<p>Gym provides an API for getting and setting physics state as structured Numpy arrays.</p>
+<section id="rigid-body-states">
+<h3>Rigid Body States<a class="headerlink" href="#rigid-body-states" title="Permalink to this heading"></a></h3>
+<p>Rigid body states includes position (Vec3), orientation (Quat), linear velocity (Vec3), and angular velocity (Vec3).  This allows you to work with the simulation state in maximal coordinates.</p>
+<p>You can get rigid body state arrays for an actor, an env, or the entire simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">body_states</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_rigid_body_states</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">STATE_ALL</span><span class="p">)</span>
+<span class="n">body_states</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_env_rigid_body_states</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">STATE_ALL</span><span class="p">)</span>
+<span class="n">body_states</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_sim_rigid_body_states</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">STATE_ALL</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The methods return structured numpy arrays.  The last argument is a bit field that specify the type of state that should be returned.  <code class="docutils literal notranslate"><span class="pre">STATE_POS</span></code> means that positions should be computed, <code class="docutils literal notranslate"><span class="pre">STATE_VEL</span></code> means that velocities should be computed, and <code class="docutils literal notranslate"><span class="pre">STATE_ALL</span></code> means that both should be computed.  The structure of the returned array is always the same, but the position and velocity values will be computed only if the corresponding flag was set.  Internally, Gym maintains a state cache buffer where these values get stored.  The Numpy arrays are just wrappers over slices of that buffer.  Depending on the underlying physics engine, getting and setting states may require nontrivial computations and the bit flags can be used to avoid unnecessary operations.</p>
+<p>The state array slices can be accessed like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">body_states</span><span class="p">[</span><span class="s2">&quot;pose&quot;</span><span class="p">]</span>             <span class="c1"># all poses (position and orientation)</span>
+<span class="n">body_states</span><span class="p">[</span><span class="s2">&quot;pose&quot;</span><span class="p">][</span><span class="s2">&quot;p&quot;</span><span class="p">])</span>           <span class="c1"># all positions (Vec3: x, y, z)</span>
+<span class="n">body_states</span><span class="p">[</span><span class="s2">&quot;pose&quot;</span><span class="p">][</span><span class="s2">&quot;r&quot;</span><span class="p">])</span>           <span class="c1"># all orientations (Quat: x, y, z, w)</span>
+<span class="n">body_states</span><span class="p">[</span><span class="s2">&quot;vel&quot;</span><span class="p">]</span>              <span class="c1"># all velocities (linear and angular)</span>
+<span class="n">body_states</span><span class="p">[</span><span class="s2">&quot;vel&quot;</span><span class="p">][</span><span class="s2">&quot;linear&quot;</span><span class="p">]</span>    <span class="c1"># all linear velocities (Vec3: x, y, z)</span>
+<span class="n">body_states</span><span class="p">[</span><span class="s2">&quot;vel&quot;</span><span class="p">][</span><span class="s2">&quot;angular&quot;</span><span class="p">]</span>   <span class="c1"># all angular velocities (Vec3: x, y, z)</span>
+</pre></div>
+</div>
+<p>You can edit and then set the states using the corresponding methods:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">set_actor_rigid_body_states</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">body_states</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">STATE_ALL</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_env_rigid_body_states</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">body_states</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">STATE_ALL</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_sim_rigid_body_states</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">body_states</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">STATE_ALL</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Saving and restoring states is demonstrated in the <code class="docutils literal notranslate"><span class="pre">projectiles.py</span></code> example.  At the beginning, we save a copy of the rigid body states for the entire simulation.  When the user presses R, those states are restored.</p>
+<p>To determine the offset of a specific rigid body in the state arrays, use the <code class="docutils literal notranslate"><span class="pre">find_actor_rigid_body_index</span></code> method, like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">i1</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">find_actor_rigid_body_index</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="s2">&quot;body_name&quot;</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">DOMAIN_ACTOR</span><span class="p">)</span>
+<span class="n">i2</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">find_actor_rigid_body_index</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="s2">&quot;body_name&quot;</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">DOMAIN_ENV</span><span class="p">)</span>
+<span class="n">i3</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">find_actor_rigid_body_index</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="s2">&quot;body_name&quot;</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">DOMAIN_SIM</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The last argument specifies the index domain.</p>
+<ul class="simple">
+<li><p>Use domain <code class="docutils literal notranslate"><span class="pre">DOMAIN_ACTOR</span></code> to get an index into the state buffer returned by <code class="docutils literal notranslate"><span class="pre">get_actor_rigid_body_states</span></code></p></li>
+<li><p>Use domain <code class="docutils literal notranslate"><span class="pre">DOMAIN_ENV</span></code> to get an index into the state buffer returned by <code class="docutils literal notranslate"><span class="pre">get_env_rigid_body_states</span></code></p></li>
+<li><p>Use domain <code class="docutils literal notranslate"><span class="pre">DOMAIN_SIM</span></code> to get an index into the state buffer returned by <code class="docutils literal notranslate"><span class="pre">get_sim_rigid_body_states</span></code></p></li>
+</ul>
+</section>
+<section id="dof-states">
+<h3>DOF States<a class="headerlink" href="#dof-states" title="Permalink to this heading"></a></h3>
+<p>You can also work with actors using reduced coordinates:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dof_states</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_dof_states</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">STATE_ALL</span><span class="p">)</span>
+
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_dof_states</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">dof_states</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">STATE_ALL</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>DOF state arrays include the position and velocity as single floats.  For linear DOFs, the positions are in meters and the velocities are in meters per second.  For angular DOFs, the positions are in radians and the velocities are in radians per second.</p>
+<p>You can access the position and velocity slices like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dof_states</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">]</span>   <span class="c1"># all positions</span>
+<span class="n">dof_states</span><span class="p">[</span><span class="s2">&quot;vel&quot;</span><span class="p">]</span>   <span class="c1"># all velocities</span>
+</pre></div>
+</div>
+<p>You can determine the offset of a specific DOF using the <code class="docutils literal notranslate"><span class="pre">find_actor_dof_index</span></code> method.</p>
+<p>Note that DOF states do not include the pose or velocity of the root rigid body, so they don’t fully capture the actor state.  As a consequence, we do not provide methods to get and set DOF states for entire environments or simulations.  This limitation should be addressed in the future.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">joint_monkey.py</span></code> example illustrates working with DOF states.</p>
+</section>
+<section id="physics-state-tensor-api">
+<h3>Physics State Tensor API<a class="headerlink" href="#physics-state-tensor-api" title="Permalink to this heading"></a></h3>
+<p>The new tensor API allows for <a class="reference internal" href="tensors.html#physics-state-tensors"><span class="std std-ref">getting and setting state</span></a> using CPU or GPU tensors.  This makes it possible to run simulations entirely on the GPU, without copying data between the host and the device.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="assets.html" class="btn btn-neutral float-left" title="Assets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tensors.html" class="btn btn-neutral float-right" title="Tensor API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

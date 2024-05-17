@@ -1,0 +1,306 @@
+Programming Examples
+#####################
+
+Common Command Line Options
+===========================
+
+--help
+    Prints out commandline options for each example.
+--physx
+    Uses PhysX as the physics backend for simulation.
+--flex
+    Uses FleX as the physics backend for simulation.
+--sim_device
+    Choose the device for running the simulation with PyTorch-like syntax. Can be **cpu** or **cuda**, with an optional device specification. Default is **cuda:0**.
+--pipeline
+    Choose either the **cpu** or **gpu** pipeline for tensor operations. Default is **gpu**.
+--graphics_device_id
+    Specify the device ordinal used for graphics.
+
+ .. note::
+    All examples support the ``--physx`` and ``--flex`` command line options except for ``claw.py`` (flex only), ``soft_body.py`` (flex only), ``franka_cube_ik.py`` (physx only), and ``franka_osc.py`` (physx only).
+
+
+List of Examples
+=================
+
+.. 1080_balls_of_solitude_py:
+
+Collision filtering (1080_balls_of_solitude.py)
+------------------------------------------------
+This example demonstrates the usage of collision groups and collision filters.  It creates a pyramid of balls in each environment.
+By default, the balls in each environment will collide with each other, but not the balls from other environments.
+The ``--all_collisions`` option makes all balls collide with each other, across all environments.
+The ``--no_collisions`` option filters out collisions between all balls, even those in the same environment.
+
+.. image:: ../images/example_1080_balls.png
+
+.. asset_info_py:
+
+Asset and Environment Info (asset_info.py)
+------------------------------------------
+This example demonstrates the introspection API at two levels. 
+First assets are loaded from their respective representations (either URDF or MJCF) and the bodies, joints and degrees of freedom can be retrieved. 
+Second once an asset has been added to the simulation as an actor that actors current state in the simulation can be queried, state information related to the different bodies, joint etc can be accessed. 
+
+.. body_physics_props_py:
+
+Body physics properties example (body_physics_props.py)
+-------------------------------------------------------
+This example demonstrates how to load rigid body, update its properties and apply various actions. Specifically, there are three scenarios that
+presents the following details.
+
+- First, load rigid body asset with varying properties.
+- Second, modify the shape and visual properties of the rigid body.
+- Third, use the rigid body handle to control it and perform various actions like applying body force and linear velocity.
+
+.. image:: ../images/example_body_physics_prop.png
+
+.. domain_randomization_py:
+
+Domain Randomization (domain_randomization.py)
+----------------------------------------------
+This example demonstrates domain randomization.
+
+- First, it randomizes color and texture of the asset loaded in the environment.
+- Second, it randomizes parameters for the lights present in the environment.
+- Third, it randomizes the position of the camera and capture multiple viewpoints.
+
+The ``--save_images`` option can be used to save images to disk.
+
+.. image:: ../images/example_domain_randomization.png
+
+.. franka_attractor_py:
+
+Franka Attractor (franka_attractor.py)
+--------------------------------------
+This example demonstrates using attractors to navigate Franka arms to reach a target location and pose.
+
+.. image:: ../images/example_franka_attractor.png
+
+.. _graphics_example:
+
+Isaac Gym Graphics Example (graphics.py)
+----------------------------------------
+This example demonstrates the use of several graphics operations of Isaac Gym, including the following:
+
+- Load Textures / Create Textures from Buffer
+- Apply Textures to rigid bodies
+- Create Camera Sensors: At a static location, Attached to a rigid body
+- Retrieve different types of camera images
+
+The ``--save_images`` option can be used to save images to disk.
+
+.. image:: ../images/example_graphics.png
+
+.. dof_controls_py:
+
+DOF Controls (dof_controls.py)
+----------------------------------
+This example demonstrates various methods to control DOFs (degrees-of-freedom).
+A cartpole asset is loaded from URDF.  This asset is instanced in several enviornments, each one using a different control mode.
+Demonstrates the usage of DOF properties and drive modes, including position, velocity, and effort controls.
+
+.. image:: ../images/example_dof_control.png
+
+.. joint_monkey_py:
+
+Joint Monkey (joint_monkey.py)
+----------------------------------
+This example animates degree-of-freedom ranges for a given asset.  It demonstrates usage of DOF properties and states.
+It also demonstrates line drawing utilities to visualize DOF frames (origin and axis).
+
+Command line arguments:
+
+- ``--asset_id n`` selects an asset (valid range is 0 to 7)
+- ``--speed_scale s`` multiplier for animation speed, defaults to 1.0
+- ``--show_axis`` enables visualization of the currently animated DOF frame
+
+.. image:: ../images/joint_monkey.png
+
+.. maths_py:
+
+Gym Math API (maths.py)
+-----------------------
+Examples of math operations available in the Gym API and conversion to numpy data types
+
+.. soft_body_py:
+
+Soft Body (soft_body.py)
+------------------------
+This example shows soft-body simulation with Flex backend. 
+URDF soft body model is loaded into simulation, and stress levels are visualized.
+Note: only ``--flex`` is supported for this example. PhysX support for soft bodies will be added in upcoming releases.
+
+.. image:: ../images/example_soft_body.png
+
+.. transforms_py:
+
+Visualize Transforms (transforms.py)
+------------------------------------
+This example demonstrates how to draw transforms on specific locations on an actor. 
+Transforms for the handles on a cabinet are visualized using wireframe geometry helpers, these helpers are dynamically updates as the doors and drawers of the cabinet move.  
+
+.. image:: ../images/example_transforms.png
+
+.. projectiles_py:
+
+Projectiles (projectiles.py)
+----------------------------
+An example which shows how to spawn and move assets, illustrates collision filtering, and how to use the viewer to interact with the physics simulation.
+
+- ``space`` key can be used to shoot projectiles
+- ``R`` key can be used to reset simulation
+
+.. image:: ../images/example_projectiles.png
+
+.. claw_py:
+
+.. large_mass_ratio.py:
+
+Large mass ratio test (large_mass_ratio.py)
+-------------------------------------------
+An example testing stability and perfromance when simulating stack of boxes with large mass-ratio.
+
+- Stack of boxes when every next box has density and mass 10 times larger than the previous one. The default example.
+- ``--inverted_pyramid_test`` boxes have the same density, but the every next is 2 larger, and 8 times heavier than the previous one. 
+
+- ``--num_envs`` sets number of environments to simulate
+- ``--num_threads`` sets number of threads PhysX uses for simulation
+
+.. image:: ../images/example_large_mass_ratio.png
+
+.. kuka_bin.py:
+
+Kuka bin example (kuka_bin.py)
+------------------------------
+An example showing Kuka robot with Allegro Hand and a bin with multiple objects in it.
+
+- ``--num_envs`` sets number of environments to simulate
+- ``--num_threads`` sets number of threads PhysX uses for simulation
+- ``--num_objects`` sets number of objects in the bin
+- ``--object_type`` sets type of objects in the bin, 0 - box, 1 - meat can, 2 - banana, 3 - mug, 4 - brick, 5 - random
+
+.. image:: ../images/example_kuka_bin.png
+
+.. _interop_torch_example:
+
+PyTorch Interop (interop_torch.py)
+-----------------------------------
+An example of sharing Isaac Gym tensors with PyTorch.  Illustrates how to directly access GPU camera sensors and physics state tensors using PyTorch.
+
+When the example is running and the viewer window is in focus:
+
+- Press ``P`` to print the rigid body states.
+- Press ``C`` to write the camera sensor images to disk.
+
+
+.. _franka_cube_ik_example:
+
+Franka IK Picking (franka_cube_ik.py)
+--------------------------------------
+An example of using the Jacobian tensors for inverse kinematics and picking.
+
+This example is only supported in the PhysX backend at the moment.
+
+The example can run using the CPU or GPU pipeline.  By default, it runs on cpu.  Passing ``--pipeline=gpu`` will turn on the GPU pipeline, where all tensors reside on the GPU.
+
+.. image:: ../images/franka_cube_ik.png
+
+.. _franka_osc_example:
+
+Franka Operational Space Control (franka_osc.py)
+-------------------------------------------------
+An example of using the Jacobian and mass matrix tensors for Operational Space Control.  The end effector position and orientation can be controlled independently.  By default, only the position will be animated, producing a circular motion of the end effector.
+
+This example is only supported in the PhysX backend at the moment.
+
+Command line arguments:
+
+- ``--pos_control <boolvalue>`` whether to animate the position (on by default).
+- ``--orn_control <boolvalue>`` whether to animate the orientation (off by default).
+
+Sample usage::
+
+    python franka_osc.py --pos_control 0 --orn_control 0
+    python franka_osc.py --pos_control 1 --orn_control 0
+    python franka_osc.py --pos_control 0 --orn_control 1
+    python franka_osc.py --pos_control 1 --orn_control 1
+
+This example only works with the CPU pipeline, because mass matrices are not supported on GPU yet.
+
+.. image:: ../images/example_franka_osc.png
+
+.. _apply_forces_example:
+
+Apply Forces (apply_forces.py)
+-------------------------------
+This example shows how to apply forces and torques to rigid bodies using the tensor API.
+
+Note that the GPU tensor pipeline is currently only available with PhysX.
+
+.. _apply_forces_at_pos_example:
+
+Apply Forces at Positions (apply_forces_at_pos.py)
+---------------------------------------------------
+This example shows how to apply forces to rigid bodies at given positions using the tensor API.
+
+Note that the GPU tensor pipeline is currently only available with PhysX.
+
+.. _multiple_camera_envs_example:
+
+Multiple Cameras (multiple_camera_envs.py)
+------------------------------------------
+An example of using multiple cameras per environment for multiple environments.
+Two camera sensors are created for each environment. View matrix for each camera is printed out to std out.
+
+The ``--save_images`` option can be used to save images to disk.
+
+.. _graphics_up_example:
+
+Graphics Up-Axis (test_graphics_up.py)
+--------------------------------------
+This example demonstrates the ability to change the up axis used in Isaac Gym.
+The default option is to set Y as up axis. Using ``gymapi.UpAxis.UP_AXIS_Z``, we can
+change orientation such that Z is up for both the Viewer and camera sensors.
+
+The ``--save_images`` option can be used to save images to disk.
+The ``--up_axis_z`` option sets Z as up axis.
+
+.. _assimp_loading_example:
+
+Graphics Materials Example (graphics_materials.py)
+--------------------------------------------------
+This example demonstrates the usage of different mesh loading asset options.
+The two columns demonstrate the asset option `use_mesh_materials`.
+This option is used to override the materials specified in the asset file with
+materials retrieved from the meshes. The Spam container also demonstrates the
+asset option to override normals loaded from the mesh with vertex normals computed
+by Gym.
+
+.. _actor_scaling_example:
+
+Actor Scaling (actor_scaling.py)
+--------------------------------
+This example demonstrates the runtime scaling API for actors. Several assets
+are loaded and ``num_columns`` actors are created per asset, each with a increasing
+scale factor applied to them between ``min_scale`` and ``max_scale``.
+
+- ``--num_columns`` sets the number of columns of actors (i.e. the number of actors created per asset).
+- ``--min_scale`` sets the scale applied to the left-most actor in each row.
+- ``--max_scale`` sets the scale applied to the right-most actor in each row.
+
+.. image:: ../images/actor_scaling.png
+
+Terrain Creation (terrain_creation.py)
+--------------------------------------
+This example demonstrates the terrain creation API and tools to create different types of terrain. 
+Different heightfield terrain types are generated using: ``random_uniform_terrain()``, ``sloped_terrain()``, ``pyramid_sloped_terrain()``, ``discrete_obstacles_terrain()``, ``wave_terrain()``, ``stairs_terrain()``, ``pyramid_stairs_terrain()``, and ``stepping_stones_terrain()``.
+They are then converted to a triangle mesh using ``convert_heightfield_to_trimesh()`` and added to the simulation with ``gym.add_triangle_mesh()``.
+ 
+.. image:: ../images/terrain.png
+
+Spherical Joint (spherical_joint.py)
+--------------------------------------
+This example demonstrates the support of spherical joints in URDF file and how to control an articulated cuboid with 6 DOF, 3 prismatic + 1 spherical to reach a changing goal orientation (indicated by the axis geometry).
+

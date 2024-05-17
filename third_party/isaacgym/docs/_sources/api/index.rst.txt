@@ -1,0 +1,14 @@
+API Reference
+##############
+
+.. toctree::
+   :maxdepth: 2
+
+   python/index.rst
+
+.. only:: internal
+
+.. toctree::
+   :maxdepth: 2
+
+   cpp/index.rst

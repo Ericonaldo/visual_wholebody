@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terrains &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Reference" href="../api/index.html" />
+    <link rel="prev" title="Graphics and Camera Sensors" href="graphics.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Isaac Gym
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simsetup.html">Simulation Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assets.html">Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physics Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tensors.html">Tensor API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forcesensors.html">Force Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tuning.html">Simulation Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html">Math Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics and Camera Sensors</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Terrains</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#net-contact-force-issue">Net Contact Force Issue</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Programming</a> &raquo;</li>
+      <li>Terrains</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="terrains">
+<h1>Terrains<a class="headerlink" href="#terrains" title="Permalink to this heading"></a></h1>
+<p>In addition to the API provided for adding flat ground planes into simulation environments, we also provide APIs and utilities for generating uneven terrains.
+Terrains can be added as static triangle meshes using <code class="docutils literal notranslate"><span class="pre">gym.add_triangle_mesh()</span></code>. We provide utilities to generate some simple terrains in <code class="docutils literal notranslate"><span class="pre">isaacgym/terrain_utils.py</span></code>.
+Different heightfield terrain types can be generated using: <code class="docutils literal notranslate"><span class="pre">random_uniform_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">sloped_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">pyramid_sloped_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">discrete_obstacles_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">wave_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">stairs_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">pyramid_stairs_terrain()</span></code>, and <code class="docutils literal notranslate"><span class="pre">stepping_stones_terrain()</span></code>.
+They can then be converted to a triangle mesh using <code class="docutils literal notranslate"><span class="pre">convert_heightfield_to_trimesh()</span></code> and added to the simulation.</p>
+<p>Please see <code class="docutils literal notranslate"><span class="pre">examples/terrain_creation.py</span></code> for more details.</p>
+<img alt="../_images/terrain.png" src="../_images/terrain.png" />
+<p>We also showcase an example of Reinforcement Learning with uneven terrain in our AnymalTerrain environment, which can be found at <a class="reference external" href="https://github.com/NVIDIA-Omniverse/IsaacGymEnvs">https://github.com/NVIDIA-Omniverse/IsaacGymEnvs</a>.</p>
+<img alt="../_images/anymal_on_terrain.png" src="../_images/anymal_on_terrain.png" />
+<section id="net-contact-force-issue">
+<h2>Net Contact Force Issue<a class="headerlink" href="#net-contact-force-issue" title="Permalink to this heading"></a></h2>
+<p>The net contact force reporting (<code class="docutils literal notranslate"><span class="pre">gym.acquire_net_contact_force_tensor()</span></code>) of rigid bodies colliding with triangle meshes is known to be unreliable at the moment.
+Due to interactions with triangle edges the reported forces can be largely reduced or even completely missed at some timesteps.
+The net contact force reporting will be improved in the future. As a workaround we propose to use force sensors (<code class="docutils literal notranslate"><span class="pre">gym.create_asset_force_sensor()</span></code>) or filter the reported contact net contact forces in the environment.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="graphics.html" class="btn btn-neutral float-left" title="Graphics and Camera Sensors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

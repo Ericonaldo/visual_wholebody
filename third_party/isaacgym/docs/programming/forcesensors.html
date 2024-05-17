@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Force Sensors &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Simulation Tuning" href="tuning.html" />
+    <link rel="prev" title="Tensor API" href="tensors.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Isaac Gym
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simsetup.html">Simulation Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assets.html">Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physics Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tensors.html">Tensor API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Force Sensors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rigid-body-force-sensors">Rigid Body Force Sensors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tensor-api">Tensor API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#joint-force-sensors">Joint Force Sensors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Tensor API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tuning.html">Simulation Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html">Math Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics and Camera Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terrain.html">Terrains</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Programming</a> &raquo;</li>
+      <li>Force Sensors</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="force-sensors">
+<span id="id1"></span><h1>Force Sensors<a class="headerlink" href="#force-sensors" title="Permalink to this heading"></a></h1>
+<section id="rigid-body-force-sensors">
+<h2>Rigid Body Force Sensors<a class="headerlink" href="#rigid-body-force-sensors" title="Permalink to this heading"></a></h2>
+<p>Force sensors can be attached to rigid bodies to measure forces and torques experienced at user-specified reference frames.  The readings represent the net forces and torques experienced by the parent body, which include external forces, contact forces, and internal forces applied by the solver (e.g., due to joint drives).  A body resting on the ground plane will have a net force of zero.</p>
+<p>Force sensors are created on assets.  This way, you only need to define the force sensors once and they will be created on every actor instanced from the asset.</p>
+<p>To create a force sensor, you specify the rigid body index to which the sensor will be attached and the relative pose of the sensor with respect to the body origin.  Multiple sensors can be attached to the same body:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">body_idx</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">find_asset_rigid_body_index</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="s2">&quot;bodyName&quot;</span><span class="p">)</span>
+
+<span class="n">sensor_pose1</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+<span class="n">sensor_pose2</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+
+<span class="n">sensor_idx1</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_asset_force_sensor</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">body_idx</span><span class="p">,</span> <span class="n">sensor_pose1</span><span class="p">)</span>
+<span class="n">sensor_idx2</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_asset_force_sensor</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">body_idx</span><span class="p">,</span> <span class="n">sensor_pose2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also pass additional properties for each sensor, which determine how the forces will be computed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sensor_props</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">ForceSensorProperties</span><span class="p">()</span>
+<span class="n">sensor_props</span><span class="o">.</span><span class="n">enable_forward_dynamics_forces</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">sensor_props</span><span class="o">.</span><span class="n">enable_constraint_solver_forces</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">sensor_props</span><span class="o">.</span><span class="n">use_world_frame</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">sensor_idx</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_asset_force_sensor</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">body_idx</span><span class="p">,</span> <span class="n">sensor_pose</span><span class="p">,</span> <span class="n">sensor_props</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../api/python/struct_py.html#isaacgym.gymapi.ForceSensorProperties" title="isaacgym.gymapi.ForceSensorProperties"><code class="xref py py-class docutils literal notranslate"><span class="pre">isaacgym.gymapi.ForceSensorProperties</span></code></a> for more details.</p>
+<p>After creating actors, you can get the number of attached force sensors and access the individual force sensors using their index:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">actor_handle</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_actor</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">asset</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+
+<span class="n">num_sensors</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_force_sensor_count</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_sensors</span><span class="p">):</span>
+    <span class="n">sensor</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_force_sensor</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>During simulation, you can query the latest sensor readings like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sensor_data</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="n">get_forces</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sensor_data</span><span class="o">.</span><span class="n">force</span><span class="p">)</span>   <span class="c1"># force as Vec3</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sensor_data</span><span class="o">.</span><span class="n">torque</span><span class="p">)</span>  <span class="c1"># torque as Vec3</span>
+</pre></div>
+</div>
+<p>Two sensors attached to the same body will report the same force, but will generally differ in torques if their relative poses are different.  Forces are measured at the body’s center of mass, but torques are measured at the sensor’s local reference frame.</p>
+<p>The total number of force sensors in a simulation can be obtained by calling <code class="docutils literal notranslate"><span class="pre">gym.get_sim_force_sensor_count(sim)</span></code>.</p>
+<section id="tensor-api">
+<h3>Tensor API<a class="headerlink" href="#tensor-api" title="Permalink to this heading"></a></h3>
+<p>The function <code class="docutils literal notranslate"><span class="pre">acquire_force_sensor_tensor</span></code> returns a Gym tensor descriptor, which can be wrapped as a PyTorch tensor as discussed in the <a class="reference internal" href="tensors.html#tensor-api"><span class="std std-ref">Tensor API documentation</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_fsdata</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">acquire_force_sensor_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+<span class="n">fsdata</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">wrap_tensor</span><span class="p">(</span><span class="n">_fsdata</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The shape of this tensor is (num_force_sensors, 6) and the data type is float32.  For each sensor, the first three floats are the force and the last three floats are the torque.</p>
+<p>After each simulation step, you can get the latest sensor readings by calling:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">refresh_force_sensor_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="limitations">
+<h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this heading"></a></h3>
+<p>Force sensors are currently only available with the PhysX backend.</p>
+</section>
+</section>
+<section id="joint-force-sensors">
+<h2>Joint Force Sensors<a class="headerlink" href="#joint-force-sensors" title="Permalink to this heading"></a></h2>
+<p>To enable reading forces on each degree-of-freedom of articulated actors, call the <code class="docutils literal notranslate"><span class="pre">enable_actor_dof_force_sensors</span></code> method when setting up the envs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">actor</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_actor</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">enable_actor_dof_force_sensors</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These sensors are not enabled by default for performance reasons.  Although the performance impact is usually quite small, it is best to only enable the sensors when needed.  During simulation, the forces can be retrieved using the <code class="docutils literal notranslate"><span class="pre">get_actor_dof_forces</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">forces</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_actor_dof_forces</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">actor_handle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This returns a numpy array of total forces acting on this actor’s DOFs.  Note that the returned forces will always be zero if <code class="docutils literal notranslate"><span class="pre">enable_actor_dof_force_sensors</span></code> was not previously called on the actor.</p>
+<section id="id2">
+<h3>Tensor API<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
+<p>The function <code class="docutils literal notranslate"><span class="pre">acquire_dof_force_tensor</span></code> returns a Gym tensor descriptor, which can be wrapped as a PyTorch tensor as discussed in the <a class="reference internal" href="tensors.html#tensor-api"><span class="std std-ref">Tensor API documentation</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_forces</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">acquire_dof_force_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+<span class="n">forces</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">wrap_tensor</span><span class="p">(</span><span class="n">_forces</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is a one-dimensional tensor of float32 values corresponding to each DOF in the simulation.</p>
+<p>After each simulation step, you can get the latest sensor readings by calling:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">refresh_dof_force_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>Limitations<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
+<p>DOF force sensors are only supported in the PhysX backend.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tensors.html" class="btn btn-neutral float-left" title="Tensor API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tuning.html" class="btn btn-neutral float-right" title="Simulation Tuning" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

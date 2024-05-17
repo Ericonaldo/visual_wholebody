@@ -1,0 +1,35 @@
+digraph G {
+node [shape=box];
+"panda_link0" [label="panda_link0"];
+"panda_link1" [label="panda_link1"];
+"panda_link2" [label="panda_link2"];
+"panda_link3" [label="panda_link3"];
+"panda_link4" [label="panda_link4"];
+"panda_link5" [label="panda_link5"];
+"panda_link6" [label="panda_link6"];
+"panda_link7" [label="panda_link7"];
+"panda_hand" [label="panda_hand"];
+"panda_leftfinger" [label="panda_leftfinger"];
+"panda_rightfinger" [label="panda_rightfinger"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"panda_link0" -> "panda_joint1" [label="xyz: 0 0 0.333 \nrpy: 0 -0 0"]
+"panda_joint1" -> "panda_link1"
+"panda_link1" -> "panda_joint2" [label="xyz: 0 0 0 \nrpy: -1.5708 0 0"]
+"panda_joint2" -> "panda_link2"
+"panda_link2" -> "panda_joint3" [label="xyz: 0 -0.316 0 \nrpy: 1.5708 -0 0"]
+"panda_joint3" -> "panda_link3"
+"panda_link3" -> "panda_joint4" [label="xyz: 0.0825 0 0 \nrpy: 1.5708 -0 0"]
+"panda_joint4" -> "panda_link4"
+"panda_link4" -> "panda_joint5" [label="xyz: -0.0825 0.384 0 \nrpy: -1.5708 0 0"]
+"panda_joint5" -> "panda_link5"
+"panda_link5" -> "panda_joint6" [label="xyz: 0 0 0 \nrpy: 1.5708 -0 0"]
+"panda_joint6" -> "panda_link6"
+"panda_link6" -> "panda_joint7" [label="xyz: 0.088 0 0 \nrpy: 1.5708 -0 0"]
+"panda_joint7" -> "panda_link7"
+"panda_link7" -> "panda_hand_joint" [label="xyz: 0 0 0.107 \nrpy: 0 0 -0.785398"]
+"panda_hand_joint" -> "panda_hand"
+"panda_hand" -> "panda_finger_joint1" [label="xyz: 0 0 0.0584 \nrpy: 0 -0 0"]
+"panda_finger_joint1" -> "panda_leftfinger"
+"panda_hand" -> "panda_finger_joint2" [label="xyz: 0 0 0.0584 \nrpy: 0 -0 0"]
+"panda_finger_joint2" -> "panda_rightfinger"
+}

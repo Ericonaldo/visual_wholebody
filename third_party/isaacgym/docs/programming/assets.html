@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assets &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Physics Simulation" href="physics.html" />
+    <link rel="prev" title="Simulation Setup" href="simsetup.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Isaac Gym
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simsetup.html">Simulation Setup</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Assets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#loading-assets">Loading Assets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#loading-meshes-in-assets">Loading Meshes in Assets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overriding-inertial-properties">Overriding Inertial Properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#convex-decomposition">Convex Decomposition</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#procedural-assets">Procedural Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#asset-options">Asset Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#asset-introspection">Asset Introspection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-actors">Creating Actors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#limitations">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relevant-examples">Relevant Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physics Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tensors.html">Tensor API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forcesensors.html">Force Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tuning.html">Simulation Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html">Math Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics and Camera Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terrain.html">Terrains</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Programming</a> &raquo;</li>
+      <li>Assets</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="assets">
+<h1>Assets<a class="headerlink" href="#assets" title="Permalink to this heading"></a></h1>
+<section id="loading-assets">
+<h2>Loading Assets<a class="headerlink" href="#loading-assets" title="Permalink to this heading"></a></h2>
+<p>Gym currently supports loading URDF and MJCF file formats.  Loading an asset file creates a <code class="docutils literal notranslate"><span class="pre">GymAsset</span></code> object that includes the definiton of all the bodies, collision shapes, visual attachments, joints, and degrees of freedom (DOFs).  Soft bodies and particles are also supported with some formats.</p>
+<p>When loading an asset, you specify the asset root directory and the asset path relative to the root.  This split is necessary because the importers sometimes need to search for external reference files like meshes or materials within the asset directory tree. The asset root directory can be specified as an absolute path or as a path relative to the current working directory.  In our Python examples, we load assets like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asset_root</span> <span class="o">=</span> <span class="s2">&quot;../../assets&quot;</span>
+<span class="n">asset_file</span> <span class="o">=</span> <span class="s2">&quot;urdf/franka_description/robots/franka_panda.urdf&quot;</span>
+<span class="n">asset</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">load_asset</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">asset_root</span><span class="p">,</span> <span class="n">asset_file</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">load_asset</span></code> method uses the file name extension to determine the asset file format.  Supported extensions include <strong>.urdf</strong> for URDF files, and <strong>.xml</strong> for MJCF files.</p>
+<p>Sometimes, you may wish to pass extra information to the asset importer.  This is accomplished by specifying an optional <code class="docutils literal notranslate"><span class="pre">AssetOptions</span></code> parameter:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asset_options</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">AssetOptions</span><span class="p">()</span>
+<span class="n">asset_options</span><span class="o">.</span><span class="n">fix_base_link</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">asset_options</span><span class="o">.</span><span class="n">armature</span> <span class="o">=</span> <span class="mf">0.01</span>
+
+<span class="n">asset</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">load_asset</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">asset_root</span><span class="p">,</span> <span class="n">asset_file</span><span class="p">,</span> <span class="n">asset_options</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="loading-meshes-in-assets">
+<h3>Loading Meshes in Assets<a class="headerlink" href="#loading-meshes-in-assets" title="Permalink to this heading"></a></h3>
+<p>Gym uses Assimp to load meshes specified in assets. Some meshes can have materials or textures specified directly in the mesh file. If the asset file also specifies a material for that mesh, then the materials from the asset take priority. To use the mesh materials instead, use</p>
+<blockquote>
+<div><p>asset_options.use_mesh_materials = True.</p>
+</div></blockquote>
+<p>Gym tries to load normals directly from the mesh. If the mesh has incomplete normals, Gym will generate smooth vertex normals. To force Gym to always generate smooth vertex normals/face normals, use</p>
+<blockquote>
+<div><p>asset_options.mesh_normal_mode = gymapi.COMPUTE_PER_VERTEX</p>
+</div></blockquote>
+<p>or</p>
+<blockquote>
+<div><p>asset_options.mesh_normal_mode = gymapi.COMPUTE_PER_FACE</p>
+</div></blockquote>
+<p>respectively.</p>
+<p>If a mesh has submeshes that represent a convex decomposition, Gym can load the submeshes as seperate shapes in the asset. To enable this, use</p>
+<blockquote>
+<div><p>asset_options.convex_decomposition_from_submeshes = True.</p>
+</div></blockquote>
+</section>
+<section id="overriding-inertial-properties">
+<h3>Overriding Inertial Properties<a class="headerlink" href="#overriding-inertial-properties" title="Permalink to this heading"></a></h3>
+<p>Inertial properties for rigid bodies are important for simulation accuracy and stability.  Each rigid body has a center of mass and an inertia tensor.  URDF and MJCF allow for specifying these values, but sometimes the values are incorrect.  For example, there are many URDF assets in the wild with seemingly arbitrary inertia tensors, which can cause undesirable simulation artifacts.  To overcome this, Isaac Gym allows for explicitly overriding the center of mass and inertia tensors using values computed from the geometries of collision shapes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asset_options</span><span class="o">.</span><span class="n">override_com</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">asset_options</span><span class="o">.</span><span class="n">override_inertia</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>By default, these options are both False, which means that the importers will use the values given in the original assets.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">python/examples/convex_decomposition.py</span></code> for sample usage.</p>
+</section>
+<section id="convex-decomposition">
+<h3>Convex Decomposition<a class="headerlink" href="#convex-decomposition" title="Permalink to this heading"></a></h3>
+<p>Isaac Gym supports automatic convex decomposition of triangle meshes used for collision shapes.  This is only needed when using PhysX, since PhysX requires convex meshes for collisions (Flex is able to use triangle meshes directly).  Without convex decomposition, each triangle mesh shape is approximated using a single convex hull.  This is efficient, but a single convex hull may not accurately represent the shape of the original triangle mesh.  Convex decomposition creates a more accurate shape approximation consisting of multiple convex shapes.  This is particularly useful for applications like grasping, where the exact shape of physical objects is important.</p>
+<p>By default, convex decomposition is disabled.  You can enable it using a flag in the AssetOptions during asset import:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asset_options</span><span class="o">.</span><span class="n">vhacd_enabled</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>Gym uses a third party library (<a class="reference external" href="https://github.com/kmammou/v-hacd">V-HACD</a>) to perform the convex decomposition.  There are many parameters that affect the decomposition speed and the quality of the result.  They are exposed to Python in the <a class="reference internal" href="../api/python/struct_py.html#isaacgym.gymapi.VhacdParams" title="isaacgym.gymapi.VhacdParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">isaacgym.gymapi.VhacdParams</span></code></a> class, which is included in AssetOptions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asset_options</span><span class="o">.</span><span class="n">vhacd_params</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="mi">300000</span>
+<span class="n">asset_options</span><span class="o">.</span><span class="n">vhacd_params</span><span class="o">.</span><span class="n">max_convex_hulls</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">asset_options</span><span class="o">.</span><span class="n">vhacd_params</span><span class="o">.</span><span class="n">max_num_vertices_per_ch</span> <span class="o">=</span> <span class="mi">64</span>
+</pre></div>
+</div>
+<p>See <code class="docutils literal notranslate"><span class="pre">python/examples/convex_decomposition.py</span></code> for sample usage.</p>
+<p>Convex decomposition can take a long time, depending on the paramaters and the number of meshes.  To avoid recomputing convex decompositions every time, Gym uses a simple caching strategy.  When a mesh is decomposed for the first time, the results of the decomposition will be stored in a cache directory for fast loading on subsequent runs.  By default, the cache directory is <code class="docutils literal notranslate"><span class="pre">${HOME}/.isaacgym/vhacd</span></code>.  The cache directory and any files it contains can be safely deleted at any time.</p>
+<p>You can view the results of convex decomposition by clicking on the Viewer tab in the viewer GUI and enabling the “Render Collision Meshes” checkbox.</p>
+</section>
+</section>
+<section id="procedural-assets">
+<h2>Procedural Assets<a class="headerlink" href="#procedural-assets" title="Permalink to this heading"></a></h2>
+<p>Simple geometric assets like boxes, capsules, and spheres can be created procedurally:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asset_options</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">AssetOptions</span><span class="p">()</span>
+<span class="n">asset_options</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="mf">10.0</span>
+
+<span class="n">box_asset</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_box</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">asset_options</span><span class="p">)</span>
+<span class="n">sphere_asset</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_sphere</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">asset_options</span><span class="p">)</span>
+<span class="n">capsule_asset</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_capsule</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">asset_options</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="asset-options">
+<h2>Asset Options<a class="headerlink" href="#asset-options" title="Permalink to this heading"></a></h2>
+<p>See <a class="reference internal" href="../api/python/struct_py.html#isaacgym.gymapi.AssetOptions" title="isaacgym.gymapi.AssetOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">isaacgym.gymapi.AssetOptions</span></code></a>.</p>
+</section>
+<section id="asset-introspection">
+<h2>Asset Introspection<a class="headerlink" href="#asset-introspection" title="Permalink to this heading"></a></h2>
+<p>You can inspect the collections of components in each asset, including rigid bodies, joints, and DOFs.  See <code class="docutils literal notranslate"><span class="pre">examples/asset_info.py</span></code> for sample usage.</p>
+</section>
+<section id="creating-actors">
+<h2>Creating Actors<a class="headerlink" href="#creating-actors" title="Permalink to this heading"></a></h2>
+<p>Loading or creating an asset does not automatically add it to the simulation.  A <code class="docutils literal notranslate"><span class="pre">GymAsset</span></code> serves as a blueprint for actors and can be instanced multiple times in a simulation with different poses and individualized properties, as described in the section on <a class="reference internal" href="simsetup.html#envs-and-actors"><span class="std std-ref">Environments and Actors</span></a>.</p>
+<p>If the collision filter for the actor is set to -1, the actor will use filters loaded in by the asset loaders. This is important for MJCF files that specify non-zero contypes/conaffinities or have other contacts specified.
+Setting the collision filter to 0 will enable collisions between all shapes in the actor.
+Setting the collision filter to anything &gt; 0 will disable all self collisions.</p>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this heading"></a></h2>
+<p>The asset pipeline is a work in progress, so there are some limitations.</p>
+<ul class="simple">
+<li><p>The URDF importer can only load meshes in OBJ format.  Many URDF models come with STL collision meshes and DAE visual meshes, but those need to be manually converted to OBJ for the current importer.</p></li>
+<li><p>The MJCF importer supports primitive shapes only, such as boxes, capsules, and spheres.  Mesh loading is currently not available in that importer.</p></li>
+<li><p>The MJCF importer supports multiple joints between a pair of bodies, which is useful to define independently named and controllable degrees of freedom.  This is used in the <code class="docutils literal notranslate"><span class="pre">humanoid_20_5.xml</span></code> model to define independent motion limits for shoulders, hips, and other compound joints.</p></li>
+<li><p>The MJCF importer only supports files where the worldbody has no more than one direct child body. This means that MJCF files that define an entire environment may not be supported. For example, one MJCF file cannot contain both a robot and a ground plane.</p></li>
+</ul>
+</section>
+<section id="relevant-examples">
+<h2>Relevant Examples<a class="headerlink" href="#relevant-examples" title="Permalink to this heading"></a></h2>
+<p>Take a look at the Python examples <code class="docutils literal notranslate"><span class="pre">asset_info.py</span></code> and <code class="docutils literal notranslate"><span class="pre">joint_monkey.py</span></code> for working with assets.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="simsetup.html" class="btn btn-neutral float-left" title="Simulation Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="physics.html" class="btn btn-neutral float-right" title="Physics Simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

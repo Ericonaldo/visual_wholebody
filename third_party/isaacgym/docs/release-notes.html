@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Release Notes &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples/index.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Isaac Gym
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#preview4">1.0.preview4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new-features">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bug-fixes-and-improvements">Bug fixes and improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#preview3">1.0.preview3</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#driver-requirement">Driver Requirement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-changes">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rl-environment-changes">RL Environment Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Bug fixes and improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#preview2">1.0.preview2</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-command-line-parameter-changes">API + Command Line Parameter Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#preview1">1.0.preview1</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#removed-features">Removed Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changes">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Bug Fixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#known-issues-and-limitations">Known Issues and Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="programming/index.html">Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Release Notes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="release-notes">
+<h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading"></a></h1>
+<section id="preview4">
+<h2>1.0.preview4<a class="headerlink" href="#preview4" title="Permalink to this heading"></a></h2>
+<section id="general">
+<h3>General<a class="headerlink" href="#general" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>This release aligns the PhysX implementation in standalone Preview Isaac Gym with Omniverse Isaac Sim 2022.1 to simplify migration to Omniverse for RL workloads</p></li>
+</ul>
+</section>
+<section id="new-features">
+<h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>PhysX backend: Added support for SDF collisions with a nut &amp; bolt example.</p></li>
+<li><p>PhysX backend: Enabled gyroscopic forces by default to improve simulation (can disable with <code class="docutils literal notranslate"><span class="pre">asset_options.enable_gyroscopic_forces</span> <span class="pre">=</span> <span class="pre">False</span></code>).</p></li>
+<li><p>PhysX backend: Allow customizing <code class="docutils literal notranslate"><span class="pre">rest_offset</span></code> and <code class="docutils literal notranslate"><span class="pre">contact_offset</span></code> per asset and per individual shape.</p></li>
+<li><p>Added parsing of spherical (ball) joints support in URDF importer.</p></li>
+</ul>
+</section>
+<section id="bug-fixes-and-improvements">
+<h3>Bug fixes and improvements<a class="headerlink" href="#bug-fixes-and-improvements" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>PhysX: Improved elastic collision behaviour.</p></li>
+<li><p>PhysX: Fixed a bug when resetting some fixe-base actors.</p></li>
+<li><p>Fixed an issue with PhysX material property caching affecting dynamically changing friction properties, such as during domain randomization.</p></li>
+<li><p>Fixed an issue with friction mode for triangle meshes and heightfields; in previous releases this was incorrectly set to multiply mode. With this release we use average mode, like all other shapes in the simulation.</p></li>
+</ul>
+</section>
+</section>
+<section id="preview3">
+<h2>1.0.preview3<a class="headerlink" href="#preview3" title="Permalink to this heading"></a></h2>
+<section id="driver-requirement">
+<h3>Driver Requirement<a class="headerlink" href="#driver-requirement" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>NVIDIA Driver version 470+ is now required.</p></li>
+</ul>
+</section>
+<section id="api-changes">
+<h3>API Changes<a class="headerlink" href="#api-changes" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Force sensors are now defined on assets, not individual actors (see force sensor documentation).</p></li>
+<li><p>Added optional ForceSensorProperties to fine-tune how forces are reported (see force sensor documentation).</p></li>
+<li><p>Added GPU mass-matrices API.</p></li>
+<li><p>Added API to create non-even terrain.</p></li>
+<li><p>Changed default contact collection mode from CC_LAST_SUBSTEP to CC_ALL_SUBSTEPS, which is more accurate but may be slower when running with multiple substeps.  It can be overriden by <code class="docutils literal notranslate"><span class="pre">SimParams.physx.contact_collection</span></code>.</p></li>
+</ul>
+</section>
+<section id="rl-environment-changes">
+<h3>RL Environment Changes<a class="headerlink" href="#rl-environment-changes" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>RL framework and all RL environments are moved to <a class="reference external" href="https://github.com/NVIDIA-Omniverse/IsaacGymEnvs">https://github.com/NVIDIA-Omniverse/IsaacGymEnvs</a>.</p></li>
+<li><p>RL docs can now be found at <a class="reference external" href="https://github.com/NVIDIA-Omniverse/IsaacGymEnvs/blob/main/README.md">https://github.com/NVIDIA-Omniverse/IsaacGymEnvs/blob/main/README.md</a> and in the docs folder. Please refer to the framework docs for changes required to update existing RL environments.</p></li>
+</ul>
+</section>
+<section id="id1">
+<h3>Bug fixes and improvements<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Increased the limits on the number of actor bodies and joints with PhysX.</p></li>
+<li><p>Fixed a bug with randomization of rigid body properties with the GPU pipeline.</p></li>
+<li><p>Fixed a bug with setting DOF position targets with the GPU pipeline.</p></li>
+<li><p>Fixed inclined plane rendering.</p></li>
+<li><p>Updated docker base image to <a class="reference external" href="https://docs.nvidia.com/deeplearning/frameworks/pytorch-release-notes/rel_21-09.html">https://docs.nvidia.com/deeplearning/frameworks/pytorch-release-notes/rel_21-09.html</a></p></li>
+<li><p>Added viewer support when running in docker.</p></li>
+<li><p>Fixed instabilities related to actor scaling in GPU simulations.  There are still some limitation with changing mass properties when running with the GPU pipeline, see <a class="reference internal" href="programming/physics.html#actor-scaling"><span class="std std-ref">actor scaling</span></a>.</p></li>
+</ul>
+</section>
+</section>
+<section id="preview2">
+<h2>1.0.preview2<a class="headerlink" href="#preview2" title="Permalink to this heading"></a></h2>
+<section id="api-command-line-parameter-changes">
+<h3>API + Command Line Parameter Changes<a class="headerlink" href="#api-command-line-parameter-changes" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Command line arguments for simulation API and device selection have changed, and are now aligned between the RL examples and general programming examples:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">--physx_gpu</span></code> command line option has been removed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--sim_device</span></code> is used to specify a device for simulation. It can take either <code class="docutils literal notranslate"><span class="pre">cpu</span></code> or <code class="docutils literal notranslate"><span class="pre">cuda:n</span></code> as options.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--pipeline</span></code> is used to explicitly choose either the <code class="docutils literal notranslate"><span class="pre">cpu</span></code> or <code class="docutils literal notranslate"><span class="pre">gpu</span></code> tensor pipeline API.</p></li>
+</ul>
+</li>
+<li><p>Command line arguments for setting the experiment name were improved and extended:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">--experiment</span></code> command line option replaced <code class="docutils literal notranslate"><span class="pre">--experiment_name</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--metadata</span></code> flag was added. When used with <code class="docutils literal notranslate"><span class="pre">--experiment</span> <span class="pre">&lt;experiment</span> <span class="pre">name&gt;</span></code> additional information about the physics engine, sim device, pipeline and domain randomization is added to the experiment name.</p></li>
+</ul>
+</li>
+<li><p>Refactored the API for applying rigid body forces:</p>
+<ul>
+<li><p>The new body force API allows applying torques and using different coordinate spaces for force, torque, and position vectors.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">apply_body_force</span></code> function was replaced by <code class="docutils literal notranslate"><span class="pre">apply_body_forces</span></code> and <code class="docutils literal notranslate"><span class="pre">apply_body_force_at_pos</span></code> (see API docs).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">apply_rigid_body_force_tensor</span></code> function was replaced by <code class="docutils literal notranslate"><span class="pre">apply_rigid_body_force_tensors</span></code> and <code class="docutils literal notranslate"><span class="pre">apply_rigid_body_force_at_pos_tensors</span></code> (see tensor API docs).</p></li>
+</ul>
+</li>
+<li><p>Simulation determinism has been improved:</p>
+<ul>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">--seed</span></code> parameter can be set in RL examples to specify what random seed to use. Explicitly setting a seed should produce deterministic results between runs.</p></li>
+<li><p>By default, the seed is set to <em>-1</em>, which will generate a random seed for each run.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--torch_deterministic</span></code> parameter can now be set to force additional determinism in PyTorch operations, at the expense of performance.</p></li>
+<li><p>For more details, please refer to the Reproducibility section on the Reinforcement Learning Examples page.</p></li>
+</ul>
+</li>
+<li><p>The base RL task class has been updated to prepare for future multi-gpu training support:</p>
+<ul>
+<li><p>Any user environment inherited from the RL base task class should be updated as well</p></li>
+</ul>
+</li>
+<li><p>Asset root and file paths can now be read in from cfg files.</p></li>
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">attach_camera_to_body</span></code> now takes named enums instead of an integer argument for the camera attachment mode.</p></li>
+<li><p>Contents in docker image are now placed under <code class="docutils literal notranslate"><span class="pre">/opt</span></code> instead of <code class="docutils literal notranslate"><span class="pre">/workspace</span></code>.</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>New Features<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Asset handling</p>
+<ul>
+<li><p>Added support for convex decomposition of collision meshes during asset import.</p></li>
+<li><p>Now uses Assimp for mesh loading. This means that many different types of meshes can be specified in MJCF or URDF assets (including .dae, .stl, .obj, etc.).</p></li>
+<li><p>Added support for loading materials and (embedded and non-embedded) textures from meshes in URDF and MJCF files.</p></li>
+<li><p>Added support for overriding normals loaded from meshes with either smooth vertex normals or face normals.</p></li>
+<li><p>Added flags for explicitly overriding inertia tensors and center of mass in AssetOptions.</p></li>
+<li><p>Added support for visual boxes and material loading from MJCF.</p></li>
+<li><p>See <a class="reference internal" href="programming/assets.html"><span class="doc">Assets</span></a> for additional information</p></li>
+</ul>
+</li>
+<li><p>Updated graphical user interface and visualization options</p>
+<ul>
+<li><p>Added API support for getting mouse position and window size from the viewer</p></li>
+<li><p>See <a class="reference internal" href="programming/simsetup.html"><span class="doc">Simulation Setup</span></a> for additional information</p></li>
+</ul>
+</li>
+<li><p>Updates related to Shadow Hand Environment and RL framework features</p>
+<ul>
+<li><p>Added adaptive KL scheduling to the default rl-pytorch RL framework. This was previously available only in the rl_games RL framework.</p></li>
+<li><p>Added different observation variants in the Shadow Hand environment for a closer match to OpenAI’s Learning Dexterity project: <a class="reference external" href="https://openai.com/blog/learning-dexterity/">https://openai.com/blog/learning-dexterity/</a></p></li>
+<li><p>Added support of asymmetric observations and Shadow Hand training examples using them.</p></li>
+<li><p>Added examples of training with LSTM policy and value functions with rl_games.</p></li>
+<li><p>Added support of setting control frequency to be lower than a simulation frequency and <cite>controlFrequencyInv</cite> parameter to the yaml configs to specify how many simulation steps per one control step should be performed.</p></li>
+<li><p>Added correlated noise to Domain Randomization options.</p></li>
+<li><p>Added support for custom distributions of actor parameters for domain randomization.</p></li>
+</ul>
+</li>
+<li><p>Other Asset and Example updates:</p>
+<ul>
+<li><p>Added new training environments: ANYmal quadruped robot, Quadcopter and NASA Ingenuity helicopter.</p></li>
+</ul>
+</li>
+<li><p>Scalability related containerization updates:</p>
+<ul>
+<li><p>Added support for Python 3.8.</p></li>
+<li><p>Added support for headless rendering in docker with available graphics driver.</p></li>
+<li><p>Improved CUDA context handling to prepare for multi-GPU training support</p></li>
+</ul>
+</li>
+<li><p>Additional new features:</p>
+<ul>
+<li><p>Added support for runtime scaling of actors.</p></li>
+<li><p>Added support for recomputing the inertia tensors of rigid bodies when their mass is changed.</p></li>
+<li><p>Added support for specifying position offset when applying force to bodies.</p></li>
+<li><p>Changed the default values of max_depenetration_velocity and bounce_threshold_velocity.</p></li>
+<li><p>Added CoordinateSpace enum to specify position offsets in local, env, or global space.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="bug-fixes">
+<h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Fixed issue with observation and action noise.</p></li>
+<li><p>Fixed joint limit ranges for CMU and NV humanoids.</p></li>
+<li><p>Fixed axes bug for humanoid training.</p></li>
+<li><p>Fixed incorrect visualization of collision meshes with PhysX backend.</p></li>
+<li><p>Fixed a bug with env spacing in z-up simulations.</p></li>
+<li><p>Fixed a bug where meshes, cylinders, or ellipsoids imported from MJCF could have incorrect friction properties.</p></li>
+<li><p>Fixed a bug where primitive shapes created procedurally could have incorrect thickness in Flex.</p></li>
+<li><p>Fixed a possible crash when getting net contact force tensor on GPU.</p></li>
+<li><p>Fixed submitting mixed control tensors in GPU pipeline.</p></li>
+<li><p>Fixed issues with z-up camera view matrix calculation, lookAt function, and mouse drag direction.</p></li>
+<li><p>Fixed rigid body property getter that was returning erroneous inertia tensors.</p></li>
+<li><p>PhysX: Fixed occasional crash with aggregates on GPU.</p></li>
+<li><p>PhysX: Fixed possible buffer overflow in convex-capsule collision on GPU.</p></li>
+<li><p>PhysX: Fixed stability issues with small meshes.</p></li>
+<li><p>PhysX: Improvements to TGS restitution.</p></li>
+<li><p>PhysX: Fixed issue with applying body forces in GPU pipeline.</p></li>
+<li><p>PhysX: Fixed issue with applying body torques in GPU pipeline.</p></li>
+<li><p>PhysX: Fixed various issues causing non-determinism.</p></li>
+<li><p>Fixed synchronization issues in GPU pipeline.</p></li>
+<li><p>Fixed issue with z-up camera view matrix calculation.</p></li>
+<li><p>Fixed issues with setting the rigid shape properties of an actor.</p></li>
+<li><p>Improved error checking for input tensors.</p></li>
+<li><p>Improved error reporting when CPU-only functions get called during simulation with the GPU pipeline.</p></li>
+<li><p>Fixed a bug in computing transform inverse.</p></li>
+<li><p>Fixed a Flex crash on startup caused by a driver bug.</p></li>
+<li><p>Fixed a bug with ground plane friction in the body_physics_props example.</p></li>
+</ul>
+</section>
+</section>
+<section id="preview1">
+<h2>1.0.preview1<a class="headerlink" href="#preview1" title="Permalink to this heading"></a></h2>
+<section id="id3">
+<h3>New Features<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Implemented end-to-end GPU pipeline for physics simulation, which allows interacting with simulations on the GPU without copying data to or from the host.</p></li>
+<li><p>Added new Tensor API for physics state and control, on both CPU and GPU.</p></li>
+<li><p>Added Pytorch interop utilities for the Tensor API.</p></li>
+<li><p>Added a new simple framework for reinforcement learning and a collection of sample tasks.</p></li>
+<li><p>Added new configurable domain randomization features.</p></li>
+<li><p>Added support for fixed and spatial tendons with PhysX.</p></li>
+<li><p>Added support for user-defined force sensors attached to articulation links with PhysX.</p></li>
+<li><p>Exposed DOF forces in PhysX.</p></li>
+<li><p>Added Jacobian and generalized mass matrices with PhysX.</p></li>
+<li><p>Improved PVD support - can connect to PVD remotely or log to file.</p></li>
+<li><p>Improved contact handling with multiple substeps.</p></li>
+<li><p>Added support for multiple subscenes to parallelize computations with CPU PhysX.</p></li>
+<li><p>Improved contact handling performance in PhysX.</p></li>
+<li><p>Support for rigid dynamic actors in PhysX to increase performance with single-body actors.</p></li>
+<li><p>Support for custom aggregates with PhysX.</p></li>
+<li><p>Exposed joint armature and joint friction in PhysX.</p></li>
+<li><p>Added support for soft contacts with Flex.</p></li>
+<li><p>Added stress tensors with Flex.</p></li>
+<li><p>Added pneumatic pressure/target tensors with Flex.</p></li>
+<li><p>Added soft materials with Flex.</p></li>
+<li><p>Added new simulation and asset/actor options for Flex and PhysX.</p></li>
+<li><p>Parsing tendon definitions from MJCF.</p></li>
+<li><p>Loading cylinder geometry from MJCF.</p></li>
+<li><p>Loading visual meshes from MJCF.</p></li>
+<li><p>Generating filters from contact specification in MJCF.</p></li>
+<li><p>Improved support for multiple sensor cameras per env.</p></li>
+<li><p>Improved Z-up simulation support.</p></li>
+<li><p>Updated PhysX and FleX versions.</p></li>
+<li><p>Viewer sync can be toggled by pressing V (disabling sync increases performance, especially with the GPU pipeline).</p></li>
+<li><p>Improved setup scripts.</p></li>
+<li><p>Updated documentation and examples.</p></li>
+<li><p>Updated docker images.</p></li>
+</ul>
+</section>
+<section id="removed-features">
+<h3>Removed Features<a class="headerlink" href="#removed-features" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Removed Python multiprocessing support, which is superseded by the new Tensor API.</p></li>
+<li><p>Removed old <code class="docutils literal notranslate"><span class="pre">rlbase</span></code> module and examples, which are replaced by the new RL framework designed around the Tensor API.</p></li>
+<li><p>Removed old RTX renderer.</p></li>
+</ul>
+</section>
+<section id="changes">
+<h3>Changes<a class="headerlink" href="#changes" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Renamed package from <code class="docutils literal notranslate"><span class="pre">carbongym</span></code> to <code class="docutils literal notranslate"><span class="pre">isaacgym</span></code>.</p></li>
+<li><p>Improved quaternion-Euler conversion utilities.</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3>Bug Fixes<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Numerous physics bug fixes and simulation stability improvements.</p></li>
+<li><p>Fixes and improvements to URDF and MJCF importers.</p></li>
+<li><p>Fixes and improvements to camera sensors.</p></li>
+</ul>
+</section>
+</section>
+<section id="known-issues-and-limitations">
+<h2>Known Issues and Limitations<a class="headerlink" href="#known-issues-and-limitations" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Most of the rigid body tensor API is only available with PhysX.</p></li>
+<li><p>Soft body support is currently only available with FleX.</p></li>
+<li><p>Missing tensor API for setting all rigid body states: root and DOF state tensors can be used instead.</p></li>
+<li><p>Missing API for configuring properties of spatial tendons.</p></li>
+<li><p>When using the GPU pipeline, DOF states don’t refresh in the viewer.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples/index.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

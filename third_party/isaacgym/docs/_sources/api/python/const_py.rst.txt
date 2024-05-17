@@ -1,0 +1,50 @@
+Python Constants and Flags
+###########################
+
+.. autoattribute:: isaacgym.gymapi.INVALID_HANDLE
+
+Default viewer size:
+
+.. autoattribute:: isaacgym.gymapi.DEFAULT_VIEWER_WIDTH
+
+.. autoattribute:: isaacgym.gymapi.DEFAULT_VIEWER_HEIGHT
+
+State flags:
+
+.. autoattribute:: isaacgym.gymapi.STATE_NONE
+
+.. autoattribute:: isaacgym.gymapi.STATE_POS
+
+.. autoattribute:: isaacgym.gymapi.STATE_VEL
+
+.. autoattribute:: isaacgym.gymapi.STATE_ALL
+
+Rigid body flags:
+
+.. autoattribute:: isaacgym.gymapi.RIGID_BODY_NONE
+
+.. autoattribute:: isaacgym.gymapi.RIGID_BODY_DISABLE_GRAVITY
+
+.. autoattribute:: isaacgym.gymapi.RIGID_BODY_DISABLE_SIMULATION (PhysX only)
+
+Attractor axis flags:
+
+.. autoattribute:: isaacgym.gymapi.AXIS_NONE
+
+.. autoattribute:: isaacgym.gymapi.AXIS_X
+
+.. autoattribute:: isaacgym.gymapi.AXIS_Y
+
+.. autoattribute:: isaacgym.gymapi.AXIS_Z
+
+.. autoattribute:: isaacgym.gymapi.AXIS_TWIST
+
+.. autoattribute:: isaacgym.gymapi.AXIS_SWING_1
+
+.. autoattribute:: isaacgym.gymapi.AXIS_SWING_2
+
+.. autoattribute:: isaacgym.gymapi.AXIS_TRANSLATION
+
+.. autoattribute:: isaacgym.gymapi.AXIS_ROTATION
+
+.. autoattribute:: isaacgym.gymapi.AXIS_ALL

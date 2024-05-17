@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Release Notes" href="release-notes.html" />
+    <link rel="prev" title="About Isaac Gym" href="about_gym.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Isaac Gym
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#set-up-the-python-package">Set up the Python package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-in-an-existing-python-environment">Install in an existing Python environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-in-a-new-conda-environment">Install in a new conda environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-in-a-docker-container">Install in a Docker container</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-example-rl-environments">Install Example RL Environments</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-the-installation">Testing the installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-example">Simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reinforcement-learning-example">Reinforcement learning example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#for-anaconda-users">For Anaconda Users</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="programming/index.html">Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Installation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Ubuntu 18.04 or 20.04.</p></li>
+<li><p>Python 3.6, 3.7 or 3.8.</p></li>
+<li><p>Minimum NVIDIA driver version:</p>
+<ul>
+<li><p>Linux: 470</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="set-up-the-python-package">
+<h2>Set up the Python package<a class="headerlink" href="#set-up-the-python-package" title="Permalink to this heading"></a></h2>
+<p>Setting up Gym will automatically install all of the Python package dependencies, including numpy and PyTorch.  You can install everything in an existing Python environment or create a brand new conda environment.  Creating a new conda environment is a safer option, because all of the packages will be installed with versions that are known to work, and there is no risk of messing up your existing Python environments with incompatible package versions.</p>
+<section id="install-in-an-existing-python-environment">
+<h3>Install in an existing Python environment<a class="headerlink" href="#install-in-an-existing-python-environment" title="Permalink to this heading"></a></h3>
+<p>In the <code class="docutils literal notranslate"><span class="pre">python</span></code> subdirectory, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+</pre></div>
+</div>
+<p>This will install the <code class="docutils literal notranslate"><span class="pre">isaacgym</span></code> package and all of its dependencies in the active Python environment.  If your have more than one Python environment where you want to use Gym, you will need to run this command in each of them.  To verify the details of the installed package, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">show</span> <span class="n">isaacgym</span>
+</pre></div>
+</div>
+<p>To uninstall, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">uninstall</span> <span class="n">isaacgym</span>
+</pre></div>
+</div>
+</section>
+<section id="install-in-a-new-conda-environment">
+<h3>Install in a new conda environment<a class="headerlink" href="#install-in-a-new-conda-environment" title="Permalink to this heading"></a></h3>
+<p>In the root directory, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">create_conda_env_rlgpu</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>This will create a new conda env called <code class="docutils literal notranslate"><span class="pre">rlgpu</span></code>, which you can activate by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">activate</span> <span class="n">rlgpu</span>
+</pre></div>
+</div>
+<p>If you wish to change the name of the env, you can edit <code class="docutils literal notranslate"><span class="pre">python/rlgpu_conda_env.yml</span></code>, then update the <code class="docutils literal notranslate"><span class="pre">ENV_NAME</span></code> variable in the <code class="docutils literal notranslate"><span class="pre">create_conda_env_rlgpu.sh</span></code> script to match.</p>
+<p>To uninstall, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">remove</span> <span class="o">--</span><span class="n">name</span> <span class="n">rlgpu</span> <span class="o">--</span><span class="nb">all</span>
+</pre></div>
+</div>
+</section>
+<section id="install-in-a-docker-container">
+<h3>Install in a Docker container<a class="headerlink" href="#install-in-a-docker-container" title="Permalink to this heading"></a></h3>
+<p>This installation method is experimental, but may be useful for running RL training in certain environments.</p>
+<p>Follow <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker">these instructions</a> to install the NVIDIA Container Toolkit on your system. In the root directory, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">docker</span><span class="o">/</span><span class="n">build</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>This will build a Docker image, which you can run interactively as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">docker</span><span class="o">/</span><span class="n">run</span><span class="o">.</span><span class="n">sh</span> <span class="o">&lt;</span><span class="n">display</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Note that you can pass in an optional &lt;display&gt; argument to the <code class="docutils literal notranslate"><span class="pre">run.sh</span></code> script, which will allow viewer support when running from inside the docker container. To retrieve the name of your display, refer to the output from <code class="docutils literal notranslate"><span class="pre">xdpyinfo</span></code>.</p>
+</section>
+<section id="install-example-rl-environments">
+<h3>Install Example RL Environments<a class="headerlink" href="#install-example-rl-environments" title="Permalink to this heading"></a></h3>
+<p>We provide example reinforcement learning environments that can be trained with Isaac Gym. For more details, please visit <a class="reference external" href="https://github.com/NVIDIA-Omniverse/IsaacGymEnvs">https://github.com/NVIDIA-Omniverse/IsaacGymEnvs</a> and follow the setup instructions in the README.</p>
+<p>Simply clone the IsaacGymEnvs repository and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-the-installation">
+<h2>Testing the installation<a class="headerlink" href="#testing-the-installation" title="Permalink to this heading"></a></h2>
+<section id="simple-example">
+<h3>Simple example<a class="headerlink" href="#simple-example" title="Permalink to this heading"></a></h3>
+<p>To test the installation, you can run the examples from the <code class="docutils literal notranslate"><span class="pre">python/examples</span></code> subdirectory, like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">joint_monkey</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>It is important to run from that directory, because the example scripts assume that assets can be found relative to that location.</p>
+<p>The joint monkey example loads an asset and animates all of its degrees-of-freedom through their full range of motion.</p>
+<img alt="_images/joint_monkey.png" src="_images/joint_monkey.png" />
+</section>
+<section id="reinforcement-learning-example">
+<h3>Reinforcement learning example<a class="headerlink" href="#reinforcement-learning-example" title="Permalink to this heading"></a></h3>
+<p>You can also run a reinforcement learning task to test GPU simulation and Pytorch integration.
+This requires setting up the IsaacGymEnvs repository (<a class="reference external" href="https://github.com/NVIDIA-Omniverse/IsaacGymEnvs">https://github.com/NVIDIA-Omniverse/IsaacGymEnvs</a>). Please follow instructions in the README for setting up the IsaacGymEnvs repository and for launching a reinforcement learning task.
+The “Cartpole” task is a good simple environment to test and should train in less than 5 seconds in headless mode.</p>
+<img alt="_images/cartpole.png" src="_images/cartpole.png" />
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this heading"></a></h2>
+<p>Isaac Gym is under intense development and things break occasionally.</p>
+<p>If you run into crashes or other problems when running the examples:</p>
+<ul class="simple">
+<li><p>Make sure your system meets the requirements listed at the top.</p></li>
+<li><p>Verify that the correct package is being used (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">show</span> <span class="pre">isaacgym</span></code>).  If the package was installed more than once, check that the reported location points to the version you want to use.</p></li>
+<li><p>On systems with integrated Intel graphics, make sure that the NVIDIA GPU is selected.  For example, on Ubuntu 18.04, you can run <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">prime-select</span> <span class="pre">nvidia</span></code>. If you have multiple Vulkan devices visible when running <code class="docutils literal notranslate"><span class="pre">vulkaninfo</span></code>, you may need to explicitly force use of your NVIDIA GPU. You can do this as follows: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/nvidia_icd.json</span></code></p></li>
+</ul>
+<section id="for-anaconda-users">
+<h3>For Anaconda Users<a class="headerlink" href="#for-anaconda-users" title="Permalink to this heading"></a></h3>
+<p>If you see an error like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">ImportError</span><span class="p">:</span> <span class="n">libpython3</span><span class="mf">.7</span><span class="n">m</span><span class="o">.</span><span class="n">so</span><span class="mf">.1.0</span><span class="p">:</span> <span class="n">cannot</span> <span class="nb">open</span> <span class="n">shared</span> <span class="nb">object</span> <span class="n">file</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="n">file</span> <span class="ow">or</span> <span class="n">directory</span>
+</pre></div>
+</div>
+<p>Installing the corresponding Python lib should fix that problem:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">libpython3</span><span class="mf">.7</span>
+</pre></div>
+</div>
+<p>If you are running Ubuntu 20.04, which does not have a libpython3.7 package, you will instead need to set the LD_LIBRARY_PATH variable appropriately:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LD_LIBRARY_PATH</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">xyz</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">rlgpu</span><span class="o">/</span><span class="n">lib</span>
+</pre></div>
+</div>
+<p>If you see an error like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ImportError: /home/xyz/anaconda3/bin/../lib/libstdc++.so.6: version `GLIBCXX_3.4.20` not found (required by /home/xyz/carbgym/python/isaacgym/_bindings/linux64/gym_36.so)
+</pre></div>
+</div>
+<p>That means that the <code class="docutils literal notranslate"><span class="pre">libstdc++</span></code> version distributed with Anaconda is different than the one used on your system to build Isaac Gym.  Anaconda does some environment shenanigans that masks the system <code class="docutils literal notranslate"><span class="pre">libstdc++</span></code> with the one it installed, but it may be incompatible with how Isaac Gym was built on your system.  There’s a number of ways this can be fixed and none of them are pretty.  The simplest would be to “hide” the conflicting <code class="docutils literal notranslate"><span class="pre">libstdc++</span></code> files that Anaconda installed by moving them to a different directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir ${YOUR_CONDA_ENV}/lib/_unused
+mv ${YOUR_CONDA_ENV}/lib/libstdc++* ${YOUR_CONDA_ENV}/lib/_unused
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="about_gym.html" class="btn btn-neutral float-left" title="About Isaac Gym" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="release-notes.html" class="btn btn-neutral float-right" title="Release Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

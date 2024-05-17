@@ -1,0 +1,263 @@
+env:
+  numEnvs: 10240
+  numAgents: 1
+  envSpacing: 5.0
+  enableDebugVis: False
+  isFlagrun: False
+  maxEpisodeLength: 150 #200
+  pdControl: True
+  powerScale: 1.0
+  controlFrequencyInv: 4
+  controlFrequencyLow: 8
+  imgDelayFrame: 4
+  floatingBase: True
+
+  liftedSuccessThreshold: 0.35
+  liftedInitThreshold: 0.05
+  baseObjectDisThreshold: 0.6
+  holdSteps: 25
+  lastCommands: False
+
+  asset:
+    assetRoot: "data/asset"
+    assetFileRobot: "b1z1-float/urdf/b1z1.urdf"
+    assetFileObj: "obj_set/"
+
+    asset_multi:
+      green_bowl:
+        dict_idx: 0
+        height: 0.026
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      sugar_box:
+        dict_idx: 1
+        height: 0.088
+        orientation: [0.0, 0.707, 0.0, 0.707]
+        scale: 1.0
+      potato_chip_1:
+        dict_idx: 2
+        height: 0.086
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 0.8
+      plastic_peach:
+        dict_idx: 3
+        height: 0.0
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      plastic_banana:
+        dict_idx: 4
+        height: 0.019
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      green_cup:
+        dict_idx: 5
+        height: 0.031
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      magic_clean:
+        dict_idx: 6
+        height: 0.127
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      power_drill:
+        dict_idx: 8
+        height: 0.094
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      soap_dish:
+        dict_idx: 9
+        height: 0.021
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      yellow_bowl:
+        dict_idx: 10
+        height: 0.026
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      pitcher:
+        dict_idx: 11
+        height: 0.120
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      blue_tea_box:
+        dict_idx: 12
+        height: 0.037
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      mug:
+        dict_idx: 13
+        height: 0.042
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      lipton_tea:
+        dict_idx: 14
+        height: 0.043
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      conditioner:
+        dict_idx: 15
+        height: 0.08
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      plastic_lemon:
+        dict_idx: 16
+        height: 0.0
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      shampoo:
+        dict_idx: 17
+        height: 0.082
+        orientation: [-0.707, 0.0, 0.0, 0.707]
+        scale: 1.0
+      plastic_apple:
+        dict_idx: 18
+        height: 0.0
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      plate_holder:
+        dict_idx: 19
+        height: 0.052
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      book_holder_3:
+        dict_idx: 20
+        height: 0.078
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      repellent:
+        dict_idx: 21
+        height: 0.106
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      glue_1:
+        dict_idx: 22
+        height: 0.058
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      blue_moon:
+        dict_idx: 23
+        height: 0.124
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      plastic_orange:
+        dict_idx: 24
+        height: 0.0
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      pink_tea_box:
+        dict_idx: 25
+        height: 0.038
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      bleach_cleanser:
+        dict_idx: 26
+        height: 0.124
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 0.5
+      phillips_screwdriver:
+        dict_idx: 27
+        height: 0.016
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      doraemon_bowl:
+        dict_idx: 28
+        height: 0.027
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      orange_cup:
+        dict_idx: 29
+        height: 0.031
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      blue_cup:
+        dict_idx: 30
+        height: 0.031
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      cleanser:
+        dict_idx: 31
+        height: 0.088
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      bowl:
+        dict_idx: 32
+        height: 0.029
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      clear_box:
+        dict_idx: 33
+        height: 0.051
+        orientation: [0.0, 0.0, 0.0, 1.0]
+        scale: 1.0
+      
+
+    control:
+        stiffness: {'joint': 80, 'z1': 5}  # [N*m/rad]
+        damping: {'joint': 2.0, 'z1': 0.5}     # [N*m*s/rad]
+
+  plane:
+    staticFriction: 1.0
+    dynamicFriction: 1.0
+    restitution: 0.0
+  
+physics_engine: "physx"
+
+sim:
+  substeps: 1
+  use_gpu_pipeline: True
+  up_axis: "z"
+  gravity: [0.0, 0.0, -9.81]
+  dt: 0.005
+
+  physx:
+    use_gpu: True
+    num_threads: 4
+    solver_type: 1
+    num_position_iterations: 8
+    num_velocity_iterations: 0
+    contact_offset: 0.02
+    rest_offset: 0.0
+    bounce_threshold_velocity: 0.2
+    max_depenetration_velocity: 50.0
+    default_buffer_size_multiplier: 100.0
+    max_gpu_contact_pairs: 1000000 #284032
+
+reward:
+  base_height_target: 0.55
+  only_positive_rewards: False
+  scales:
+    approaching: 0.5
+    lifting: 1.0
+    pick_up: 3.5 # 0.5
+    acc_penalty: -0.001
+    command_penalty: -1.0
+    command_reward: 0.25
+    standpick: 0.25
+    action_rate: -0.001
+    ee_orn: 0.01
+    base_dir: 0.25
+    rad_penalty: 0.0
+    base_ang_pen: 0.0
+    base_approaching: 0.01 # 0.05
+    grasp_base_height: 0.5
+    gripper_rate: 0.0 # -0.1
+
+sensor:
+  depth_clip_lower: 0.15
+  depth_clip_rand_range: [0.18, 0.25]
+  enableCamera: False # True
+  resized_resolution: [96, 54]
+  onboard_camera:
+    horizontal_fov: 69
+    resolution: [96, 54] 
+    position: [0.425, 0.04, 0.12]
+    rotation: [0.0, 0.0, 0.0]
+  wrist_camera:
+    horizontal_fov: 69
+    resolution: [96, 54]
+    # position: [0.0951, 0.191, -0.03175] # Estimate
+    position: [0.0955, 0.22, -0.03175] # Fix the real offset height
+    # position: [0.1091, 0.191, -0.03175] # Fix the real offset
+    # position: [0.0623, 0.191, -0.03175]
+    rotation: [-1.57, 0.0, -0.87] #-0.52, -0.347 -0.87
+    rand_position: [0.005, 0.005, 0.005]

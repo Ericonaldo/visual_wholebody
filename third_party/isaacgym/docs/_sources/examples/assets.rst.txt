@@ -1,0 +1,282 @@
+Bundled Assets
+###############
+
+
+Articulated Models
+==================
+
+The following color scheme is used to represent the articulated models below.
+
+.. graphviz::
+
+    digraph {
+    graph [aspect=1 concentrate=true ordering=out ratio=compress];
+    node [ fontname=Roboto ];
+    edge [ fontname=Roboto ];
+    A [label="Root Rigid Body" shape="polygon" style="filled" fillcolor="#6F6F6F"]
+    B [label="Rigid Body" shape="polygon" style="filled" fillcolor="#76b900"]
+    C [label="Rigid Body" shape="polygon" style="filled" fillcolor="#76b900"]
+    D [label="Rigid Body" shape="polygon" style="filled" fillcolor="#76b900"]
+    E [label="Rigid Body" shape="polygon" style="filled" fillcolor="#76b900"]
+    F [label="Rigid Body" shape="polygon" style="filled" fillcolor="#76b900"]
+    A -> B[label="Revolute Joint" fillcolor="#4ECDC4" color="#4ECDC4"]
+    C -> D[label="Fixed Joint" fillcolor="#556270" color="#556270"]
+    E -> F[label="Prismatic Joint" fillcolor="#C7F464" color="#C7F464"]
+    }
+
+
+MJCF Models
+~~~~~~~~~~~
+
+
+Ant :code:`assets/mjcf/nv_ant.xml`
+----------------------------------
+
+.. graphviz::
+
+   digraph {
+    graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+    node [ fontname=Roboto ];
+    edge [ fontname=Roboto ];
+    torso [shape="polygon" style="filled" fillcolor="#6F6F6F"]
+    front_left_leg [shape="polygon" style="filled" fillcolor="#76b900"]
+    front_left_foot [shape="polygon" style="filled" fillcolor="#76b900"]
+    front_right_leg [shape="polygon" style="filled" fillcolor="#76b900"]
+    front_right_foot [shape="polygon" style="filled" fillcolor="#76b900"]
+    left_back_leg [shape="polygon" style="filled" fillcolor="#76b900"]
+    left_back_foot [shape="polygon" style="filled" fillcolor="#76b900"]
+    right_back_leg [shape="polygon" style="filled" fillcolor="#76b900"]
+    right_back_foot [shape="polygon" style="filled" fillcolor="#76b900"]
+    torso -> front_left_leg [label="hip_1" fillcolor="#4ECDC4" color="#4ECDC4"]
+    front_left_leg -> front_left_foot [label="ankle_1" fillcolor="#4ECDC4" color="#4ECDC4"]
+    torso -> front_right_leg [label="hip_2" fillcolor="#4ECDC4" color="#4ECDC4"]
+    front_right_leg -> front_right_foot [label="ankle_2" fillcolor="#4ECDC4" color="#4ECDC4"]
+    torso -> left_back_leg [label="hip_3" fillcolor="#4ECDC4" color="#4ECDC4"]
+    left_back_leg -> left_back_foot [label="ankle_3" fillcolor="#4ECDC4" color="#4ECDC4"]
+    torso -> right_back_leg [label="hip_4" fillcolor="#4ECDC4" color="#4ECDC4"]
+    right_back_leg -> right_back_foot [label="ankle_4" fillcolor="#4ECDC4" color="#4ECDC4"]
+   }
+
+-----
+
+Humanoid :code:`assets/mjcf/nv_humanoid.xml`
+----------------------------------------------
+
+
+.. graphviz::
+
+    digraph {
+    graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+    node [ fontname=Roboto ];
+    edge [ fontname=Roboto ];
+    torso [shape="polygon" style="filled" fillcolor="#6F6F6F"]
+    lwaist [shape="polygon" style="filled" fillcolor="#76b900"]
+    pelvis [shape="polygon" style="filled" fillcolor="#76b900"]
+    right_thigh [shape="polygon" style="filled" fillcolor="#76b900"]
+    right_shin [shape="polygon" style="filled" fillcolor="#76b900"]
+    right_foot [shape="polygon" style="filled" fillcolor="#76b900"]
+    left_thigh [shape="polygon" style="filled" fillcolor="#76b900"]
+    left_shin [shape="polygon" style="filled" fillcolor="#76b900"]
+    left_foot [shape="polygon" style="filled" fillcolor="#76b900"]
+    right_upper_arm [shape="polygon" style="filled" fillcolor="#76b900"]
+    right_lower_arm [shape="polygon" style="filled" fillcolor="#76b900"]
+    left_upper_arm [shape="polygon" style="filled" fillcolor="#76b900"]
+    left_lower_arm [shape="polygon" style="filled" fillcolor="#76b900"]
+    torso -> lwaist [label="abdomen_z" fillcolor="#4ECDC4" color="#4ECDC4"]
+    torso -> lwaist [label="abdomen_y" fillcolor="#4ECDC4" color="#4ECDC4"]
+    lwaist -> pelvis [label="abdomen_x" fillcolor="#4ECDC4" color="#4ECDC4"]
+    pelvis -> right_thigh [label="right_hip_x" fillcolor="#4ECDC4" color="#4ECDC4"]
+    pelvis -> right_thigh [label="right_hip_z" fillcolor="#4ECDC4" color="#4ECDC4"]
+    pelvis -> right_thigh [label="right_hip_y" fillcolor="#4ECDC4" color="#4ECDC4"]
+    right_thigh -> right_shin [label="right_knee" fillcolor="#4ECDC4" color="#4ECDC4"]
+    right_shin -> right_foot [label="right_ankle_y" fillcolor="#4ECDC4" color="#4ECDC4"]
+    right_shin -> right_foot [label="right_ankle_x" fillcolor="#4ECDC4" color="#4ECDC4"]
+    pelvis -> left_thigh [label="left_hip_x" fillcolor="#4ECDC4" color="#4ECDC4"]
+    pelvis -> left_thigh [label="left_hip_z" fillcolor="#4ECDC4" color="#4ECDC4"]
+    pelvis -> left_thigh [label="left_hip_y" fillcolor="#4ECDC4" color="#4ECDC4"]
+    left_thigh -> left_shin [label="left_knee" fillcolor="#4ECDC4" color="#4ECDC4"]
+    left_shin -> left_foot [label="left_ankle_y" fillcolor="#4ECDC4" color="#4ECDC4"]
+    left_shin -> left_foot [label="left_ankle_x" fillcolor="#4ECDC4" color="#4ECDC4"]
+    torso -> right_upper_arm [label="right_shoulder1" fillcolor="#4ECDC4" color="#4ECDC4"]
+    torso -> right_upper_arm [label="right_shoulder2" fillcolor="#4ECDC4" color="#4ECDC4"]
+    right_upper_arm -> right_lower_arm [label="right_elbow" fillcolor="#4ECDC4" color="#4ECDC4"]
+    torso -> left_upper_arm [label="left_shoulder1" fillcolor="#4ECDC4" color="#4ECDC4"]
+    torso -> left_upper_arm [label="left_shoulder2" fillcolor="#4ECDC4" color="#4ECDC4"]
+    left_upper_arm -> left_lower_arm [label="left_elbow" fillcolor="#4ECDC4" color="#4ECDC4"]
+    }
+
+URDF Models
+~~~~~~~~~~~
+
+Anymal :code:`assets/urdf/anymal_b_simple_description/urdf/anymal.urdf`
+-----------------------------------------------------------------------
+
+.. graphviz::
+
+    digraph {
+    graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+    node [ fontname=Roboto ];
+    edge [ fontname=Roboto ];
+    base [shape="polygon" style="filled" fillcolor="#6F6F6F"]
+    LF_HIP [shape="polygon" style="filled" fillcolor="#76b900"]
+    LF_THIGH [shape="polygon" style="filled" fillcolor="#76b900"]
+    LF_SHANK [shape="polygon" style="filled" fillcolor="#76b900"]
+    LF_ADAPTER [shape="polygon" style="filled" fillcolor="#76b900"]
+    LF_FOOT [shape="polygon" style="filled" fillcolor="#76b900"]
+    LH_HIP [shape="polygon" style="filled" fillcolor="#76b900"]
+    LH_THIGH [shape="polygon" style="filled" fillcolor="#76b900"]
+    LH_SHANK [shape="polygon" style="filled" fillcolor="#76b900"]
+    LH_ADAPTER [shape="polygon" style="filled" fillcolor="#76b900"]
+    LH_FOOT [shape="polygon" style="filled" fillcolor="#76b900"]
+    RF_HIP [shape="polygon" style="filled" fillcolor="#76b900"]
+    RF_THIGH [shape="polygon" style="filled" fillcolor="#76b900"]
+    RF_SHANK [shape="polygon" style="filled" fillcolor="#76b900"]
+    RF_ADAPTER [shape="polygon" style="filled" fillcolor="#76b900"]
+    RF_FOOT [shape="polygon" style="filled" fillcolor="#76b900"]
+    RH_HIP [shape="polygon" style="filled" fillcolor="#76b900"]
+    RH_THIGH [shape="polygon" style="filled" fillcolor="#76b900"]
+    RH_SHANK [shape="polygon" style="filled" fillcolor="#76b900"]
+    RH_ADAPTER [shape="polygon" style="filled" fillcolor="#76b900"]
+    RH_FOOT [shape="polygon" style="filled" fillcolor="#76b900"]
+    base -> LF_HIP [label="LF_HAA" fillcolor="#4ECDC4" color="#4ECDC4"]
+    LF_HIP -> LF_THIGH [label="LF_HFE" fillcolor="#4ECDC4" color="#4ECDC4"]
+    LF_THIGH -> LF_SHANK [label="LF_KFE" fillcolor="#4ECDC4" color="#4ECDC4"]
+    LF_SHANK -> LF_ADAPTER [label="LF_SHANK_TO_ADAPTER" fillcolor="#556270" color="#556270"]
+    LF_ADAPTER -> LF_FOOT [label="LF_ADAPTER_TO_FOOT" fillcolor="#556270" color="#556270"]
+    base -> LH_HIP [label="LH_HAA" fillcolor="#4ECDC4" color="#4ECDC4"]
+    LH_HIP -> LH_THIGH [label="LH_HFE" fillcolor="#4ECDC4" color="#4ECDC4"]
+    LH_THIGH -> LH_SHANK [label="LH_KFE" fillcolor="#4ECDC4" color="#4ECDC4"]
+    LH_SHANK -> LH_ADAPTER [label="LH_SHANK_TO_ADAPTER" fillcolor="#556270" color="#556270"]
+    LH_ADAPTER -> LH_FOOT [label="LH_ADAPTER_TO_FOOT" fillcolor="#556270" color="#556270"]
+    base -> RF_HIP [label="RF_HAA" fillcolor="#4ECDC4" color="#4ECDC4"]
+    RF_HIP -> RF_THIGH [label="RF_HFE" fillcolor="#4ECDC4" color="#4ECDC4"]
+    RF_THIGH -> RF_SHANK [label="RF_KFE" fillcolor="#4ECDC4" color="#4ECDC4"]
+    RF_SHANK -> RF_ADAPTER [label="RF_SHANK_TO_ADAPTER" fillcolor="#556270" color="#556270"]
+    RF_ADAPTER -> RF_FOOT [label="RF_ADAPTER_TO_FOOT" fillcolor="#556270" color="#556270"]
+    base -> RH_HIP [label="RH_HAA" fillcolor="#4ECDC4" color="#4ECDC4"]
+    RH_HIP -> RH_THIGH [label="RH_HFE" fillcolor="#4ECDC4" color="#4ECDC4"]
+    RH_THIGH -> RH_SHANK [label="RH_KFE" fillcolor="#4ECDC4" color="#4ECDC4"]
+    RH_SHANK -> RH_ADAPTER [label="RH_SHANK_TO_ADAPTER" fillcolor="#556270" color="#556270"]
+    RH_ADAPTER -> RH_FOOT [label="RH_ADAPTER_TO_FOOT" fillcolor="#556270" color="#556270"]
+    }
+
+-----
+
+.. _franka_asset:
+
+Franka Panda :code:`assets/urdf/franka_description/robots/franka_panda.urdf`
+-----------------------------------------------------------------------------
+
+.. graphviz::
+
+    digraph {
+    graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+    node [ fontname=Roboto ];
+    edge [ fontname=Roboto ];
+    panda_link0 [shape="polygon" style="filled" fillcolor="#6F6F6F"]
+    panda_link1 [shape="polygon" style="filled" fillcolor="#76b900"]
+    panda_link2 [shape="polygon" style="filled" fillcolor="#76b900"]
+    panda_link3 [shape="polygon" style="filled" fillcolor="#76b900"]
+    panda_link4 [shape="polygon" style="filled" fillcolor="#76b900"]
+    panda_link5 [shape="polygon" style="filled" fillcolor="#76b900"]
+    panda_link6 [shape="polygon" style="filled" fillcolor="#76b900"]
+    panda_link7 [shape="polygon" style="filled" fillcolor="#76b900"]
+    panda_hand [shape="polygon" style="filled" fillcolor="#76b900"]
+    panda_leftfinger [shape="polygon" style="filled" fillcolor="#76b900"]
+    panda_rightfinger [shape="polygon" style="filled" fillcolor="#76b900"]
+    panda_link0 -> panda_link1 [label="panda_joint1" fillcolor="#4ECDC4" color="#4ECDC4"]
+    panda_link1 -> panda_link2 [label="panda_joint2" fillcolor="#4ECDC4" color="#4ECDC4"]
+    panda_link2 -> panda_link3 [label="panda_joint3" fillcolor="#4ECDC4" color="#4ECDC4"]
+    panda_link3 -> panda_link4 [label="panda_joint4" fillcolor="#4ECDC4" color="#4ECDC4"]
+    panda_link4 -> panda_link5 [label="panda_joint5" fillcolor="#4ECDC4" color="#4ECDC4"]
+    panda_link5 -> panda_link6 [label="panda_joint6" fillcolor="#4ECDC4" color="#4ECDC4"]
+    panda_link6 -> panda_link7 [label="panda_joint7" fillcolor="#4ECDC4" color="#4ECDC4"]
+    panda_link7 -> panda_hand [label="panda_hand_joint" fillcolor="#556270" color="#556270"]
+    panda_hand -> panda_leftfinger [label="panda_finger_joint1" fillcolor="#C7F464" color="#C7F464"]
+    panda_hand -> panda_rightfinger [label="panda_finger_joint2" fillcolor="#C7F464" color="#C7F464"]
+    }
+
+-----
+
+Kinova Jaco :code:`assets/urdf/kinova_description/urdf/kinova.urdf`
+-------------------------------------------------------------------
+
+.. graphviz::
+
+    digraph {
+    graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+    node [ fontname=Roboto ];
+    edge [ fontname=Roboto ];
+    kinova_link_base [shape="polygon" style="filled" fillcolor="#6F6F6F"]
+    kinova_link_1 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_2 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_3 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_4 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_5 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_6 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_end_effector [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_finger_1 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_finger_tip_1 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_finger_2 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_finger_tip_2 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_finger_3 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_finger_tip_3 [shape="polygon" style="filled" fillcolor="#76b900"]
+    kinova_link_base -> kinova_link_1 [label="kinova_joint_1" fillcolor="#4ECDC4" color="#4ECDC4"]
+    kinova_link_1 -> kinova_link_2 [label="kinova_joint_2" fillcolor="#4ECDC4" color="#4ECDC4"]
+    kinova_link_2 -> kinova_link_3 [label="kinova_joint_3" fillcolor="#4ECDC4" color="#4ECDC4"]
+    kinova_link_3 -> kinova_link_4 [label="kinova_joint_4" fillcolor="#4ECDC4" color="#4ECDC4"]
+    kinova_link_4 -> kinova_link_5 [label="kinova_joint_5" fillcolor="#4ECDC4" color="#4ECDC4"]
+    kinova_link_5 -> kinova_link_6 [label="kinova_joint_6" fillcolor="#4ECDC4" color="#4ECDC4"]
+    kinova_link_6 -> kinova_end_effector [label="kinova_joint_end_effector" fillcolor="#556270" color="#556270"]
+    kinova_link_6 -> kinova_link_finger_1 [label="kinova_joint_finger_1" fillcolor="#556270" color="#556270"]
+    kinova_link_finger_1 -> kinova_link_finger_tip_1 [label="kinova_joint_finger_tip_1" fillcolor="#556270" color="#556270"]
+    kinova_link_6 -> kinova_link_finger_2 [label="kinova_joint_finger_2" fillcolor="#556270" color="#556270"]
+    kinova_link_finger_2 -> kinova_link_finger_tip_2 [label="kinova_joint_finger_tip_2" fillcolor="#556270" color="#556270"]
+    kinova_link_6 -> kinova_link_finger_3 [label="kinova_joint_finger_3" fillcolor="#556270" color="#556270"]
+    kinova_link_finger_3 -> kinova_link_finger_tip_3 [label="kinova_joint_finger_tip_3" fillcolor="#556270" color="#556270"]
+    }
+
+-----
+
+Cabinet :code:`assets/urdf/sektion_cabinet_model/urdf/sektion_cabinet.urdf`
+---------------------------------------------------------------------------
+
+
+.. graphviz::
+
+    digraph {
+    graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+    node [ fontname=Roboto ];
+    edge [ fontname=Roboto ];
+    sektion [shape="polygon" style="filled" fillcolor="#6F6F6F"]
+    door_left_link [shape="polygon" style="filled" fillcolor="#76b900"]
+    door_left_nob_link [shape="polygon" style="filled" fillcolor="#76b900"]
+    door_right_link [shape="polygon" style="filled" fillcolor="#76b900"]
+    door_right_nob_link [shape="polygon" style="filled" fillcolor="#76b900"]
+    drawer_bottom [shape="polygon" style="filled" fillcolor="#76b900"]
+    drawer_handle_bottom [shape="polygon" style="filled" fillcolor="#76b900"]
+    drawer_top [shape="polygon" style="filled" fillcolor="#76b900"]
+    drawer_handle_top [shape="polygon" style="filled" fillcolor="#76b900"]
+    sektion -> door_left_link [label="door_left_joint" fillcolor="#4ECDC4" color="#4ECDC4"]
+    door_left_link -> door_left_nob_link [label="door_left_nob_transform" fillcolor="#556270" color="#556270"]
+    sektion -> door_right_link [label="door_right_joint" fillcolor="#4ECDC4" color="#4ECDC4"]
+    door_right_link -> door_right_nob_link [label="door_right_nob_transform" fillcolor="#556270" color="#556270"]
+    sektion -> drawer_bottom [label="drawer_bottom_joint" fillcolor="#C7F464" color="#C7F464"]
+    drawer_bottom -> drawer_handle_bottom [label="drawer_handle_bottom_joint" fillcolor="#556270" color="#556270"]
+    sektion -> drawer_top [label="drawer_top_joint" fillcolor="#C7F464" color="#C7F464"]
+    drawer_top -> drawer_handle_top [label="drawer_handle_top_joint" fillcolor="#556270" color="#556270"]
+    }
+
+Textures
+========
+The following texture assets are available in gym for visualization and domain randomization purposes
+
+- background_texture_metal_rust.jpg    
+- metal_wall_iron_fence.jpg            
+- particle_board_paint_aged.jpg        
+- pebble_stone_texture_nature.jpg      
+- texture_background_wall_paint_2.jpg
+- texture_background_wall_paint_3.jpg
+- texture_license.txt
+- texture_stone_stone_texture_0.jpg
+- texture_wood_brown_1033760.jpg

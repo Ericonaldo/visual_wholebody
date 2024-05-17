@@ -1,0 +1,41 @@
+digraph G {
+node [shape=box];
+"wx250/base_link" [label="wx250/base_link"];
+"wx250/shoulder_link" [label="wx250/shoulder_link"];
+"wx250/upper_arm_link" [label="wx250/upper_arm_link"];
+"wx250/forearm_link" [label="wx250/forearm_link"];
+"wx250/wrist_link" [label="wx250/wrist_link"];
+"wx250/gripper_link" [label="wx250/gripper_link"];
+"wx250/ee_arm_link" [label="wx250/ee_arm_link"];
+"wx250/gripper_prop_link" [label="wx250/gripper_prop_link"];
+"wx250/gripper_bar_link" [label="wx250/gripper_bar_link"];
+"wx250/fingers_link" [label="wx250/fingers_link"];
+"wx250/ee_gripper_link" [label="wx250/ee_gripper_link"];
+"wx250/left_finger_link" [label="wx250/left_finger_link"];
+"wx250/right_finger_link" [label="wx250/right_finger_link"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"wx250/base_link" -> "waist" [label="xyz: 0 0 0.072 \nrpy: 0 -0 0"]
+"waist" -> "wx250/shoulder_link"
+"wx250/shoulder_link" -> "shoulder" [label="xyz: 0 0 0.03865 \nrpy: 0 -0 0"]
+"shoulder" -> "wx250/upper_arm_link"
+"wx250/upper_arm_link" -> "elbow" [label="xyz: 0.04975 0 0.25 \nrpy: 0 -0 0"]
+"elbow" -> "wx250/forearm_link"
+"wx250/forearm_link" -> "wrist_angle" [label="xyz: 0.25 0 0 \nrpy: 0 -0 0"]
+"wrist_angle" -> "wx250/wrist_link"
+"wx250/wrist_link" -> "wrist_rotate" [label="xyz: 0.065 0 0 \nrpy: 0 -0 0"]
+"wrist_rotate" -> "wx250/gripper_link"
+"wx250/gripper_link" -> "ee_arm" [label="xyz: 0.043 0 0 \nrpy: 0 -0 0"]
+"ee_arm" -> "wx250/ee_arm_link"
+"wx250/ee_arm_link" -> "gripper" [label="xyz: 0.0055 0 0 \nrpy: 0 -0 0"]
+"gripper" -> "wx250/gripper_prop_link"
+"wx250/ee_arm_link" -> "gripper_bar" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"gripper_bar" -> "wx250/gripper_bar_link"
+"wx250/gripper_bar_link" -> "ee_bar" [label="xyz: 0.023 0 0 \nrpy: 0 -0 0"]
+"ee_bar" -> "wx250/fingers_link"
+"wx250/fingers_link" -> "ee_gripper" [label="xyz: 0.027575 0 0 \nrpy: 0 -0 0"]
+"ee_gripper" -> "wx250/ee_gripper_link"
+"wx250/fingers_link" -> "left_finger" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"left_finger" -> "wx250/left_finger_link"
+"wx250/fingers_link" -> "right_finger" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"right_finger" -> "wx250/right_finger_link"
+}

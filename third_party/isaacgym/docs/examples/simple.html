@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programming Examples &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reinforcement Learning Examples" href="rl.html" />
+    <link rel="prev" title="Examples" href="index.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Isaac Gym
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Programming Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-command-line-options">Common Command Line Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-of-examples">List of Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#collision-filtering-1080-balls-of-solitude-py">Collision filtering (1080_balls_of_solitude.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#asset-and-environment-info-asset-info-py">Asset and Environment Info (asset_info.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#body-physics-properties-example-body-physics-props-py">Body physics properties example (body_physics_props.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#domain-randomization-domain-randomization-py">Domain Randomization (domain_randomization.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#franka-attractor-franka-attractor-py">Franka Attractor (franka_attractor.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#isaac-gym-graphics-example-graphics-py">Isaac Gym Graphics Example (graphics.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dof-controls-dof-controls-py">DOF Controls (dof_controls.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#joint-monkey-joint-monkey-py">Joint Monkey (joint_monkey.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gym-math-api-maths-py">Gym Math API (maths.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#soft-body-soft-body-py">Soft Body (soft_body.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visualize-transforms-transforms-py">Visualize Transforms (transforms.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#projectiles-projectiles-py">Projectiles (projectiles.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#large-mass-ratio-test-large-mass-ratio-py">Large mass ratio test (large_mass_ratio.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#kuka-bin-example-kuka-bin-py">Kuka bin example (kuka_bin.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pytorch-interop-interop-torch-py">PyTorch Interop (interop_torch.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#franka-ik-picking-franka-cube-ik-py">Franka IK Picking (franka_cube_ik.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#franka-operational-space-control-franka-osc-py">Franka Operational Space Control (franka_osc.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apply-forces-apply-forces-py">Apply Forces (apply_forces.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apply-forces-at-positions-apply-forces-at-pos-py">Apply Forces at Positions (apply_forces_at_pos.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multiple-cameras-multiple-camera-envs-py">Multiple Cameras (multiple_camera_envs.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#graphics-up-axis-test-graphics-up-py">Graphics Up-Axis (test_graphics_up.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#graphics-materials-example-graphics-materials-py">Graphics Materials Example (graphics_materials.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#actor-scaling-actor-scaling-py">Actor Scaling (actor_scaling.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#terrain-creation-terrain-creation-py">Terrain Creation (terrain_creation.py)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spherical-joint-spherical-joint-py">Spherical Joint (spherical_joint.py)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rl.html">Reinforcement Learning Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assets.html">Bundled Assets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming/index.html">Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Examples</a> &raquo;</li>
+      <li>Programming Examples</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="programming-examples">
+<h1>Programming Examples<a class="headerlink" href="#programming-examples" title="Permalink to this heading"></a></h1>
+<section id="common-command-line-options">
+<h2>Common Command Line Options<a class="headerlink" href="#common-command-line-options" title="Permalink to this heading"></a></h2>
+<dl class="option-list">
+<dt><kbd><span class="option">--help</span></kbd></dt>
+<dd><p>Prints out commandline options for each example.</p>
+</dd>
+<dt><kbd><span class="option">--physx</span></kbd></dt>
+<dd><p>Uses PhysX as the physics backend for simulation.</p>
+</dd>
+<dt><kbd><span class="option">--flex</span></kbd></dt>
+<dd><p>Uses FleX as the physics backend for simulation.</p>
+</dd>
+<dt><kbd><span class="option">--sim_device</span></kbd></dt>
+<dd><p>Choose the device for running the simulation with PyTorch-like syntax. Can be <strong>cpu</strong> or <strong>cuda</strong>, with an optional device specification. Default is <strong>cuda:0</strong>.</p>
+</dd>
+<dt><kbd><span class="option">--pipeline</span></kbd></dt>
+<dd><p>Choose either the <strong>cpu</strong> or <strong>gpu</strong> pipeline for tensor operations. Default is <strong>gpu</strong>.</p>
+</dd>
+<dt><kbd><span class="option">--graphics_device_id</span></kbd></dt>
+<dd><blockquote>
+<div><p>Specify the device ordinal used for graphics.</p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All examples support the <code class="docutils literal notranslate"><span class="pre">--physx</span></code> and <code class="docutils literal notranslate"><span class="pre">--flex</span></code> command line options except for <code class="docutils literal notranslate"><span class="pre">claw.py</span></code> (flex only), <code class="docutils literal notranslate"><span class="pre">soft_body.py</span></code> (flex only), <code class="docutils literal notranslate"><span class="pre">franka_cube_ik.py</span></code> (physx only), and <code class="docutils literal notranslate"><span class="pre">franka_osc.py</span></code> (physx only).</p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="list-of-examples">
+<h2>List of Examples<a class="headerlink" href="#list-of-examples" title="Permalink to this heading"></a></h2>
+<section id="collision-filtering-1080-balls-of-solitude-py">
+<h3>Collision filtering (1080_balls_of_solitude.py)<a class="headerlink" href="#collision-filtering-1080-balls-of-solitude-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates the usage of collision groups and collision filters.  It creates a pyramid of balls in each environment.
+By default, the balls in each environment will collide with each other, but not the balls from other environments.
+The <code class="docutils literal notranslate"><span class="pre">--all_collisions</span></code> option makes all balls collide with each other, across all environments.
+The <code class="docutils literal notranslate"><span class="pre">--no_collisions</span></code> option filters out collisions between all balls, even those in the same environment.</p>
+<img alt="../_images/example_1080_balls.png" src="../_images/example_1080_balls.png" />
+</section>
+<section id="asset-and-environment-info-asset-info-py">
+<h3>Asset and Environment Info (asset_info.py)<a class="headerlink" href="#asset-and-environment-info-asset-info-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates the introspection API at two levels.
+First assets are loaded from their respective representations (either URDF or MJCF) and the bodies, joints and degrees of freedom can be retrieved.
+Second once an asset has been added to the simulation as an actor that actors current state in the simulation can be queried, state information related to the different bodies, joint etc can be accessed.</p>
+</section>
+<section id="body-physics-properties-example-body-physics-props-py">
+<h3>Body physics properties example (body_physics_props.py)<a class="headerlink" href="#body-physics-properties-example-body-physics-props-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates how to load rigid body, update its properties and apply various actions. Specifically, there are three scenarios that
+presents the following details.</p>
+<ul class="simple">
+<li><p>First, load rigid body asset with varying properties.</p></li>
+<li><p>Second, modify the shape and visual properties of the rigid body.</p></li>
+<li><p>Third, use the rigid body handle to control it and perform various actions like applying body force and linear velocity.</p></li>
+</ul>
+<img alt="../_images/example_body_physics_prop.png" src="../_images/example_body_physics_prop.png" />
+</section>
+<section id="domain-randomization-domain-randomization-py">
+<h3>Domain Randomization (domain_randomization.py)<a class="headerlink" href="#domain-randomization-domain-randomization-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates domain randomization.</p>
+<ul class="simple">
+<li><p>First, it randomizes color and texture of the asset loaded in the environment.</p></li>
+<li><p>Second, it randomizes parameters for the lights present in the environment.</p></li>
+<li><p>Third, it randomizes the position of the camera and capture multiple viewpoints.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">--save_images</span></code> option can be used to save images to disk.</p>
+<img alt="../_images/example_domain_randomization.png" src="../_images/example_domain_randomization.png" />
+</section>
+<section id="franka-attractor-franka-attractor-py">
+<h3>Franka Attractor (franka_attractor.py)<a class="headerlink" href="#franka-attractor-franka-attractor-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates using attractors to navigate Franka arms to reach a target location and pose.</p>
+<img alt="../_images/example_franka_attractor.png" src="../_images/example_franka_attractor.png" />
+</section>
+<section id="isaac-gym-graphics-example-graphics-py">
+<span id="graphics-example"></span><h3>Isaac Gym Graphics Example (graphics.py)<a class="headerlink" href="#isaac-gym-graphics-example-graphics-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates the use of several graphics operations of Isaac Gym, including the following:</p>
+<ul class="simple">
+<li><p>Load Textures / Create Textures from Buffer</p></li>
+<li><p>Apply Textures to rigid bodies</p></li>
+<li><p>Create Camera Sensors: At a static location, Attached to a rigid body</p></li>
+<li><p>Retrieve different types of camera images</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">--save_images</span></code> option can be used to save images to disk.</p>
+<img alt="../_images/example_graphics.png" src="../_images/example_graphics.png" />
+</section>
+<section id="dof-controls-dof-controls-py">
+<h3>DOF Controls (dof_controls.py)<a class="headerlink" href="#dof-controls-dof-controls-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates various methods to control DOFs (degrees-of-freedom).
+A cartpole asset is loaded from URDF.  This asset is instanced in several enviornments, each one using a different control mode.
+Demonstrates the usage of DOF properties and drive modes, including position, velocity, and effort controls.</p>
+<img alt="../_images/example_dof_control.png" src="../_images/example_dof_control.png" />
+</section>
+<section id="joint-monkey-joint-monkey-py">
+<h3>Joint Monkey (joint_monkey.py)<a class="headerlink" href="#joint-monkey-joint-monkey-py" title="Permalink to this heading"></a></h3>
+<p>This example animates degree-of-freedom ranges for a given asset.  It demonstrates usage of DOF properties and states.
+It also demonstrates line drawing utilities to visualize DOF frames (origin and axis).</p>
+<p>Command line arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--asset_id</span> <span class="pre">n</span></code> selects an asset (valid range is 0 to 7)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--speed_scale</span> <span class="pre">s</span></code> multiplier for animation speed, defaults to 1.0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--show_axis</span></code> enables visualization of the currently animated DOF frame</p></li>
+</ul>
+<img alt="../_images/joint_monkey.png" src="../_images/joint_monkey.png" />
+</section>
+<section id="gym-math-api-maths-py">
+<h3>Gym Math API (maths.py)<a class="headerlink" href="#gym-math-api-maths-py" title="Permalink to this heading"></a></h3>
+<p>Examples of math operations available in the Gym API and conversion to numpy data types</p>
+</section>
+<section id="soft-body-soft-body-py">
+<h3>Soft Body (soft_body.py)<a class="headerlink" href="#soft-body-soft-body-py" title="Permalink to this heading"></a></h3>
+<p>This example shows soft-body simulation with Flex backend.
+URDF soft body model is loaded into simulation, and stress levels are visualized.
+Note: only <code class="docutils literal notranslate"><span class="pre">--flex</span></code> is supported for this example. PhysX support for soft bodies will be added in upcoming releases.</p>
+<img alt="../_images/example_soft_body.png" src="../_images/example_soft_body.png" />
+</section>
+<section id="visualize-transforms-transforms-py">
+<h3>Visualize Transforms (transforms.py)<a class="headerlink" href="#visualize-transforms-transforms-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates how to draw transforms on specific locations on an actor.
+Transforms for the handles on a cabinet are visualized using wireframe geometry helpers, these helpers are dynamically updates as the doors and drawers of the cabinet move.</p>
+<img alt="../_images/example_transforms.png" src="../_images/example_transforms.png" />
+</section>
+<section id="projectiles-projectiles-py">
+<h3>Projectiles (projectiles.py)<a class="headerlink" href="#projectiles-projectiles-py" title="Permalink to this heading"></a></h3>
+<p>An example which shows how to spawn and move assets, illustrates collision filtering, and how to use the viewer to interact with the physics simulation.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">space</span></code> key can be used to shoot projectiles</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">R</span></code> key can be used to reset simulation</p></li>
+</ul>
+<img alt="../_images/example_projectiles.png" src="../_images/example_projectiles.png" />
+</section>
+<section id="large-mass-ratio-test-large-mass-ratio-py">
+<h3>Large mass ratio test (large_mass_ratio.py)<a class="headerlink" href="#large-mass-ratio-test-large-mass-ratio-py" title="Permalink to this heading"></a></h3>
+<p>An example testing stability and perfromance when simulating stack of boxes with large mass-ratio.</p>
+<ul class="simple">
+<li><p>Stack of boxes when every next box has density and mass 10 times larger than the previous one. The default example.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--inverted_pyramid_test</span></code> boxes have the same density, but the every next is 2 larger, and 8 times heavier than the previous one.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--num_envs</span></code> sets number of environments to simulate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--num_threads</span></code> sets number of threads PhysX uses for simulation</p></li>
+</ul>
+<img alt="../_images/example_large_mass_ratio.png" src="../_images/example_large_mass_ratio.png" />
+</section>
+<section id="kuka-bin-example-kuka-bin-py">
+<h3>Kuka bin example (kuka_bin.py)<a class="headerlink" href="#kuka-bin-example-kuka-bin-py" title="Permalink to this heading"></a></h3>
+<p>An example showing Kuka robot with Allegro Hand and a bin with multiple objects in it.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--num_envs</span></code> sets number of environments to simulate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--num_threads</span></code> sets number of threads PhysX uses for simulation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--num_objects</span></code> sets number of objects in the bin</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--object_type</span></code> sets type of objects in the bin, 0 - box, 1 - meat can, 2 - banana, 3 - mug, 4 - brick, 5 - random</p></li>
+</ul>
+<img alt="../_images/example_kuka_bin.png" src="../_images/example_kuka_bin.png" />
+</section>
+<section id="pytorch-interop-interop-torch-py">
+<span id="interop-torch-example"></span><h3>PyTorch Interop (interop_torch.py)<a class="headerlink" href="#pytorch-interop-interop-torch-py" title="Permalink to this heading"></a></h3>
+<p>An example of sharing Isaac Gym tensors with PyTorch.  Illustrates how to directly access GPU camera sensors and physics state tensors using PyTorch.</p>
+<p>When the example is running and the viewer window is in focus:</p>
+<ul class="simple">
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">P</span></code> to print the rigid body states.</p></li>
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">C</span></code> to write the camera sensor images to disk.</p></li>
+</ul>
+</section>
+<section id="franka-ik-picking-franka-cube-ik-py">
+<span id="franka-cube-ik-example"></span><h3>Franka IK Picking (franka_cube_ik.py)<a class="headerlink" href="#franka-ik-picking-franka-cube-ik-py" title="Permalink to this heading"></a></h3>
+<p>An example of using the Jacobian tensors for inverse kinematics and picking.</p>
+<p>This example is only supported in the PhysX backend at the moment.</p>
+<p>The example can run using the CPU or GPU pipeline.  By default, it runs on cpu.  Passing <code class="docutils literal notranslate"><span class="pre">--pipeline=gpu</span></code> will turn on the GPU pipeline, where all tensors reside on the GPU.</p>
+<img alt="../_images/franka_cube_ik.png" src="../_images/franka_cube_ik.png" />
+</section>
+<section id="franka-operational-space-control-franka-osc-py">
+<span id="franka-osc-example"></span><h3>Franka Operational Space Control (franka_osc.py)<a class="headerlink" href="#franka-operational-space-control-franka-osc-py" title="Permalink to this heading"></a></h3>
+<p>An example of using the Jacobian and mass matrix tensors for Operational Space Control.  The end effector position and orientation can be controlled independently.  By default, only the position will be animated, producing a circular motion of the end effector.</p>
+<p>This example is only supported in the PhysX backend at the moment.</p>
+<p>Command line arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--pos_control</span> <span class="pre">&lt;boolvalue&gt;</span></code> whether to animate the position (on by default).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--orn_control</span> <span class="pre">&lt;boolvalue&gt;</span></code> whether to animate the orientation (off by default).</p></li>
+</ul>
+<p>Sample usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">franka_osc</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">pos_control</span> <span class="mi">0</span> <span class="o">--</span><span class="n">orn_control</span> <span class="mi">0</span>
+<span class="n">python</span> <span class="n">franka_osc</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">pos_control</span> <span class="mi">1</span> <span class="o">--</span><span class="n">orn_control</span> <span class="mi">0</span>
+<span class="n">python</span> <span class="n">franka_osc</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">pos_control</span> <span class="mi">0</span> <span class="o">--</span><span class="n">orn_control</span> <span class="mi">1</span>
+<span class="n">python</span> <span class="n">franka_osc</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">pos_control</span> <span class="mi">1</span> <span class="o">--</span><span class="n">orn_control</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>This example only works with the CPU pipeline, because mass matrices are not supported on GPU yet.</p>
+<img alt="../_images/example_franka_osc.png" src="../_images/example_franka_osc.png" />
+</section>
+<section id="apply-forces-apply-forces-py">
+<span id="apply-forces-example"></span><h3>Apply Forces (apply_forces.py)<a class="headerlink" href="#apply-forces-apply-forces-py" title="Permalink to this heading"></a></h3>
+<p>This example shows how to apply forces and torques to rigid bodies using the tensor API.</p>
+<p>Note that the GPU tensor pipeline is currently only available with PhysX.</p>
+</section>
+<section id="apply-forces-at-positions-apply-forces-at-pos-py">
+<span id="apply-forces-at-pos-example"></span><h3>Apply Forces at Positions (apply_forces_at_pos.py)<a class="headerlink" href="#apply-forces-at-positions-apply-forces-at-pos-py" title="Permalink to this heading"></a></h3>
+<p>This example shows how to apply forces to rigid bodies at given positions using the tensor API.</p>
+<p>Note that the GPU tensor pipeline is currently only available with PhysX.</p>
+</section>
+<section id="multiple-cameras-multiple-camera-envs-py">
+<span id="multiple-camera-envs-example"></span><h3>Multiple Cameras (multiple_camera_envs.py)<a class="headerlink" href="#multiple-cameras-multiple-camera-envs-py" title="Permalink to this heading"></a></h3>
+<p>An example of using multiple cameras per environment for multiple environments.
+Two camera sensors are created for each environment. View matrix for each camera is printed out to std out.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--save_images</span></code> option can be used to save images to disk.</p>
+</section>
+<section id="graphics-up-axis-test-graphics-up-py">
+<span id="graphics-up-example"></span><h3>Graphics Up-Axis (test_graphics_up.py)<a class="headerlink" href="#graphics-up-axis-test-graphics-up-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates the ability to change the up axis used in Isaac Gym.
+The default option is to set Y as up axis. Using <code class="docutils literal notranslate"><span class="pre">gymapi.UpAxis.UP_AXIS_Z</span></code>, we can
+change orientation such that Z is up for both the Viewer and camera sensors.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--save_images</span></code> option can be used to save images to disk.
+The <code class="docutils literal notranslate"><span class="pre">--up_axis_z</span></code> option sets Z as up axis.</p>
+</section>
+<section id="graphics-materials-example-graphics-materials-py">
+<span id="assimp-loading-example"></span><h3>Graphics Materials Example (graphics_materials.py)<a class="headerlink" href="#graphics-materials-example-graphics-materials-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates the usage of different mesh loading asset options.
+The two columns demonstrate the asset option <cite>use_mesh_materials</cite>.
+This option is used to override the materials specified in the asset file with
+materials retrieved from the meshes. The Spam container also demonstrates the
+asset option to override normals loaded from the mesh with vertex normals computed
+by Gym.</p>
+</section>
+<section id="actor-scaling-actor-scaling-py">
+<span id="actor-scaling-example"></span><h3>Actor Scaling (actor_scaling.py)<a class="headerlink" href="#actor-scaling-actor-scaling-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates the runtime scaling API for actors. Several assets
+are loaded and <code class="docutils literal notranslate"><span class="pre">num_columns</span></code> actors are created per asset, each with a increasing
+scale factor applied to them between <code class="docutils literal notranslate"><span class="pre">min_scale</span></code> and <code class="docutils literal notranslate"><span class="pre">max_scale</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--num_columns</span></code> sets the number of columns of actors (i.e. the number of actors created per asset).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--min_scale</span></code> sets the scale applied to the left-most actor in each row.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--max_scale</span></code> sets the scale applied to the right-most actor in each row.</p></li>
+</ul>
+<img alt="../_images/actor_scaling.png" src="../_images/actor_scaling.png" />
+</section>
+<section id="terrain-creation-terrain-creation-py">
+<h3>Terrain Creation (terrain_creation.py)<a class="headerlink" href="#terrain-creation-terrain-creation-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates the terrain creation API and tools to create different types of terrain.
+Different heightfield terrain types are generated using: <code class="docutils literal notranslate"><span class="pre">random_uniform_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">sloped_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">pyramid_sloped_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">discrete_obstacles_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">wave_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">stairs_terrain()</span></code>, <code class="docutils literal notranslate"><span class="pre">pyramid_stairs_terrain()</span></code>, and <code class="docutils literal notranslate"><span class="pre">stepping_stones_terrain()</span></code>.
+They are then converted to a triangle mesh using <code class="docutils literal notranslate"><span class="pre">convert_heightfield_to_trimesh()</span></code> and added to the simulation with <code class="docutils literal notranslate"><span class="pre">gym.add_triangle_mesh()</span></code>.</p>
+<img alt="../_images/terrain.png" src="../_images/terrain.png" />
+</section>
+<section id="spherical-joint-spherical-joint-py">
+<h3>Spherical Joint (spherical_joint.py)<a class="headerlink" href="#spherical-joint-spherical-joint-py" title="Permalink to this heading"></a></h3>
+<p>This example demonstrates the support of spherical joints in URDF file and how to control an articulated cuboid with 6 DOF, 3 prismatic + 1 spherical to reach a changing goal orientation (indicated by the axis geometry).</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rl.html" class="btn btn-neutral float-right" title="Reinforcement Learning Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

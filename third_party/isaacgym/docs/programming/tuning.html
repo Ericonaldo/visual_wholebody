@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulation Tuning &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Math Utilities" href="math.html" />
+    <link rel="prev" title="Force Sensors" href="forcesensors.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Isaac Gym
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simsetup.html">Simulation Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assets.html">Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physics Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tensors.html">Tensor API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forcesensors.html">Force Sensors</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Simulation Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simulation-parameters">Simulation Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simulation-parameters-tuning">Simulation Parameters Tuning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#common-parameters">Common Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#flex">Flex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physx">PhysX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scene-parameters">Scene parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physx-visual-debugger-pvd">PhysX Visual Debugger (PVD)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="math.html">Math Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics and Camera Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terrain.html">Terrains</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Programming</a> &raquo;</li>
+      <li>Simulation Tuning</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="simulation-tuning">
+<h1>Simulation Tuning<a class="headerlink" href="#simulation-tuning" title="Permalink to this heading"></a></h1>
+<p>There are many factors that affect simulation stability and performance.</p>
+<section id="simulation-parameters">
+<span id="tuning-sim-params"></span><h2>Simulation Parameters<a class="headerlink" href="#simulation-parameters" title="Permalink to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">SimParams</span></code> allow you to specify parameters for the physics solver.</p>
+</section>
+<section id="simulation-parameters-tuning">
+<h2>Simulation Parameters Tuning<a class="headerlink" href="#simulation-parameters-tuning" title="Permalink to this heading"></a></h2>
+<p>Either PhysX CPU or Flex could be used as a simulation backend. Support of PhysX GPU Articulation Solver will be added soon. There are 2 common parameters that could be tuned to improved performance and/or simulation stability - timestep and number of substeps and a number of engine specific parameters. Deformable object simulation is supported only be Flex at the moment.</p>
+<section id="common-parameters">
+<h3>Common Parameters<a class="headerlink" href="#common-parameters" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>dt</strong> - Simulation timestep, the default is <strong>1/60 s</strong></p></li>
+<li><p><strong>substeps</strong> - Number of simulation substeps, the default is <strong>2</strong>. The effective simulation timestep is <strong>dt/substeps</strong>.</p></li>
+</ul>
+<p>The <strong>dt</strong> parameter is the time step used to advance the simulation, in seconds.  Accurate and stable physics simulation requires fairly short timesteps, generally under 1/50th of a second. Time steps that are too long can lead to instabilities, especially with fast-moving objects, strong forces, or complex articulated assemblies. In addition to advancing the simulation, you will typically have some code for querying the state of the world and applying controls during every iteration of the loop. The <strong>dt</strong> parameter, then, determines the frequency at which you interact with the simulation.  Quite often, the frequency of that interaction is lower than the frequency required for stable physics simulation.  The <strong>num_substeps</strong> parameter can be used to subdivide each timestep into equal sub-intervals to achieve a stable physics simulation.  In the snippet above, <strong>dt</strong> is 1/60, so you can interact with the simulation 60 times during every simulated second.  But <strong>num_substeps</strong> is 2, which means that the physics simulation advances in increments of 1/120 seconds. These are the default simulation parameters.</p>
+</section>
+<section id="flex">
+<h3>Flex<a class="headerlink" href="#flex" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>solver_type</strong> - there are 6 constraint solvers available for Flex, numbered as follows:</p></li>
+<li><p><strong>0 - XPBD (GPU)</strong> - a position-based solver that uses an iterative descent method, this method is less accurate than the Newton solvers (below), but generally fast and robust for moderately stiff systems.</p></li>
+</ul>
+<p>Flex also supports a nonlinear Newton solver with a number of different linear solvers as a backend, these are listed below:</p>
+<ul class="simple">
+<li><p><strong>1 - Newton Jacobi (GPU)</strong> - Jacobi solver on GPU (CUDA)</p></li>
+<li><p><strong>2 - Newton LDLT (CPU)</strong> - Cholesky backend on CPU (Eigen-based)</p></li>
+<li><p><strong>3 - Newton PCG1 (CPU)</strong> - Preconditioned conjugate gradient on CPU (Eigen-based)</p></li>
+<li><p><strong>4 - Newton PCG2 (GPU)</strong> - Preconditioned conjugate gradient on GPU (CUDA)</p></li>
+<li><p><strong>5 - Newton PCR (GPU)</strong> - Preconditioned conjugate residual method on GPU (CUDA)</p></li>
+</ul>
+<p>The default and recommended one is <strong>5</strong> - <strong>Newton PCR</strong> solver, the CPU backends may be very slow for large systems and are mostly present for verification purposes.</p>
+<ul class="simple">
+<li><p><strong>num_outer_iterations</strong> - number of iterations taken by the solver per simulation substep.</p></li>
+<li><p><strong>num_inner_iterations</strong> - number of linear solver iterations taken for each outer iteration, is used only by Newton solvers</p></li>
+<li><p><strong>relaxation</strong> - control the convergence rate of the solver. The default values is 0.75 Values greater than 1 may lead to instability. Newton solvers currently use a zero velocity starting iterate, so if not converged sufficiently too high relaxation can introduce a kind of numerical equivalent to damping = 1 - (1 - relaxation)^numOuterIterations.</p></li>
+<li><p><strong>warm_start</strong> - Fraction of the cached Lagrange multipliers to be used on the next simulation step. Accelerates convergence, the default, conservative values is 0.4. Larger values could lead to a more bouncy behaviour and some times instabilities in case of presence of fast movement and/or large, rapidly changing forces in a system. In a situation where you are trying to simulate a quite slow-moving system with a lot of contacts - say robotics manipulation tasks with grasping complex shapes you can benefit from trying higher warm start values, up to 1.0.</p></li>
+<li><p><strong>shape_collision_distance</strong> - Distance in meters for particles to maintain against rigid shapes (separate from radius parameter).</p></li>
+<li><p><strong>shape_collision_margin</strong> - Distance in meters at which contacts are generated. Flex uses a speculative contact model, when feature pairs (e.g.: vertices/edges) come within this distance of each other at the start of a time-step a contact constraint will be generated. If bodies are moving quickly then the margin should be large enough to ensure that contacts are not missed during a time-step. One way to formalize this is to say that if the maximum velocity a feature travels with is v and the time-step is dt, then the margin should be margin = v*dt/substeps. If you are dropping objects from a large height and seeing them ‘pop’ back up, then it is likely to having to low a collision margin (objects interpenetrate and are then ejected).</p></li>
+</ul>
+<p>The most universal way of improving simulation stability (convergence) and decreasing penetrations is increasing number of substeps. But it could be simulationally quite costly. Other methods to try are:</p>
+<p>In case lack of convergence increasing number of outer and inner iteration could help. Another source of instabilities could be dues to the bad initial configuration and presence of self-collisions. It can be diagnosed by visualizing contact forces in the system and disabling self-collisions for a robot whenever it is possible or fixing the initial configuration.
+In addition to increasing number of substeps making shapeCollisionDistance larger when it is possible could help to prevent penetrations for fast moving objects. In case penetrations are present in a slow moving system, like robotic arms, first of all contact forces generated in a simulation should checked and reduced if needed, for example by making robot motors weaker.</p>
+<p>Shape representation in Flex is through triangle meshes - all primitive shapes including spheres, capsules, and boxes are represented internally by triangle meshes stored in a GPU BVH structure (spheres and capsules can be thought of as a single degenerate triangle + thickness). This unified representation means Flex can handle non-convex and arbitrary triangle meshes for dynamic physical shapes, however unlike e.g.: convex polyhedra, triangle soups do not generally define “inside/outside” regions. This means once interpenetration occurs it cannot be resolved in a well defined way. To avoid interpenetrations it is recommended to use a sufficient thickness layer on the collision shapes.</p>
+</section>
+<section id="physx">
+<h3>PhysX<a class="headerlink" href="#physx" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>num_threads</strong> - number of CPU cores used by PhysX. Default is 4. Setting to 0 will run the simulation on the thread that calls PxScene::simulate().  A value greater than 0 will spawn numCores-1 worker</p></li>
+<li><p><strong>solver_type</strong> -type of solver used. The default and recommended to use is 1 - <strong>TGS</strong>: temporal gauss seidel solver. It is a non-linear iterative solver.</p></li>
+<li><p><strong>contact_offset</strong> - shapes whose distance is less than the sum of their contactOffset values will generate contacts. Default 0.02 m</p></li>
+<li><p><strong>rest_offset</strong> - two shapes will come to rest at a distance equal to the sum of their restOffset values. Default is 0.01 m</p></li>
+<li><p><strong>num_position_iterations</strong>  - PhysX solver position iterations count. Default 4</p></li>
+<li><p><strong>num_velocity_iterations</strong> - PhysX solver velocity iterations count. Default 1</p></li>
+<li><p><strong>bounce_threshold_velocity</strong> - A contact with a relative velocity below this will not bounce. Default is 0.2 m/s</p></li>
+<li><p><strong>max_depenetration_velocity</strong> - The maximum velocity permitted to be introduced by the solver to correct for penetrations in contacts. Default is 100.0 m/s</p></li>
+</ul>
+<p>To improve solver convergence, usually only position iterations number should be increased. Velocity iterations can negatively impact solver convergence. They are there to reduce some energy gain from penetrations but make the overall simulation less stiff. Good the default choice of velocity iterations for the TGS solver is 0. Instability has to be looked at at a case-by-case basis. However, general rules are:</p>
+<p>If it is caused by deep penetration, either more sub-steps should be used or limiting the energy the solver can inject to correct errors will help. See <code class="docutils literal notranslate"><span class="pre">PxRigidBody::setMaxDepenetrationVelocity</span></code>. The default value is 5 m/s but a larger value, e.g. 100m/s, can help to remove penetrations in the case of big forces present.</p>
+<p>Increasing joint armature values, if possible, can also increase simulation stability.</p>
+<p>If instability is basically the system failing to converge, increasing the number of position iterations or sub-stepping should help.
+If PGS is used, substepping has a much bigger influence on sim quality than increasing iterations, but substepping is way more expensive (iterations are relatively cheap).
+If TGS is used, substepping and iterations are more similar in terms of how they impact convergence. Iterations are much cheaper than a substep, but not as cheap as the PGS solver. Whenever possible, using TGS instead of PGS is highly recommended. Other parameters that may influence stability are: shape contact offset (margin), rest offset (inflation)</p>
+</section>
+<section id="scene-parameters">
+<h3>Scene parameters<a class="headerlink" href="#scene-parameters" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>bounce_threshold_velocity</strong> - relative velocity required to trigger a bounce. The default is 0.2 m/s, which is some cases could be pretty high. Reducing could give a more natural bouncing behaviour, for example in case of bouncing balls.</p></li>
+<li><p><strong>friction_offset_threshold</strong> - the contact distance at which friction starts being computed. The default is 0.04 m. If a very small objects are simulated, it should be decreased.</p></li>
+<li><p><strong>friction_correlation_distance</strong> - contact points can be merged into a single friction anchor if the distance between the contacts is smaller than correlation distance. The default is 0.025 m.</p></li>
+</ul>
+</section>
+<section id="physx-visual-debugger-pvd">
+<h3>PhysX Visual Debugger (PVD)<a class="headerlink" href="#physx-visual-debugger-pvd" title="Permalink to this heading"></a></h3>
+<p>The PhysX Visual Debugger (PVD) allows you to visualize, debug, and interact with physical scene representation when PhysX simulation is used:
+<a class="reference external" href="https://developer.nvidia.com/pvd-tutorials">https://developer.nvidia.com/pvd-tutorials</a></p>
+<p>PVD will only work if you are using the PhysX backend.</p>
+<p>If you are building from source, search premake5.lua for a line like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">local</span> <span class="n">physxLibs</span> <span class="o">=</span> <span class="s2">&quot;profile&quot;</span>
+</pre></div>
+</div>
+<p>The physxLibs variable should be set to either “profile” or “checked” for PVD to work.  If you change this variable, make sure to rebuild.</p>
+<p>By default, Gym will try to connect to PVD running on localhost.  If you wish to connect to PVD on a different machine, set the environment variable GYM_PVD_HOST to the IP or hostname.</p>
+<p>You can set the environment variable in the terminal or you can do it in your Python script like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;GYM_PVD_HOST&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xxx.yyy.zzz.www&quot;</span>
+</pre></div>
+</div>
+<p>If you want to save the PVD capture to a file instead of connecting to PVD live, set the environment variable GYM_PVD_FILE to the file name.  You may omit the extension.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;GYM_PVD_FILE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;foo&quot;</span>
+</pre></div>
+</div>
+<p>will create a file named foo.pxd2.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="forcesensors.html" class="btn btn-neutral float-left" title="Force Sensors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="math.html" class="btn btn-neutral float-right" title="Math Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+About Isaac Gym
+###############
+
+What is Isaac Gym?
+==================
+
+Isaac Gym is NVIDIA’s prototype physics simulation environment for reinforcement learning research. 
+
+Isaac Gym allows developers to experiment with end-to-end GPU accelerated RL for physically based systems. Unlike other similar 'gym' style systems, in Isaac Gym, simulation can run on the GPU, storing results in GPU tensors rather than copying them back to CPU memory. A tensor-based API is provided to access these results, allowing RL observation and reward calculations to also take place on the GPU. 
+
+This combination permits thousand of environments to be simultaneously simulated on a single GPU, allowing experiments that previously may have required an entire data center to run on a single workstation.
+
+Isaac Gym includes a basic PPO implementation and a straightforward RL task system that can be used with it, but users may substitute alternative task systems and RL algorithms as desired. 
+
+Core features of Isaac Gym include:
+
+- Support for importing URDF and MJCF files 
+- GPU accelerated tensor API for evaluating environment state and applying actions
+- Support for a variety of environment sensors - position, velocity, force, torque, etc
+- Runtime domain randomization of physics parameters
+- Jacobian / inverse kinematics support
+
+
+How does Isaac Gym relate to Omniverse and Isaac Sim?
+=====================================================
+
+Isaac Gym, in its current prototype incarnation, is a standalone system that does not directly interface with other NVIDIA simulation or robotics products, though it does use the same underlying PhysX simulation engine under the hood.
+
+While `Omniverse <https://developer.nvidia.com/nvidia-omniverse-platform>`_ and the Omniverse-based `Isaac Sim <https://developer.nvidia.com/isaac-sim>`_ use Pixar's USD scene description language to describe the environments to be simulated, Isaac Gym environment setup requires the use of Python code and custom APIs, though it can also import robot descriptions from URDF and MJCF format files.
+
+Rendering in Isaac Gym is relatively basic, and does not support either ray tracing or the more sophisticated synthetic data sensors provided in Omniverse.
+
+
+The Future of Isaac Gym
+=======================
+
+The tensor-based API for physics simulation at the core of Isaac Gym will be made available in future releases of NVIDIA’s Omniverse Platform, however the APIs used for environment setup will switch over to being based on USD. During the course of migrating to Omniverse, some features and APIs will undoubtedly change, while new APIs to support additional Omniverse functionality such as advanced rendering and soft body simulation will also be added.
+
+More information about the transition of Isaac Gym functionality into Omniverse will be shared in the NVIDIA Dev Talk Forums when it is available. 
+
+In the meantime, we invite researchers and academics to explore the potential of GPU-based reinforcement learning, and to provide feedback to us on your experience!

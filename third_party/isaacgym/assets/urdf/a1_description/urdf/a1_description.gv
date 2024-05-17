@@ -1,0 +1,71 @@
+digraph G {
+node [shape=box];
+"base" [label="base"];
+"trunk" [label="trunk"];
+"FL_hip" [label="FL_hip"];
+"FL_thigh_shoulder" [label="FL_thigh_shoulder"];
+"FL_thigh" [label="FL_thigh"];
+"FL_calf" [label="FL_calf"];
+"FL_foot" [label="FL_foot"];
+"FR_hip" [label="FR_hip"];
+"FR_thigh_shoulder" [label="FR_thigh_shoulder"];
+"FR_thigh" [label="FR_thigh"];
+"FR_calf" [label="FR_calf"];
+"FR_foot" [label="FR_foot"];
+"RL_hip" [label="RL_hip"];
+"RL_thigh_shoulder" [label="RL_thigh_shoulder"];
+"RL_thigh" [label="RL_thigh"];
+"RL_calf" [label="RL_calf"];
+"RL_foot" [label="RL_foot"];
+"RR_hip" [label="RR_hip"];
+"RR_thigh_shoulder" [label="RR_thigh_shoulder"];
+"RR_thigh" [label="RR_thigh"];
+"RR_calf" [label="RR_calf"];
+"RR_foot" [label="RR_foot"];
+"imu_link" [label="imu_link"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base" -> "floating_base" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"floating_base" -> "trunk"
+"trunk" -> "FL_hip_joint" [label="xyz: 0.1805 0.047 0 \nrpy: 0 -0 0"]
+"FL_hip_joint" -> "FL_hip"
+"FL_hip" -> "FL_hip_fixed" [label="xyz: 0 0.081 0 \nrpy: 0 -0 0"]
+"FL_hip_fixed" -> "FL_thigh_shoulder"
+"FL_hip" -> "FL_thigh_joint" [label="xyz: 0 0.0838 0 \nrpy: 0 -0 0"]
+"FL_thigh_joint" -> "FL_thigh"
+"FL_thigh" -> "FL_calf_joint" [label="xyz: 0 0 -0.2 \nrpy: 0 -0 0"]
+"FL_calf_joint" -> "FL_calf"
+"FL_calf" -> "FL_foot_fixed" [label="xyz: 0 0 -0.2 \nrpy: 0 -0 0"]
+"FL_foot_fixed" -> "FL_foot"
+"trunk" -> "FR_hip_joint" [label="xyz: 0.1805 -0.047 0 \nrpy: 0 -0 0"]
+"FR_hip_joint" -> "FR_hip"
+"FR_hip" -> "FR_hip_fixed" [label="xyz: 0 -0.081 0 \nrpy: 0 -0 0"]
+"FR_hip_fixed" -> "FR_thigh_shoulder"
+"FR_hip" -> "FR_thigh_joint" [label="xyz: 0 -0.0838 0 \nrpy: 0 -0 0"]
+"FR_thigh_joint" -> "FR_thigh"
+"FR_thigh" -> "FR_calf_joint" [label="xyz: 0 0 -0.2 \nrpy: 0 -0 0"]
+"FR_calf_joint" -> "FR_calf"
+"FR_calf" -> "FR_foot_fixed" [label="xyz: 0 0 -0.2 \nrpy: 0 -0 0"]
+"FR_foot_fixed" -> "FR_foot"
+"trunk" -> "RL_hip_joint" [label="xyz: -0.1805 0.047 0 \nrpy: 0 -0 0"]
+"RL_hip_joint" -> "RL_hip"
+"RL_hip" -> "RL_hip_fixed" [label="xyz: 0 0.081 0 \nrpy: 0 -0 0"]
+"RL_hip_fixed" -> "RL_thigh_shoulder"
+"RL_hip" -> "RL_thigh_joint" [label="xyz: 0 0.0838 0 \nrpy: 0 -0 0"]
+"RL_thigh_joint" -> "RL_thigh"
+"RL_thigh" -> "RL_calf_joint" [label="xyz: 0 0 -0.2 \nrpy: 0 -0 0"]
+"RL_calf_joint" -> "RL_calf"
+"RL_calf" -> "RL_foot_fixed" [label="xyz: 0 0 -0.2 \nrpy: 0 -0 0"]
+"RL_foot_fixed" -> "RL_foot"
+"trunk" -> "RR_hip_joint" [label="xyz: -0.1805 -0.047 0 \nrpy: 0 -0 0"]
+"RR_hip_joint" -> "RR_hip"
+"RR_hip" -> "RR_hip_fixed" [label="xyz: 0 -0.081 0 \nrpy: 0 -0 0"]
+"RR_hip_fixed" -> "RR_thigh_shoulder"
+"RR_hip" -> "RR_thigh_joint" [label="xyz: 0 -0.0838 0 \nrpy: 0 -0 0"]
+"RR_thigh_joint" -> "RR_thigh"
+"RR_thigh" -> "RR_calf_joint" [label="xyz: 0 0 -0.2 \nrpy: 0 -0 0"]
+"RR_calf_joint" -> "RR_calf"
+"RR_calf" -> "RR_foot_fixed" [label="xyz: 0 0 -0.2 \nrpy: 0 -0 0"]
+"RR_foot_fixed" -> "RR_foot"
+"trunk" -> "imu_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"imu_joint" -> "imu_link"
+}

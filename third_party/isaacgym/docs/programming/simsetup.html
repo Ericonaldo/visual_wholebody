@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulation Setup &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Assets" href="assets.html" />
+    <link rel="prev" title="Programming" href="index.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Isaac Gym
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Programming</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Simulation Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-simulation">Creating a Simulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#simulation-parameters">Simulation Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-ground-plane">Creating a Ground Plane</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#loading-assets">Loading Assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#environments-and-actors">Environments and Actors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-simulation">Running the Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-viewer">Adding a Viewer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#the-viewer-gui">The Viewer GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-mouse-keyboard-input">Custom Mouse/Keyboard Input</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#cleanup">Cleanup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="assets.html">Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physics Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tensors.html">Tensor API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forcesensors.html">Force Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tuning.html">Simulation Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html">Math Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics and Camera Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terrain.html">Terrains</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Programming</a> &raquo;</li>
+      <li>Simulation Setup</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="simulation-setup">
+<h1>Simulation Setup<a class="headerlink" href="#simulation-setup" title="Permalink to this heading"></a></h1>
+<p>Isaac Gym provides a simulation interface that lets you create dynamic environments for training intelligent agents.  The API is procedural and data-oriented rather than object-oriented.  This facilitates efficient exchange of information between the core implementation written in C++ and client scripts written in Python.  For example, rather than working with hierarchical collections of body and joint objects, Isaac Gym uses flat data arrays to represent the state and controls of the simulation.  This makes it easy to work with the data using common Python libraries like NumPy, which provides efficient methods to manipulate multidimensional arrays.  It is also possible to access the simulation data as CPU or GPU tensors that can be shared with common deep learning frameworks like PyTorch.</p>
+<p>The core API, including supporting data types and constants, is defined in the <code class="docutils literal notranslate"><span class="pre">gymapi</span></code> module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">isaacgym</span> <span class="kn">import</span> <span class="n">gymapi</span>
+</pre></div>
+</div>
+<p>All of the Gym API functions can be accessed as methods of a singleton <code class="docutils literal notranslate"><span class="pre">Gym</span></code> object acquired on startup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">acquire_gym</span><span class="p">()</span>
+</pre></div>
+</div>
+<section id="creating-a-simulation">
+<span id="creating-simulations"></span><h2>Creating a Simulation<a class="headerlink" href="#creating-a-simulation" title="Permalink to this heading"></a></h2>
+<p>The <strong>gym</strong> object by itself doesn’t do very much.  It only serves as a proxy for the Gym API.  To create a simulation, you need to call the <code class="docutils literal notranslate"><span class="pre">create_sim</span></code> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sim_params</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">SimParams</span><span class="p">()</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_sim</span><span class="p">(</span><span class="n">compute_device_id</span><span class="p">,</span> <span class="n">graphics_device_id</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">SIM_PHYSX</span><span class="p">,</span> <span class="n">sim_params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <strong>sim</strong> object contains physics and graphics contexts that will allow you to load assets, create environments, and interact with the simulation.</p>
+<p>The first argument to <code class="docutils literal notranslate"><span class="pre">create_sim</span></code> is the compute device ordinal, which selects the GPU for physics simulation. The second argument is the graphics device ordinal, which selects the GPU for rendering.  In multi-GPU systems, you can use different devices to perform these roles.  For headless simulation (without a viewer) that doesn’t require any sensor rendering, you can set the graphics device to -1, and no graphics context will be created.</p>
+<p>The third argument specifies which physics backend you wish to use.  Presently, the choices are <code class="docutils literal notranslate"><span class="pre">SIM_PHYSX</span></code> or <code class="docutils literal notranslate"><span class="pre">SIM_FLEX</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The PhysX backend offers robust rigid body and articulation simulation that can run on either CPU or GPU.  It is presently the only backend that fully supports the new tensor API.</p></li>
+<li><p>The Flex backend offers soft body and rigid body simulation that runs entirely on the GPU, but it does not fully support the tensor API yet.</p></li>
+</ul>
+</div></blockquote>
+<p>The last argument to <code class="docutils literal notranslate"><span class="pre">create_sim</span></code> contains additional simulation parameters, discussed below.</p>
+<section id="simulation-parameters">
+<h3>Simulation Parameters<a class="headerlink" href="#simulation-parameters" title="Permalink to this heading"></a></h3>
+<p>The simulation parameters allow you to configure the details of physics simulation.  The settings may vary depending on the physics engine and the characteristics of the task to be simulated.  Picking the right parameters is important for simulation stability and performance.  The folling snippet shows examples of physics parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># get default set of parameters</span>
+<span class="n">sim_params</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">SimParams</span><span class="p">()</span>
+
+<span class="c1"># set common parameters</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">60</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">substeps</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">up_axis</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">UP_AXIS_Z</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">gravity</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.8</span><span class="p">)</span>
+
+<span class="c1"># set PhysX-specific parameters</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">physx</span><span class="o">.</span><span class="n">use_gpu</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">physx</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">physx</span><span class="o">.</span><span class="n">num_position_iterations</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">physx</span><span class="o">.</span><span class="n">num_velocity_iterations</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">physx</span><span class="o">.</span><span class="n">contact_offset</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">physx</span><span class="o">.</span><span class="n">rest_offset</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<span class="c1"># set Flex-specific parameters</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">flex</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">flex</span><span class="o">.</span><span class="n">num_outer_iterations</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">flex</span><span class="o">.</span><span class="n">num_inner_iterations</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">flex</span><span class="o">.</span><span class="n">relaxation</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">flex</span><span class="o">.</span><span class="n">warm_start</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+<span class="c1"># create sim with these parameters</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_sim</span><span class="p">(</span><span class="n">compute_device_id</span><span class="p">,</span> <span class="n">graphics_device_id</span><span class="p">,</span> <span class="n">physics_engine</span><span class="p">,</span> <span class="n">sim_params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Some of the parameters are independent of the physics engine, like simulation rate, up axis, or gravity.  Others apply only to a specific physics engine (grouped under <code class="docutils literal notranslate"><span class="pre">.physx</span></code> and <code class="docutils literal notranslate"><span class="pre">.flex</span></code>).  If the simulation is meant to run with only a specific physics engine, it is not necessary to specify the parameters for the other.  Providing parameters for both engines will allow for easily selecting the engine at runtime, e.g. based on a command line argument.</p>
+<p>For more information about simulation parameters, see:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="tuning.html#tuning-sim-params"><span class="std std-ref">tuning simulation parameters</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/struct_py.html#isaacgym.gymapi.SimParams" title="isaacgym.gymapi.SimParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">isaacgym.gymapi.SimParams</span></code></a></p></li>
+<li><p><a class="reference internal" href="../api/python/struct_py.html#isaacgym.gymapi.PhysXParams" title="isaacgym.gymapi.PhysXParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">isaacgym.gymapi.PhysXParams</span></code></a></p></li>
+<li><p><a class="reference internal" href="../api/python/struct_py.html#isaacgym.gymapi.FlexParams" title="isaacgym.gymapi.FlexParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">isaacgym.gymapi.FlexParams</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<section id="up-axis">
+<h4>Up Axis<a class="headerlink" href="#up-axis" title="Permalink to this heading"></a></h4>
+<p>Isaac Gym supports both y-up and z-up simulations.  Although z-up is more common in robotics and research communities, Gym defaults to y-up for legacy reasons.  This may change in the future, but in the meantime it is not hard to create a z-up simulation.  The most important thing is to configure the <code class="docutils literal notranslate"><span class="pre">up_axis</span></code> and <code class="docutils literal notranslate"><span class="pre">gravity</span></code> in <code class="docutils literal notranslate"><span class="pre">SimParams</span></code> when creating the simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sim_params</span><span class="o">.</span><span class="n">up_axis</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">UP_AXIS_Z</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">gravity</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.8</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Another place where the choice of z-up needs special attention is when creating the ground plane, discussed below.</p>
+</section>
+</section>
+<section id="creating-a-ground-plane">
+<h3>Creating a Ground Plane<a class="headerlink" href="#creating-a-ground-plane" title="Permalink to this heading"></a></h3>
+<p>Most simulations need a ground plane, unless they take place in zero gravity.  You can configure and create the ground plane like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure the ground plane</span>
+<span class="n">plane_params</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">PlaneParams</span><span class="p">()</span>
+<span class="n">plane_params</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># z-up!</span>
+<span class="n">plane_params</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">plane_params</span><span class="o">.</span><span class="n">static_friction</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">plane_params</span><span class="o">.</span><span class="n">dynamic_friction</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">plane_params</span><span class="o">.</span><span class="n">restitution</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># create the ground plane</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">add_ground</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">plane_params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The plane <code class="docutils literal notranslate"><span class="pre">normal</span></code> parameter defines the plane orientation and depends on the choice of up axis.  Use (0, 0, 1) for z-up and (0, 1, 0) for y-up.  It is possible to specify a normal vector that is not axis aligned to obtain a tilted ground plane.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">distance</span></code> parameter defines the distance of the plane from the origin.  The <code class="docutils literal notranslate"><span class="pre">static_friction</span></code> and <code class="docutils literal notranslate"><span class="pre">dynamic_friction</span></code> are the coefficients of static and dynamic friction.  The <code class="docutils literal notranslate"><span class="pre">restitution</span></code> coefficient can be used to control the elasticity of collisions with the ground plane (amount of bounce).</p>
+</section>
+</section>
+<section id="loading-assets">
+<h2>Loading Assets<a class="headerlink" href="#loading-assets" title="Permalink to this heading"></a></h2>
+<p>Gym currently supports loading URDF and MJCF file formats.  Loading an asset file creates a <code class="docutils literal notranslate"><span class="pre">GymAsset</span></code> object that includes the definiton of all the bodies, collision shapes, visual attachments, joints, and degrees of freedom (DOFs).  Soft bodies and particles are also supported with some formats.</p>
+<p>When loading an asset, you specify the asset root directory and the asset path relative to the root.  This split is necessary because the importers sometimes need to search for external reference files like meshes or materials within the asset directory tree.  The asset root directory can be specified as an absolute path or as a path relative to the current working directory.  In our Python examples, we load assets like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asset_root</span> <span class="o">=</span> <span class="s2">&quot;../../assets&quot;</span>
+<span class="n">asset_file</span> <span class="o">=</span> <span class="s2">&quot;urdf/franka_description/robots/franka_panda.urdf&quot;</span>
+<span class="n">asset</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">load_asset</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">asset_root</span><span class="p">,</span> <span class="n">asset_file</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">load_asset</span></code> method uses the file name extension to determine the asset file format.  Supported extensions include <strong>.urdf</strong> for URDF files, and <strong>.xml</strong> for MJCF files.</p>
+<p>Sometimes, you may wish to pass extra information to the asset importer.  This is accomplished by specifying an optional <code class="docutils literal notranslate"><span class="pre">AssetOptions</span></code> parameter:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asset_options</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">AssetOptions</span><span class="p">()</span>
+<span class="n">asset_options</span><span class="o">.</span><span class="n">fix_base_link</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">asset_options</span><span class="o">.</span><span class="n">armature</span> <span class="o">=</span> <span class="mf">0.01</span>
+
+<span class="n">asset</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">load_asset</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">asset_root</span><span class="p">,</span> <span class="n">asset_file</span><span class="p">,</span> <span class="n">asset_options</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The import options affect the physical and visual characteristics of the model, thus may have an impact on simulation stability and performance. More detail can be found in the chapter on <a class="reference internal" href="assets.html"><span class="doc">Assets</span></a>.</p>
+<p>Loading an asset does not automatically add it to the simulation.  A <code class="docutils literal notranslate"><span class="pre">GymAsset</span></code> serves as a blueprint for actors and can be instanced multiple times in a simulation with different poses and individualized properties.</p>
+</section>
+<section id="environments-and-actors">
+<span id="envs-and-actors"></span><h2>Environments and Actors<a class="headerlink" href="#environments-and-actors" title="Permalink to this heading"></a></h2>
+<figure class="align-default" id="id1">
+<img alt="../_images/franka_cube_ik.png" src="../_images/franka_cube_ik.png" />
+<figcaption>
+<p><span class="caption-text">A snapshot from <code class="docutils literal notranslate"><span class="pre">examples/franka_cube_ik.py</span></code> with 64 environments simulated together on the GPU using PhysX.  Each environment has three actors: a Franka arm, a table, and a box to be picked up.  The environments are physically independent of each other, but are rendered together for easy monitoring.  Getting the state of all envs and applying controls is done using a tensor-based API with PyTorch.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>An environment consists of a collection of actors and sensors that are simulated together.  Actors within an environment interact with each other physically.  Their state is maintained by the physics engine and can be controlled using the control API discussed later.  Sensors placed in an environment, like cameras, will be able to capture the actors in that environment.</p>
+<p>An important design aspect of Isaac Gym is the ability to pack multiple instances of an environment into a single simulation.  This is important in application areas like reinforcement learning, where a large number of runs is required to train agents to perform certain tasks.  With Isaac Gym, you can run tens, hundreds, or even thousands of environment instances in lockstep.  You can randomize the initial conditions in each environment, like layout, actor poses, and even the actors themselves.  You can randomize the physical, visual, and control properties of all the actors.</p>
+<p>There are several advantages to packing multiple environments into a single simulation, but the overall reason is performance.  Many scenarios are actually quite simple.  You might have a humanoid model learning to walk on a flat ground plane or an articulated robotic arm learning to pick up items in a cupboard.  There is a certain amount of overhead involved in running each time step of a simulation.  By packing multiple simple environments into a single simulation, we minimize that overhead and increase the overall computational density.  This means that more time is spent on doing meaningful computations compared to the setup time required to launch the computations and gather the results.</p>
+<p>Isaac Gym provides a simple procedural API for creating environments and populating them with actors.  This is more useful than just loading static scenes from files, because it allows you to control the positioning and properties of all the actors as they are added to the scene.  Before adding actors, you must create an environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spacing</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">lower</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="o">-</span><span class="n">spacing</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">spacing</span><span class="p">)</span>
+<span class="n">upper</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="n">spacing</span><span class="p">,</span> <span class="n">spacing</span><span class="p">,</span> <span class="n">spacing</span><span class="p">)</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_env</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Each env has its own coordinate space, which gets embedded in the global simulation space.  When creating an environment, we specify the local extents of the environment, which depend on the desired spacing between environment instances.  As new environments get added to the simulation, they will be arranged in a 2D grid one row at a time.  The last argument to <code class="docutils literal notranslate"><span class="pre">create_env</span></code> states how many envs to pack per row.</p>
+<p>An actor is simply an instance of a <code class="docutils literal notranslate"><span class="pre">GymAsset</span></code>.  To add an actor to an environment, you must specify the source asset, desired pose, and a few other details:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pose</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Transform</span><span class="p">()</span>
+<span class="n">pose</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">pose</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Quat</span><span class="p">(</span><span class="o">-</span><span class="mf">0.707107</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.707107</span><span class="p">)</span>
+
+<span class="n">actor_handle</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_actor</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">asset</span><span class="p">,</span> <span class="n">pose</span><span class="p">,</span> <span class="s2">&quot;MyActor&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Each actor must be placed in an environment.  You cannot have an actor that doesn’t belong to an environment.  The actor pose is defined in env-local coordinates using position vector <code class="docutils literal notranslate"><span class="pre">p</span></code> and orientation quaternion <code class="docutils literal notranslate"><span class="pre">r</span></code>.  In the snippet above, the orientation is specified by the quaternion (-0.707107, 0.0, 0.0, 0.707107).  The <code class="docutils literal notranslate"><span class="pre">Quat</span></code> constructor takes the arguments in (<code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, <code class="docutils literal notranslate"><span class="pre">z</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code>) order, so this quaternion represents a -90 degree rotation about the x-axis.  Such a rotation is necessary when loading an asset that is defined using z-up convention into a simulation that uses y-up convention.  Isaac Gym provides a convenience collection of math helpers, including quaternion utilities, so the quaternion could be defined in axis-angle form like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pose</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Quat</span><span class="o">.</span><span class="n">from_axis_angle</span><span class="p">(</span><span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>More information about the math utilities can be found in <a class="reference internal" href="math.html"><span class="doc">Math Utilities</span></a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_actor</span></code> arguments after the pose are optional.  You can specify a name for your actor, which is “MyActor” in this case.  This makes it possible to look up the actor by name later.  If you wish to do this, make sure that you assign unique names to all your actors within the same environment.  Because names are optional, Isaac Gym doesn’t enforce uniqueness.  Instead of looking actors up by name, you can save the actor handle returned by <code class="docutils literal notranslate"><span class="pre">create_actor</span></code>.  This handle uniquely identifies the actor in its environment and avoids the computational cost of searching for it later.</p>
+<p>The two integers at the end of the argument list are <strong>collision_group</strong> and <strong>collision_filter</strong>.  These values play an important role in the physics simulation of actors.</p>
+<ul class="simple">
+<li><p><strong>collision_group</strong> is an integer that identifies the collision group to which the actor’s bodies will be assigned.  Two bodies will only collide with each other if they belong to the same collision group. It is common to have one collision group per environment, in which case the group id corresponds to the environment index.  This prevents actors in different environments from interacting with each other physically.  In certain cases, you may wish to set up more than one collision group per environment for more fine-grained control.  The value -1 is used for a special collision group that collides with all other groups.  This can be used to create “shared” objects that can physically interact with actors in all environments.</p></li>
+<li><p><strong>collision_filter</strong> is a bit mask that lets you filter out collision between bodies. Two bodies will <em>not</em> collide if their collision filters have a common bit set.  This value can be used to filter out self-collisons in multi-body actors or prevent certain kinds of objects in a scene from interacting physically.</p></li>
+</ul>
+<p>When setting up the simulation, you can initialize all the environments in a single loop:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># set up the env grid</span>
+<span class="n">num_envs</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">envs_per_row</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">env_spacing</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">env_lower</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="o">-</span><span class="n">env_spacing</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">env_spacing</span><span class="p">)</span>
+<span class="n">env_upper</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="n">env_spacing</span><span class="p">,</span> <span class="n">env_spacing</span><span class="p">,</span> <span class="n">env_spacing</span><span class="p">)</span>
+
+<span class="c1"># cache some common handles for later use</span>
+<span class="n">envs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">actor_handles</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># create and populate the environments</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_envs</span><span class="p">):</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_env</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">env_lower</span><span class="p">,</span> <span class="n">env_upper</span><span class="p">,</span> <span class="n">envs_per_row</span><span class="p">)</span>
+    <span class="n">envs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+
+    <span class="n">height</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span>
+
+    <span class="n">pose</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Transform</span><span class="p">()</span>
+    <span class="n">pose</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="n">actor_handle</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_actor</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">asset</span><span class="p">,</span> <span class="n">pose</span><span class="p">,</span> <span class="s2">&quot;MyActor&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">actor_handles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">actor_handle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the snippet above, all envs contain the same type of actor, but the actors spawn at a randomized height.  Note that the collision group assigned to each actor corresponds to the environment index, which means that the actors from different environments will not interact with each other physically.  As we construct the environments, we also cache some useful information in lists that can be easily accessed in subsequent code.</p>
+<p>Presently, the procedural API for setting up the environments has some limitations.  It is assumed that all environments are created and populated in sequence.  You create an environment and add all the actors to it, then create another environment and add all its actors to it, and so on.  Once you finish populating one environment and start populating the next one, you can no longer add actors to the previous environment.  This has to do with how the data is organized internally to facilitate an efficient batch indexing scheme for the state cache.  This restriction may be lifted in the future, but for now be aware of the limitations.  This implies that you cannot add or remove actors in an environment after you finish setting it up.  There are ways to “fake” having a dynamic number of actors in an environment, which will be discussed in another section.</p>
+</section>
+<section id="running-the-simulation">
+<h2>Running the Simulation<a class="headerlink" href="#running-the-simulation" title="Permalink to this heading"></a></h2>
+<p>After setting up the environment grid and other parameters, you can begin simulating.  This is typically done in a loop where each iteration of the loop corresponds to one time step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="c1"># step the physics</span>
+    <span class="n">gym</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+    <span class="n">gym</span><span class="o">.</span><span class="n">fetch_results</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Isaac Gym offers a variety of ways to query the state of the world and apply controls.  You can also gather sensor snapshots and connect with external learning frameworks.  These topics will be discussed in subsequent chapters.</p>
+</section>
+<section id="adding-a-viewer">
+<h2>Adding a Viewer<a class="headerlink" href="#adding-a-viewer" title="Permalink to this heading"></a></h2>
+<p>By default, the simulation does not create any visual feedback window.  This allows the simulations to run on headless workstations or clusters with no monitors attached.  When developing and testing, however, it is useful to be able to visualize the simulation. Isaac Gym comes with a simple integrated viewer that lets you see what’s going on in the simulation.</p>
+<p>You create a viewer like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cam_props</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">CameraProperties</span><span class="p">()</span>
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_viewer</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">cam_props</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This pops up a window with the default dimensions.  You can set different dimensions by customizing the <a class="reference internal" href="../api/python/struct_py.html#isaacgym.gymapi.CameraProperties" title="isaacgym.gymapi.CameraProperties"><code class="xref py py-class docutils literal notranslate"><span class="pre">isaacgym.gymapi.CameraProperties</span></code></a>.</p>
+<p>In order to update the viewer, you can execute this code during every iteration of the simulation loop:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">step_graphics</span><span class="p">(</span><span class="n">sim</span><span class="p">);</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">draw_viewer</span><span class="p">(</span><span class="n">viewer</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">step_graphics</span></code> method synchronizes the visual representation of the simulation with the physics state.  The <code class="docutils literal notranslate"><span class="pre">draw_viewer</span></code> method renders the latest snapshot in the viewer.  They are separate methods, because <code class="docutils literal notranslate"><span class="pre">step_graphics</span></code> can be used even in the absence of a viewer, like when rendering camera sensors.</p>
+<p>With this code, the viewer window will refresh as quickly as possible.  For simple simulations, this will often be faster than real time, because each <strong>dt</strong> increment will be processed faster than that amount of real time elapses.  To synchronize the visual update frequency with real time, you can add this statement at the end of your loop iteration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">sync_frame_time</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will throttle down the simulation rate to real time.  If the simulation is running slower than real time, this statement will have no effect.</p>
+<p>If you wish to terminate the simulation when the viewer window is closed, you can condition your loop on the <code class="docutils literal notranslate"><span class="pre">query_viewer_has_closed</span></code> method, which will return True after the user closes the window.</p>
+<p>A basic simulation loop that incorporates the viewer looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="ow">not</span> <span class="n">gym</span><span class="o">.</span><span class="n">query_viewer_has_closed</span><span class="p">(</span><span class="n">viewer</span><span class="p">):</span>
+
+    <span class="c1"># step the physics</span>
+    <span class="n">gym</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+    <span class="n">gym</span><span class="o">.</span><span class="n">fetch_results</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># update the viewer</span>
+    <span class="n">gym</span><span class="o">.</span><span class="n">step_graphics</span><span class="p">(</span><span class="n">sim</span><span class="p">);</span>
+    <span class="n">gym</span><span class="o">.</span><span class="n">draw_viewer</span><span class="p">(</span><span class="n">viewer</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Wait for dt to elapse in real time.</span>
+    <span class="c1"># This synchronizes the physics simulation with the rendering rate.</span>
+    <span class="n">gym</span><span class="o">.</span><span class="n">sync_frame_time</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Fullscreen mode for the viewer can be toggled with F11 when the viewer is in focus.</p>
+<section id="the-viewer-gui">
+<h3>The Viewer GUI<a class="headerlink" href="#the-viewer-gui" title="Permalink to this heading"></a></h3>
+<p>When a viewer is created, a simple graphical user interface will be shown on the left side of the screen. Display of the GUI can be toggled on and off with the ‘Tab’ key.</p>
+<p>The GUI has 4 separate tabs: <strong>Actors</strong>, <strong>Sim</strong>, <strong>Viewer</strong>, and <strong>Perf</strong>.</p>
+<ul class="simple">
+<li><p>The <strong>Actors</strong> tab provides the ability to select an environment and an actor within that environment.  There are three separate sub-tabs for the currently selected actor.</p>
+<ul>
+<li><p>The <strong>Bodies</strong> sub-tab gives information about the active actor’s rigid bodies.  It also allows for changing the display color of the actor bodies and toggling the visualization of the body axes.</p></li>
+<li><p>The <strong>DOFs</strong> sub-tab displays information about the active actor’s degrees-of-freedom.  The DOF properties are editable using the user interface, put please note that this is an experimental feature.</p></li>
+<li><p>The <strong>Pose Override</strong> sub-tab can be used to manually set the actor’s pose using its degrees of freedom.  This feature, when enabled, overrides the pose and drive targets of the selected actor with values set in the user interface using sliders.  It can be a useful utility for interactively exploring or manipulating the degrees of freedom of an actor.</p></li>
+</ul>
+</li>
+<li><p>The <strong>Sim</strong> tab shows the physics simulation parameters.  The parameters vary by simulation type (PhysX or Flex) and can be modified by the user.</p></li>
+<li><p>The <strong>Viewer</strong> tab allows customizing common visualization options.  A noteworthy feature is the ability to toggle between viewing the graphical representation of bodies and the physical shapes that are used by the physics engine.  This can be helpful when debugging physics behavior.</p></li>
+<li><p>The <strong>Perf</strong> tab shows internally measured performance of gym. The top slider, “Performance Measurement Window” specifies a number of frames over which performance is measured. The frame rate reports the average frames per second (FPS) over the previous measurement window. The rest of the performance measures are reported as an average value per frame over the specified number of frames.</p>
+<ul>
+<li><p>Frame Time is the total time from when one step begins to when the next step begins</p></li>
+<li><p>Physics simulation time is the time the physics solver is running.</p></li>
+<li><p>Physics Data Copy is the amount of time spent copying simulation results.</p></li>
+<li><p>Idle time is time spent idling, usually within <code class="docutils literal notranslate"><span class="pre">gym.sync_frame_time(sim)</span></code>.</p></li>
+<li><p>Viewer Rendering Time is the time spent rendering and displaying the viewer</p></li>
+<li><p>Sensor Image Copy time is the time spent copying sensor image data from the GPU to the CPU.</p></li>
+<li><p>Sensor Image Rendering time is the time spent rendering camera sensors, not including viewer camera, into GPU buffers.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="custom-mouse-keyboard-input">
+<h3>Custom Mouse/Keyboard Input<a class="headerlink" href="#custom-mouse-keyboard-input" title="Permalink to this heading"></a></h3>
+<p>To get mouse/keyboard input from the viewer, action events can be subscribed to and queried. For an example of how to do this, look at <code class="docutils literal notranslate"><span class="pre">examples/projectiles.py</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">subscribe_viewer_keyboard_event</span><span class="p">(</span><span class="n">viewer</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">KEY_SPACE</span><span class="p">,</span> <span class="s2">&quot;space_shoot&quot;</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">subscribe_viewer_keyboard_event</span><span class="p">(</span><span class="n">viewer</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">KEY_R</span><span class="p">,</span> <span class="s2">&quot;reset&quot;</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">subscribe_viewer_mouse_event</span><span class="p">(</span><span class="n">viewer</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">MOUSE_LEFT_BUTTON</span><span class="p">,</span> <span class="s2">&quot;mouse_shoot&quot;</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="n">gym</span><span class="o">.</span><span class="n">query_viewer_has_closed</span><span class="p">(</span><span class="n">viewer</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">for</span> <span class="n">evt</span> <span class="ow">in</span> <span class="n">gym</span><span class="o">.</span><span class="n">query_viewer_action_events</span><span class="p">(</span><span class="n">viewer</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cleanup">
+<h2>Cleanup<a class="headerlink" href="#cleanup" title="Permalink to this heading"></a></h2>
+<p>At exit, the sim and viewer objects should be released as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">destroy_viewer</span><span class="p">(</span><span class="n">viewer</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">destroy_sim</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Programming" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="assets.html" class="btn btn-neutral float-right" title="Assets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

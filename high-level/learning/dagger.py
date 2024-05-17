@@ -1,0 +1,313 @@
+from typing import Any, Dict, Optional, Tuple, Union
+
+import copy
+import itertools
+import gym
+import gymnasium
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+from skrl.agents.torch import Agent
+from skrl.memories.torch import Memory
+from skrl.models.torch import Model
+from skrl.resources.schedulers.torch import KLAdaptiveLR
+
+# [start-config-dict-torch]
+DAGGER_DEFAULT_CONFIG = {
+    "rollouts": 16,                 # number of rollouts before updating
+    "learning_epochs": 6,           # number of learning epochs during each update
+    "mini_batches": 2,              # number of mini batches during each learning epoch
+
+    "discount_factor": 0.99,        # discount factor (gamma)
+    "lambda": 0.95,                 # TD(lambda) coefficient (lam) for computing returns and advantages
+
+    "learning_rate": 1e-3,                  # learning rate
+    "learning_rate_scheduler": None,        # learning rate scheduler class (see torch.optim.lr_scheduler)
+    "learning_rate_scheduler_kwargs": {},   # learning rate scheduler's kwargs (e.g. {"step_size": 1e-3})
+
+    "state_preprocessor": None,             # state preprocessor class (see skrl.resources.preprocessors)
+    "state_preprocessor_kwargs": {},        # state preprocessor's kwargs (e.g. {"size": env.observation_space})
+    "value_preprocessor": None,             # value preprocessor class (see skrl.resources.preprocessors)
+    "value_preprocessor_kwargs": {},        # value preprocessor's kwargs (e.g. {"size": 1})
+
+    "random_timesteps": 0,          # random exploration steps
+    "learning_starts": 0,           # learning starts after this many steps
+
+    "grad_norm_clip": 0.5,              # clipping coefficient for the norm of the gradients
+    "ratio_clip": 0.2,                  # clipping coefficient for computing the clipped surrogate objective
+    "value_clip": 0.2,                  # clipping coefficient for computing the value loss (if clip_predicted_values is True)
+    "clip_predicted_values": False,     # clip predicted values during value loss computation
+
+    "entropy_loss_scale": 0.0,      # entropy loss scaling factor
+    "value_loss_scale": 1.0,        # value loss scaling factor
+
+    "kl_threshold": 0,              # KL divergence threshold for early stopping
+
+    "rewards_shaper": None,         # rewards shaping function: Callable(reward, timestep, timesteps) -> reward
+    "time_limit_bootstrap": False,  # bootstrap at timeout termination (episode truncation)
+
+    "experiment": {
+        "directory": "",            # experiment's parent directory
+        "experiment_name": "",      # experiment name
+        "write_interval": 250,      # TensorBoard writing interval (timesteps)
+
+        "checkpoint_interval": 1000,        # interval for checkpoints (timesteps)
+        "store_separately": False,          # whether to store checkpoints separately
+
+        "wandb": False,             # whether to use Weights & Biases
+        "wandb_kwargs": {}          # wandb kwargs (see https://docs.wandb.ai/ref/python/init)
+    }
+}
+# [end-config-dict-torch]
+
+class DAgger(Agent):
+    def __init__(self,
+                 models: Dict[str, Model],
+                 memory: Optional[Union[Memory, Tuple[Memory]]] = None,
+                 observation_space: Optional[Union[int, Tuple[int], gym.Space, gymnasium.Space]] = None,
+                 action_space: Optional[Union[int, Tuple[int], gym.Space, gymnasium.Space]] = None,
+                 state_space: Optional[Union[int, Tuple[int], gym.Space, gymnasium.Space]] = None,
+                 device: Optional[Union[str, torch.device]] = None,
+                 cfg: Optional[dict] = None) -> None:
+        
+        """
+        :param models: Models used by the agent
+        :type models: dictionary of skrl.models.torch.Model
+        :param memory: Memory to storage the transitions.
+                       If it is a tuple, the first element will be used for training and
+                       for the rest only the environment transitions will be added
+        :type memory: skrl.memory.torch.Memory, list of skrl.memory.torch.Memory or None
+        :param observation_space: Observation/state space or shape (default: ``None``)
+        :type observation_space: int, tuple or list of int, gym.Space, gymnasium.Space or None, optional
+        :param action_space: Action space or shape (default: ``None``)
+        :type action_space: int, tuple or list of int, gym.Space, gymnasium.Space or None, optional
+        :param device: Device on which a tensor/array is or will be allocated (default: ``None``).
+                       If None, the device will be either ``"cuda"`` if available or ``"cpu"``
+        :type device: str or torch.device, optional
+        :param cfg: Configuration dictionary
+        :type cfg: dict
+
+        :raises KeyError: If the models dictionary is missing a required key
+        """
+        _cfg = copy.deepcopy(DAGGER_DEFAULT_CONFIG)
+        _cfg.update(cfg if cfg is not None else {})
+        super().__init__(models=models, memory=memory, observation_space=observation_space,
+                         action_space=action_space, device=device, cfg=_cfg)
+        
+        self.state_space = state_space
+        
+        # models
+        self.policy = self.models.get("policy", None)
+        
+        # checkpoint models
+        self.checkpoint_modules["policy"] = self.policy
+        
+        # configuration
+        self._learning_epochs = self.cfg["learning_epochs"]
+        self._mini_batches = self.cfg["mini_batches"]
+        self._rollouts = self.cfg["rollouts"]
+        self._rollout = 0
+        
+        self._grad_norm_clip = self.cfg["grad_norm_clip"]
+        
+        self._entropy_loss_scale = self.cfg["entropy_loss_scale"]
+        self._kl_threshold = self.cfg["kl_threshold"]
+        
+        self._learning_rate = self.cfg["learning_rate"]
+        self._learning_rate_scheduler = self.cfg["learning_rate_scheduler"]
+        
+        self._state_preprocessor = self.cfg["state_preprocessor"]
+        
+        self._random_timesteps = self.cfg["random_timesteps"]
+        self._learning_starts = self.cfg["learning_starts"]
+        
+        self._time_limit_bootstrap = self.cfg["time_limit_bootstrap"]
+        
+        self._fixed_base = self.cfg.get("fixed_base", False)
+        self._reach_only = self.cfg.get("reach_only", False)
+        self._pred_success = self.cfg.get("pred_success", False)
+        
+        if self.policy is not None:
+            self.optimizer = torch.optim.Adam(self.policy.parameters(), lr=self._learning_rate)
+            if self._learning_rate_scheduler is not None:
+                self.scheduler = self._learning_rate_scheduler(self.optimizer, **self.cfg["learning_rate_scheduler_kwargs"])
+            self.checkpoint_modules["optimizer"] = self.optimizer
+        
+        if self._state_preprocessor:
+            self._state_preprocessor = self._state_preprocessor(**self.cfg["state_preprocessor_kwargs"])
+            self.checkpoint_modules["state_preprocessor"] = self._state_preprocessor
+        else:
+            self._state_preprocessor = self._empty_preprocessor
+            
+    def init(self, trainer_cfg: Optional[Dict[str, Any]] = None) -> None:
+        """Initialize the agent
+        """
+        super().init(trainer_cfg=trainer_cfg)
+        self.set_mode("eval")
+        
+        if isinstance(self.action_space, int):
+            stu_action_space = self.action_space
+        else:
+            stu_action_space = self.action_space.shape[0]
+        if self._pred_success:
+            stu_action_space += 1
+        
+        if self.memory is not None:
+            self.memory.create_tensor(name="student_obs", size=self.state_space, dtype=torch.float32)
+            self.memory.create_tensor(name="teacher_obs", size=self.observation_space, dtype=torch.float32)
+            self.memory.create_tensor(name="actions", size=stu_action_space, dtype=torch.float32)
+            self.memory.create_tensor(name="teacher_actions", size=self.action_space, dtype=torch.float32)
+            self.memory.create_tensor(name="rewards", size=1, dtype=torch.float32)
+            self.memory.create_tensor(name="terminated", size=1, dtype=torch.bool)
+            self.memory.create_tensor(name="log_prob", size=1, dtype=torch.float32)
+            self.memory.create_tensor(name="lifted_now", size=1, dtype=torch.float32)
+            
+            # tensors sampled during training
+            self._tensor_names = ["student_obs", "teacher_obs", "actions", "teacher_actions", "rewards", "terminated", "log_prob", "lifted_now"]
+            
+        # create temporary variables needed for storage and computation
+        self._current_log_prob = None
+        self._current_next_states = None
+        
+    def act(self, states: torch.Tensor, timestep: int, timesteps: int) -> torch.Tensor:
+        """Process the environment's states to make a decision (actions) using the main policy
+
+        :param states: Environment's states
+        :type states: torch.Tensor
+        :param timestep: Current timestep
+        :type timestep: int
+        :param timesteps: Number of timesteps
+        :type timesteps: int
+
+        :return: Actions
+        :rtype: torch.Tensor
+        """
+        if timestep < self._random_timesteps:
+            return self.policy.random_act({"states": states}, role="policy")
+        
+        # sample stochastic actions
+        actions, log_prob, outputs = self.policy.act({"states": states}, role="policy")
+        if log_prob is None:
+            log_prob = 0
+            
+        self._current_log_prob = log_prob
+        
+        return actions, log_prob, outputs
+    
+    def record_transition(self, student_obs: torch.Tensor, teacher_obs, actions: torch.Tensor, teacher_actions: torch.Tensor, rewards: torch.Tensor, next_states: torch.Tensor, terminated: torch.Tensor, truncated: torch.Tensor, infos: Any, timestep: int, timesteps: int) -> None:
+        super().record_transition(states=teacher_obs, actions=actions, rewards=rewards, next_states=next_states,
+                                  terminated=terminated, truncated=truncated, infos=infos, timestep=timestep,
+                                  timesteps=timesteps)
+        
+        if self.memory is not None:
+            self._current_next_states = next_states
+            lifted_now = infos.get("lifted_now", torch.zeros_like(terminated, dtype=torch.float32, device=terminated.device))
+            self.memory.add_samples(student_obs=student_obs, teacher_obs=teacher_obs, actions=actions, teacher_actions=teacher_actions, rewards=rewards,
+                                    terminated=terminated, log_prob=self._current_log_prob, lifted_now=lifted_now)
+    
+    def pre_interaction(self, timestep: int, timesteps: int) -> None:
+        pass
+    
+    def post_interaction(self, timestep: int, timesteps: int) -> None:
+        """Callback called after the interaction with the environment
+
+        :param timestep: Current timestep
+        :type timestep: int
+        :param timesteps: Number of timesteps
+        :type timesteps: int
+        """
+        self._rollout += 1
+        
+        if not self._rollout % self._rollouts and timestep >= self._learning_starts:
+            self.set_mode("train")
+            self._update(timestep, timesteps)
+            self.set_mode("eval")
+        
+        # wirte tracking data and checkpoints
+        super().post_interaction(timestep=timestep, timesteps=timesteps)
+        
+    def _update(self, timestep: int, timesteps: int) -> None:
+        """Algorithm's main update step
+
+        :param timestep: Current timestep
+        :type timestep: int
+        :param timesteps: Number of timesteps
+        :type timesteps: int
+        """
+        cumulative_dagger_loss = 0.0
+        cumulative_entropy_loss = 0.0
+        
+        # learning epochs
+        for epoch in range(self._learning_epochs):
+            sampled_batches = self.memory.sample_all(names=self._tensor_names, mini_batches=self._mini_batches)
+            kl_divergences = []
+            for sampled_student_obs, sampled_teacher_obs, sampled_actions, sampled_teacher_actions, sampled_rewards, sampled_terminated, sampled_log_prob, sampled_lifted_now in sampled_batches:
+                
+                # sampled_student_obs = self._state_preprocessor(sampled_student_obs, train=not epoch)
+                
+                # _, next_log_prob, _ = self.policy.act({"states": sampled_student_obs, "taken_actions": sampled_actions}, role="policy")
+                
+                # # compute approximate KL divergence
+                # with torch.no_grad():
+                #     ratio = next_log_prob - sampled_log_prob
+                #     kl_divergence = ((torch.exp(ratio) - 1) - ratio).mean()
+                #     kl_divergences.append(kl_divergence)
+                    
+                # # early stopping with KL divergence
+                # if self._kl_threshold and kl_divergence > self._kl_threshold:
+                #     break
+                
+                # compute entropy loss
+                if self._entropy_loss_scale:
+                    entropy_loss = -self._entropy_loss_scale * self.policy.get_entropy(role="policy").mean()
+                else:
+                    entropy_loss = 0.0
+                    
+                # compute policy loss
+                # dagger_loss = torch.norm(sampled_actions - sampled_teacher_actions, dim=-1).mean()
+                student_actions, _, _ = self.policy.act({"states": sampled_student_obs}, role="policy")
+                if self._pred_success:
+                    student_actions, pred_lifted = student_actions[:, :-1], student_actions[:, -1]
+                if self._fixed_base:
+                    dagger_loss = F.mse_loss(student_actions[:, :-2], sampled_teacher_actions[:, :-2]) # TODO: only for fixed base robot
+                elif self._reach_only:
+                    dagger_loss = F.mse_loss(student_actions[:, :-3], sampled_teacher_actions[:, :-3]) + \
+                        F.mse_loss(student_actions[:, -2:], sampled_teacher_actions[:, -2:])
+                else:
+                    dagger_loss = F.mse_loss(student_actions, sampled_teacher_actions)
+
+                if self._pred_success:
+                    dagger_loss += F.mse_loss(pred_lifted.squeeze(), sampled_lifted_now.squeeze())
+                
+                # optimization step
+                self.optimizer.zero_grad()
+                (dagger_loss + entropy_loss).backward()
+                if self._grad_norm_clip > 0:
+                    nn.utils.clip_grad_norm_(self.policy.parameters(), self._grad_norm_clip)
+                self.optimizer.step()
+                
+                # update cumulative losses
+                cumulative_dagger_loss += dagger_loss.item()
+                if self._entropy_loss_scale:
+                    cumulative_entropy_loss += entropy_loss.item()
+            
+            # update learning rate
+            if self._learning_rate_scheduler:
+                if isinstance(self.scheduler, KLAdaptiveLR):
+                    self.scheduler.step(torch.tensor(kl_divergences).mean())
+                else:
+                    self.scheduler.step()
+        
+        # record data
+        self.track_data("Loss / DAgger loss", cumulative_dagger_loss / (self._learning_epochs * self._mini_batches))
+        if self._entropy_loss_scale:
+            self.track_data("Loss / Entropy loss", cumulative_entropy_loss / (self._learning_epochs * self._mini_batches))
+        
+        if self._current_log_prob != 0:
+            self.track_data("Policy / Standard deviation", self.policy.distribution(role="policy").stddev.mean().item())
+        
+        if self._learning_rate_scheduler:
+            self.track_data("Learning / Learning rate", self.scheduler.get_last_lr()[0])
+    

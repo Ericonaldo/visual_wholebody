@@ -1,0 +1,7 @@
+furo==2023.7.26
+sphinx
+sphinx-tabs
+sphinx-autobuild
+sphinx-copybutton
+sphinx-notfound-page
+numpy

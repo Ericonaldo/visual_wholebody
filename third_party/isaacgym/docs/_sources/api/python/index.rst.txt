@@ -1,0 +1,10 @@
+Python API
+###########
+
+.. toctree::
+   :maxdepth: 3
+
+   gym_py.rst
+   struct_py.rst
+   enum_py.rst
+   const_py.rst

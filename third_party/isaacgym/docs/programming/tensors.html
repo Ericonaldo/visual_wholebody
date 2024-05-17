@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tensor API &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Force Sensors" href="forcesensors.html" />
+    <link rel="prev" title="Physics Simulation" href="physics.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Isaac Gym
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simsetup.html">Simulation Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assets.html">Assets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physics Simulation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tensor API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simulation-setup">Simulation Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#physics-state">Physics State</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#actor-root-state-tensor">Actor Root State Tensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#degrees-of-freedom">Degrees-of-Freedom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#all-rigid-body-states">All Rigid Body States</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jacobians-and-mass-matrices">Jacobians and Mass Matrices</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#contact-tensors">Contact Tensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#force-sensors">Force Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#control-tensors">Control Tensors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dof-controls">DOF Controls</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#body-forces">Body Forces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#common-problems">Common Problems</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tensor-lifetime">Tensor Lifetime</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="forcesensors.html">Force Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tuning.html">Simulation Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html">Math Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphics.html">Graphics and Camera Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terrain.html">Terrains</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Programming</a> &raquo;</li>
+      <li>Tensor API</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tensor-api">
+<span id="id1"></span><h1>Tensor API<a class="headerlink" href="#tensor-api" title="Permalink to this heading"></a></h1>
+<p>The Gym tensor API uses GPU-compatible data representations for interacting with simulations.  It allows accessing the physics state directly on the GPU without copying data back and forth from the host.  It also supports applying controls using tensors, which makes it possible to set up experiments that run fully on the GPU.</p>
+<p>Tensors are essentially multi-dimensional arrays of values.  The Gym tensor API works with “global” tensors, i.e., tensors that hold the values for all actors in the simulation.  For example, a single tensor is used to hold the state of all the rigid bodies in the simulation.  Similarly, a single tensor can be used to apply controls to all actors in the simulation.  This approach has important performance benefits.  You can get the latest state of all actors or apply controls to all actors using a single function call.  This eliminates the need for looping over multiple environments and issuing per-actor operations, which can add considerable overhead, especially in languages like Python.  Using global buffers also facilitates data parallelism, particularly on the GPU, where multiple threads can easily work with different slices of the buffers in parallel.</p>
+<p>Tensors are well-established data structures for storing GPU-compatible data.  Popular frameworks like PyTorch and TensorFlow support tensors as a core feature.  The Gym tensor API is independent of other frameworks, but it is designed to be easily compatible with them.  The Gym tensor API uses simple tensor desciptors, which specify the device, memory address, data type, and shape of a tensor.  There is no special API for manipulating the data in the Gym tensors.  Instead, the tensor descriptors can be converted to more usable tensor types, like PyTorch tensors, using interop utilities.  Once a Gym tensor is “wrapped” in a PyTorch tensor, you can use all of the existing PyTorch utilties to work with the contents of the tensor.</p>
+<p>An important aspect of the tensor API is that it can work with CPU and GPU tensors.  This makes it possible to run the same experiment on both CPU and GPU with minimal effort.</p>
+<section id="simulation-setup">
+<h2>Simulation Setup<a class="headerlink" href="#simulation-setup" title="Permalink to this heading"></a></h2>
+<p>The tensor API is meant to be used during simulation, after all the environments and actors have been created.  To set up the simulation, you can use the “classic” API described in <a class="reference internal" href="simsetup.html#creating-simulations"><span class="std std-ref">Creating a Simulation</span></a>.  To use the tensor API, there are a few additional details to be aware of.</p>
+<p>The tensor API is currently available with PhysX only, so you must use <code class="docutils literal notranslate"><span class="pre">SIM_PHYSX</span></code> when creating the simulation.</p>
+<p>To use GPU tensors, you must set the <code class="docutils literal notranslate"><span class="pre">use_gpu_pipeline</span></code> flag to True in the <code class="docutils literal notranslate"><span class="pre">SimParams</span></code> used to create the simulation.  Also, you should configure PhysX to use the GPU:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sim_params</span> <span class="o">=</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">SimParams</span><span class="p">()</span>
+<span class="o">...</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">use_gpu_pipeline</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">sim_params</span><span class="o">.</span><span class="n">physx</span><span class="o">.</span><span class="n">use_gpu</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">sim</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">create_sim</span><span class="p">(</span><span class="n">compute_device_id</span><span class="p">,</span> <span class="n">graphics_device_id</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">SIM_PHYSX</span><span class="p">,</span> <span class="n">sim_params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">use_gpu_pipeline</span></code> is False, the tensors returned by Gym will reside on the CPU.</p>
+<p>With the CPU pipeline, PhysX simulation can run on either CPU or GPU, as specified by the <code class="docutils literal notranslate"><span class="pre">physx.use_gpu</span></code> parameter.  With the GPU pipeline, PhysX simulation must run on GPU.  Because of this, when <code class="docutils literal notranslate"><span class="pre">use_gpu_pipeline</span></code> is True, the <code class="docutils literal notranslate"><span class="pre">physx.use_gpu</span></code> parameter is ignored, and GPU PhysX is used for simulation.</p>
+<p>Finally, after all the environments are fully set up, you must call <code class="docutils literal notranslate"><span class="pre">prepare_sim</span></code> to initialize the internal data structures used by the tensor API:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">prepare_sim</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="physics-state">
+<span id="physics-state-tensors"></span><h2>Physics State<a class="headerlink" href="#physics-state" title="Permalink to this heading"></a></h2>
+<p>After calling <code class="docutils literal notranslate"><span class="pre">prepare_sim</span></code>, you can acquire the physics state tensors.  These tensors represent a cache of the simulation state in an easy-to-use format.  It is important to note that these tensors hold a copy of the simulation state.  They are not the same data structures as used by the underlying physics engine.  Each physics engine uses its own data representation and the tensors exposed by Gym are a generic representation that abstracts the underlying details.</p>
+<p>Even though the tensors are a copy of the physics state, the process of copying is very fast.  When using the GPU pipeline, the data is never copied to the host.  Device-to-device copies are fast, so the overhead is minimal.  Furthermore, users can control when to refresh the tensors, so no implicit copying is ever done.</p>
+<section id="actor-root-state-tensor">
+<h3>Actor Root State Tensor<a class="headerlink" href="#actor-root-state-tensor" title="Permalink to this heading"></a></h3>
+<p>A Gym actor can consists of one or more rigid bodies.  All actors have a root body.  The root state tensor holds the state of all the actor root bodies in the simulation.  The state of each root body is represented using 13 floats with the same layout as <code class="docutils literal notranslate"><span class="pre">GymRigidBodyState</span></code>: 3 floats for position, 4 floats for quaternion, 3 floats for linear velocity, and 3 floats for angular velocity.</p>
+<p>To acquire the root state tensor:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_root_tensor</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">acquire_actor_root_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This returns a generic tensor descriptor that isn’t very useful by itself, which is why we prefixed the name with an underscore.  In order to access the contents of the tensor, you can wrap it in a PyTorch Tensor object, using the provided <code class="docutils literal notranslate"><span class="pre">gymtorch</span></code> interop module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">root_tensor</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">wrap_tensor</span><span class="p">(</span><span class="n">_root_tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now you can use this tensor in PyTorch, with all the powerful utilities it provides - no need for us to re-invent all the wheels.  In the future, we may add other interop modules, which will allow accessing Gym state using other frameworks like TensorFlow.</p>
+<p>The shape of this tensor is (num_actors, 13) and the data type is float32.  You can use this tensor as-is, or you can create more convenient views or slices of the data using standard pytorch syntax:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">root_positions</span> <span class="o">=</span> <span class="n">root_tensor</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">root_orientations</span> <span class="o">=</span> <span class="n">root_tensor</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
+<span class="n">root_linvels</span> <span class="o">=</span> <span class="n">root_tensor</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+<span class="n">root_angvels</span> <span class="o">=</span> <span class="n">root_tensor</span><span class="p">[:,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>You only need to acquire the tensors and create the views once, before the simulation begins.</p>
+<p>To update the contents of these tensors with the latest state, call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">refresh_actor_root_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This function will fill the tensor with the latest values from the physics engine.  All the views or slices you created from this tensor will update automatically, since they all refer to the same memory buffer.  Generally, you’ll want to do this after each call to <code class="docutils literal notranslate"><span class="pre">gym.simulate</span></code>.</p>
+<p>Putting it all together, the code might look something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ...create sim, envs, and actors here...</span>
+
+<span class="n">gym</span><span class="o">.</span><span class="n">prepare_sim</span><span class="p">()</span>
+
+<span class="c1"># acquire root state tensor descriptor</span>
+<span class="n">_root_tensor</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">acquire_actor_root_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+
+<span class="c1"># wrap it in a PyTorch Tensor and create convenient views</span>
+<span class="n">root_tensor</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">wrap_tensor</span><span class="p">(</span><span class="n">_root_tensor</span><span class="p">)</span>
+<span class="n">root_positions</span> <span class="o">=</span> <span class="n">root_tensor</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">root_orientations</span> <span class="o">=</span> <span class="n">root_tensor</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
+<span class="n">root_linvels</span> <span class="o">=</span> <span class="n">root_tensor</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+<span class="n">root_angvels</span> <span class="o">=</span> <span class="n">root_tensor</span><span class="p">[:,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span>
+
+<span class="c1"># main simulation loop</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="c1"># step the physics simulation</span>
+    <span class="n">gym</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+
+    <span class="c1"># refresh the state tensors</span>
+    <span class="n">gym</span><span class="o">.</span><span class="n">refresh_actor_root_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+
+    <span class="c1"># ...use the latest state tensors here...</span>
+</pre></div>
+</div>
+<p>You can use the root state tensor to teleport actors by setting new positions, orientations, and velocities for their root bodies.  This functionality is useful during resets, but should not be done every frame, because that would interfere with the role of the physics engine and likely lead to non-physical behavior.</p>
+<p>As a contrived example, suppose you want to raise all the actors by one unit along the y-axis.  You could modify the root positions like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">offsets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">num_actors</span><span class="p">)</span>
+<span class="n">root_positions</span> <span class="o">+=</span> <span class="n">offsets</span>
+</pre></div>
+</div>
+<p>This will modify the root state tensor in-place, and you can apply the changes like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">set_actor_root_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">_root_tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice that we are using <code class="docutils literal notranslate"><span class="pre">_root_tensor</span></code> here, which is the original Gym tensor descriptor we acquired at the beginning.  We modified the contents of that tensor in-place, and now we are using it to apply an update in the physics engine.  The effect is that all actors will teleport one unit upwards, regardless of whether they were single- or multi-body actors.</p>
+<p>Another example is doing a periodic reset of actor roots, which would teleport them to their original locations once every 100 steps:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># acquire root state tensor descriptor</span>
+<span class="n">_root_tensor</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">acquire_actor_root_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+
+<span class="c1"># wrap it in a PyTorch Tensor</span>
+<span class="n">root_tensor</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">wrap_tensor</span><span class="p">(</span><span class="n">_root_tensor</span><span class="p">)</span>
+
+<span class="c1"># save a copy of the original root states</span>
+<span class="n">saved_root_tensor</span> <span class="o">=</span> <span class="n">root_tensor</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+
+<span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># main simulation loop</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="c1"># step the physics simulation</span>
+    <span class="n">gym</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+
+    <span class="n">step</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">step</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">gym</span><span class="o">.</span><span class="n">set_actor_root_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">unwrap_tensor</span><span class="p">(</span><span class="n">saved_root_tensor</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Note that we used the torch <code class="docutils literal notranslate"><span class="pre">clone</span></code> method to create a new torch tensor with a copy of the original root states.  The Gym method <code class="docutils literal notranslate"><span class="pre">set_actor_root_state_tensor</span></code> cannot digest a torch tensor directly, so we need to convert that torch tensor to a Gym tensor descriptor using <code class="docutils literal notranslate"><span class="pre">gymtorch.unwrap_tensor</span></code>.</p>
+<p>To update the state of a subset of actors, there is a method called <code class="docutils literal notranslate"><span class="pre">set_actor_root_state_tensor_indexed</span></code>.  It takes an additional tensor of actor indices to reset, which must be 32-bit integers.  The total number of actors in the simulation, <code class="docutils literal notranslate"><span class="pre">A</span></code>, can be obtained by calling <code class="docutils literal notranslate"><span class="pre">gym.get_sim_actor_count(sim)</span></code>.  Valid actor indices range from 0 to <code class="docutils literal notranslate"><span class="pre">A</span></code> - 1.  The index of a specific actor in the root state tensor can be obtained by calling <code class="docutils literal notranslate"><span class="pre">gym.get_actor_index(env,</span> <span class="pre">actor_handle,</span> <span class="pre">gymapi.DOMAIN_SIM)</span></code>.  Here’s an example of using <code class="docutils literal notranslate"><span class="pre">set_actor_root_state_tensor_indexed</span></code> with a PyTorch index tensor:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">actor_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">42</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span>
+
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_root_state_tensor_indexed</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">_root_states</span><span class="p">,</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">unwrap_tensor</span><span class="p">(</span><span class="n">actor_indices</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the state buffer passed to this method is the same as that passed to <code class="docutils literal notranslate"><span class="pre">set_actor_root_state_tensor</span></code>.  In other words, it is the entire tensor containing the states of all actors, but state updates will only be applied to the actors listed in the index tensor.  This approach makes life easier in practice and has some performance benefits.  You do not need to construct a new state tensor that contains only the states to be modified.  You can simply write updated states to the original root state tensor at the correct indices, then specify those indices in a call to <code class="docutils literal notranslate"><span class="pre">set_actor_root_state_tensor_indexed</span></code>.</p>
+<p>To avoid some common errors when sharing PyTorch tensors with Gym (and particularly index tensors), please read the <a class="reference internal" href="#tensor-lifetime"><span class="std std-ref">Tensor Lifetime</span></a> section.</p>
+</section>
+<section id="degrees-of-freedom">
+<h3>Degrees-of-Freedom<a class="headerlink" href="#degrees-of-freedom" title="Permalink to this heading"></a></h3>
+<p>Articulated actors have a number of degrees-of-freedom (DOFs) whose state can be queried and changed.  The state of each DOF is represented using two 32-bit floats, the DOF position and DOF velocity.  For prismatic (translation) DOFs, the position is in meters and the velocity is in meters per second.  For revolute (rotation) DOFs, the position is in radians and the velocity is in radians per second.</p>
+<p>The DOF state tensor contains the state of all DOFs in the simulation.  The shape of the tensor is (num_dofs, 2).  The total number of DOFs can be obtained by calling <code class="docutils literal notranslate"><span class="pre">gym.get_sim_dof_count(sim)</span></code>.  The DOF states are laid out sequentially.  The tensor begins with all the DOFs of actor 0, followed by all the DOFs of actor 1, and so on.  The ordering of DOFs for each actor is the same as with the functions <code class="docutils literal notranslate"><span class="pre">get_actor_dof_states</span></code> and <code class="docutils literal notranslate"><span class="pre">set_actor_dof_states</span></code>.  The number of DOFs for an actor can be obtained using <code class="docutils literal notranslate"><span class="pre">gym.get_actor_dof_count(env,</span> <span class="pre">actor)</span></code>.  The global index of a specific DOF in the tensor can be obtained in a number of ways:</p>
+<ul class="simple">
+<li><p>Calling <code class="docutils literal notranslate"><span class="pre">gym.get_actor_dof_index(env,</span> <span class="pre">actor_handle,</span> <span class="pre">i,</span> <span class="pre">gymapi.DOMAIN_SIM)</span></code> will return the global DOF index of the ith DOF of the specified actor.</p></li>
+<li><p>Calling <code class="docutils literal notranslate"><span class="pre">gym.find_actor_dof_index(env,</span> <span class="pre">actor_handle,</span> <span class="pre">dof_name,</span> <span class="pre">gymapi.DOMAIN_SIM)</span></code> will look up the global DOF index by name.</p></li>
+</ul>
+<p>The function <code class="docutils literal notranslate"><span class="pre">acquire_dof_state_tensor</span></code> returns a Gym tensor descriptor, which can be wrapped as a PyTorch tensor as previously discussed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_dof_states</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">acquire_dof_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+<span class="n">dof_states</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">wrap_tensor</span><span class="p">(</span><span class="n">_dof_states</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The function <code class="docutils literal notranslate"><span class="pre">refresh_dof_state_tensor</span></code> populates the tensor with the latest data from the simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">refresh_dof_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can modify the values in the DOF state tensor and apply them to the simulation.  The function <code class="docutils literal notranslate"><span class="pre">set_dof_state_tensor</span></code> applies all the values in the tensor.  This means setting all the DOF positions and velocities for all the actors in the simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">set_dof_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">_dof_states</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you modify the values in-place, you can pass the original tensor descriptor obtained from <code class="docutils literal notranslate"><span class="pre">acquire_dof_state_tensor</span></code>.  Alternatively, you can create your own tensor to hold the new values, and pass that descriptor instead.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">set_dof_state_tensor_indexed</span></code> applies the values in the given tensor to the actors specified in the <code class="docutils literal notranslate"><span class="pre">actor_index_tensor</span></code>.  The other actors remain unaffected.  This is very useful when resetting only selected actors or environments.  The actor indices must be 32-bit integers, like those obtained from <code class="docutils literal notranslate"><span class="pre">get_actor_index</span></code>.  The following snippet constructs an index tensor and passes it to <code class="docutils literal notranslate"><span class="pre">set_dof_state_tensor_indexed</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">actor_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">42</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span>
+
+<span class="n">gym</span><span class="o">.</span><span class="n">set_dof_state_tensor_indexed</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">_dof_states</span><span class="p">,</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">unwrap_tensor</span><span class="p">(</span><span class="n">actor_indices</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The state of an articulated actor can be fully defined using its entry in the root state tensor and its entries in the DOF state tensor.  Resetting actors whose base is fixed, like manipulator arms, can be accomplished by setting only new DOF states.  Resetting actors that are not fixed in place, like walking robots, requires setting a new root state along with new DOF states.  In this case, you can use the same actor index tensor, like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">actor_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">42</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span>
+<span class="n">_actor_indices</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">unwrap_tensor</span><span class="p">(</span><span class="n">actor_indices</span><span class="p">)</span>
+
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_root_state_tensor_indexed</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">_root_states</span><span class="p">,</span> <span class="n">_actor_indices</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_dof_state_tensor_indexed</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">_dof_states</span><span class="p">,</span> <span class="n">_actor_indices</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="all-rigid-body-states">
+<h3>All Rigid Body States<a class="headerlink" href="#all-rigid-body-states" title="Permalink to this heading"></a></h3>
+<p>The rigid body state tensor contains the state of all rigid bodies in the simulation.  The state of each rigid body is the same as described for the root state tensor - 13 floats capturing the position, orientation, linear velocity, and angular velocity.  The shape of the rigid body state tensor is (num_rigid_bodies, 13).  The total number of rigid bodies in a simulation can be obtained by calling <code class="docutils literal notranslate"><span class="pre">gym.get_sim_rigid_body_count(sim)</span></code>.  The rigid body states are laid out sequentially.  The tensor begins with all the bodies of actor 0, followed by all the bodies of actor 1, and so on.  The ordering of bodies for each actor is the same as with the functions <code class="docutils literal notranslate"><span class="pre">get_actor_rigid_body_states</span></code> and <code class="docutils literal notranslate"><span class="pre">set_actor_rigid_body_states</span></code>.  The number of rigid bodies for an actor can be obtained using <code class="docutils literal notranslate"><span class="pre">gym.get_actor_rigid_body_count(env,</span> <span class="pre">actor)</span></code>.  The global index of a specific rigid body in the tensor can be obtained in a number of ways:</p>
+<ul class="simple">
+<li><p>Calling <code class="docutils literal notranslate"><span class="pre">gym.get_actor_rigid_body_index(env,</span> <span class="pre">actor_handle,</span> <span class="pre">i,</span> <span class="pre">gymapi.DOMAIN_SIM)</span></code> will return the global rigid body index of the ith rigid body of the specified actor.</p></li>
+<li><p>Calling <code class="docutils literal notranslate"><span class="pre">gym.find_actor_rigid_body_index(env,</span> <span class="pre">actor_handle,</span> <span class="pre">rb_name,</span> <span class="pre">gymapi.DOMAIN_SIM)</span></code> will look up the global rigid body index by name.</p></li>
+</ul>
+<p>The function <code class="docutils literal notranslate"><span class="pre">acquire_rigid_body_state_tensor</span></code> returns a Gym tensor descriptor, which can be wrapped as a PyTorch tensor as previously discussed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_rb_states</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">acquire_rigid_body_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+<span class="n">rb_states</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">wrap_tensor</span><span class="p">(</span><span class="n">_rb_states</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The function <code class="docutils literal notranslate"><span class="pre">refresh_rigid_body_state_tensor</span></code> populates the tensor with the latest data from the simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">refresh_rigid_body_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Presently, the rigid body state tensor is read-only.  Setting rigid body states is only allowed for actor root bodies using the root state tensor.</p>
+</section>
+<section id="jacobians-and-mass-matrices">
+<h3>Jacobians and Mass Matrices<a class="headerlink" href="#jacobians-and-mass-matrices" title="Permalink to this heading"></a></h3>
+<p>The Jacobian and mass matrices are important tools in robotic control. The Jacobian matrix maps the joint space velocities of a DOF to it’s cartesian and angular velocities, while the mass matrix contains the generalized mass of the robot depending on the current configuration. They are used in standard robotic control algorithms such as Inverse Kinematics or Operational Space Control.</p>
+<p>Both Jacobians and mass matrices are exposed using tensors.  The approach is slightly different than other tensor functions, because the size of Jacobian and mass matrices can vary by actor type.  When acquiring a Jacobian or mass matrix tensor, you must specify the actor name.  The tensor will then contain the matrices for all the actors with that name across all environments - assuming that each actor with that name is of the same type.  The actor name is provided when calling <code class="docutils literal notranslate"><span class="pre">create_actor</span></code>.  The rest of this section assumes that there is an actor named “franka” in every env that is an instance of the <a class="reference internal" href="../examples/assets.html#franka-asset"><span class="std std-ref">Franka asset</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># acquire the jacobian and mass matrix tensors for all actors named &quot;franka&quot;</span>
+<span class="n">_jacobian</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">acquire_jacobian_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="s2">&quot;franka&quot;</span><span class="p">)</span>
+<span class="n">_massmatrix</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">acquire_mass_matrix_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="s2">&quot;franka&quot;</span><span class="p">)</span>
+
+<span class="c1"># wrap as pytorch tensors</span>
+<span class="n">jacobian</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">wrap_tensor</span><span class="p">(</span><span class="n">_jacobian</span><span class="p">)</span>
+<span class="n">mm</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">wrap_tensor</span><span class="p">(</span><span class="n">_massmatrix</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Jacobian matrices are available with the CPU and GPU pipeline, but mass matrices are currently only available on CPU.  Support for GPU mass matrices is planned for the future.</p>
+</div>
+<p>To refresh all of the Jacobians and mass matrix tensors that you acquired, you can call these functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">refresh_jacobian_tensors</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">refresh_mass_matrix_tensors</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The shape of the mass matrix is (num_dofs, num_dofs).  You can obtain the number of DOFs by calling <code class="docutils literal notranslate"><span class="pre">get_asset_dof_count</span></code> or <code class="docutils literal notranslate"><span class="pre">get_actor_dof_count</span></code>.  The mass matrix tensor will have shape (num_envs, num_dofs, num_dofs).  The Franka asset has 9 DOFs, so with 100 envs the shape of the tensor would be (100, 9, 9).</p>
+<p>The shape of the Jacobian depends on the number of links, DOFs, and whether the base is fixed or not.  The Jacobian relates the motion of articulation links and DOFs.  Rows represent links, columns represent DOFs.  Each body has 6 rows in the Jacobian representing its linear and angular motion along the three coordinate axes.</p>
+<p>If the actor base is free to move (not fixed in place), the shape of the Jacobian tensor will be (num_envs, num_links, 6, num_dofs + 6).  The Franka asset has 11 links and 9 DOFs, so with 100 envs the shape of the tensor would be (100, 11, 6, 15).  The extra six DOFs correspond to the linear and angular degrees of freedom of the free root link.  To retrieve the matrix elements for a particular link and DOF, you would index into the tensor like this: (env_index, link_index, axis_index, dof_index + 6).  For example, to look up the entries for the “panda_hand” link and the “panda_joint5” DOF, you would first look up the link and DOF indices in the asset dictionaries:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">link_dict</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_asset_rigid_body_dict</span><span class="p">(</span><span class="n">franka_asset</span><span class="p">)</span>
+<span class="n">dof_dict</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_asset_dof_dict</span><span class="p">(</span><span class="n">franka_asset</span><span class="p">)</span>
+
+<span class="n">link_index</span> <span class="o">=</span> <span class="n">link_dict</span><span class="p">[</span><span class="s2">&quot;panda_hand&quot;</span><span class="p">]</span>
+<span class="n">dof_index</span> <span class="o">=</span> <span class="n">dof_dict</span><span class="p">[</span><span class="s2">&quot;panda_joint5&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Then you could look up the corresponding entries in the Jacobian tensor like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># for all envs:</span>
+<span class="n">jacobian</span><span class="p">[:,</span> <span class="n">link_index</span><span class="p">,</span> <span class="p">:,</span> <span class="n">dof_index</span> <span class="o">+</span> <span class="mi">6</span><span class="p">]</span>
+
+<span class="c1"># for a specific env:</span>
+<span class="n">jacobian</span><span class="p">[</span><span class="n">env_index</span><span class="p">,</span> <span class="n">link_index</span><span class="p">,</span> <span class="p">:,</span> <span class="n">dof_index</span> <span class="o">+</span> <span class="mi">6</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>If the actor base is fixed, the shape of the Jacobian is different.  The root link is not movable, so it doesn’t have rows in the Jacobian.  Also, there are no root degrees of freedom, so those extra 6 columns are absent.  The shape of the Jacobian tensor becomes (num_envs, num_links - 1, 6, num_dofs).  Converting our previous example to look up entries in the Jacobian tensor with fixed bases:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># for all envs:</span>
+<span class="n">jacobian</span><span class="p">[:,</span> <span class="n">link_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="n">dof_index</span><span class="p">]</span>
+
+<span class="c1"># for a specific env:</span>
+<span class="n">jacobian</span><span class="p">[</span><span class="n">env_index</span><span class="p">,</span> <span class="n">link_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="n">dof_index</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../examples/simple.html#franka-cube-ik-example"><span class="std std-ref">Franka IK Picking</span></a> for an example of using the Jacobian tensor for inverse kinematics.</p>
+<p>See <a class="reference internal" href="../examples/simple.html#franka-osc-example"><span class="std std-ref">Franka OSC</span></a> for an example of using Jacobians and mass matrices for Operational Space Control.</p>
+</section>
+</section>
+<section id="contact-tensors">
+<h2>Contact Tensors<a class="headerlink" href="#contact-tensors" title="Permalink to this heading"></a></h2>
+<p>The net contact force tensor contains the net contact forces experienced by each rigid body during the last simulation step, with the forces expressed as 3D vectors.  It is a read-only tensor with shape (num_rigid_bodies, 3).  You can index individual rigid bodies in the same way as the rigid body state tensor.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">acquire_net_contact_force_tensor</span></code> returns a Gym tensor descriptor, which can be wrapped as a PyTorch tensor as previously discussed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_net_cf</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">acquire_net_contact_force_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+<span class="n">net_cf</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">wrap_tensor</span><span class="p">(</span><span class="n">_net_cf</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The function <code class="docutils literal notranslate"><span class="pre">refresh_net_contact_force_tensor</span></code> populates the tensor with the latest data from the simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">refresh_net_contact_force_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The values returned by this function are affected by the contact collection mode (<code class="docutils literal notranslate"><span class="pre">SimParams.physx.contact_collection</span></code>) and the number of physics substeps (<code class="docutils literal notranslate"><span class="pre">SimParams.substeps</span></code>).  The contact collection mode allows balancing performance and accuracy in contact reporting.  If the contact collection mode is <code class="docutils literal notranslate"><span class="pre">CC_NEVER</span></code>, no contacts are ever collected from the physics engine and the reported net contact forces will always be zero.  If the contact collection mode is <code class="docutils literal notranslate"><span class="pre">CC_ALL_SUBSTEPS</span></code>, contacts will be collected during all substeps and the reported net contact forces will be aggregated for all substeps.  If the contact collection mode is <code class="docutils literal notranslate"><span class="pre">CC_LAST_SUBSTEP</span></code>, contacts will only be collected during the last substep.  Note that when running with a single physics substep, <code class="docutils literal notranslate"><span class="pre">CC_LAST_SUBSTEP</span></code> and <code class="docutils literal notranslate"><span class="pre">CC_ALL_SUBSTEPS</span></code> are equivalent.</p>
+<p>The default contact collection mode is <code class="docutils literal notranslate"><span class="pre">CC_ALL_SUBSTEPS</span></code>, which yields the most accurate results but is the slowest mode when running with multiple substeps.  <code class="docutils literal notranslate"><span class="pre">CC_LAST_SUBSTEP</span></code> is a more performant option that can be used when full contact reporting precision is not required.  It is useful for situations with stable contacts that tend to persist over multiple physics substeps.  If the application does not require contact information at all, <code class="docutils literal notranslate"><span class="pre">CC_NEVER</span></code> is the most performant mode that ensures no contact collection overhead.</p>
+<p>See <a class="reference internal" href="../api/python/enum_py.html#isaacgym.gymapi.ContactCollection" title="isaacgym.gymapi.ContactCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">isaacgym.gymapi.ContactCollection</span></code></a>.</p>
+</div>
+</section>
+<section id="force-sensors">
+<h2>Force Sensors<a class="headerlink" href="#force-sensors" title="Permalink to this heading"></a></h2>
+<p>You can create rigid body and joint force sensors as described here: <a class="reference internal" href="forcesensors.html#force-sensors"><span class="std std-ref">Force sensors</span></a>.</p>
+</section>
+<section id="control-tensors">
+<span id="id2"></span><h2>Control Tensors<a class="headerlink" href="#control-tensors" title="Permalink to this heading"></a></h2>
+<p>The various state tensors (root state tensor, DOF state tensor, and rigid body state tensor) are useful for getting information about actors and setting new poses and velocities instantaneously.  Setting states this way is appropriate during resets, when actors need to return to their original pose or restart a task using new initial conditions.  However, setting new states directly using those tensors should be done sparingly.  The positions and velocities of actors are managed by the physics engine, which takes into account collisions, external forces, internal constraints, and drives.  Setting new positions and velocities directly should generally be avoided during simulation, because it overrides the physics engine and leads to non-physical behavior.  To manage actor behavior during simulation, you can apply DOF forces or PD controls using the following API.</p>
+<section id="dof-controls">
+<h3>DOF Controls<a class="headerlink" href="#dof-controls" title="Permalink to this heading"></a></h3>
+<p>The function <code class="docutils literal notranslate"><span class="pre">set_dof_actuation_force_tensor</span></code> can be used to apply forces for all DOFs in the simulation.  For example, here is how you can apply a random force to all DOFs with PyTorch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># get total number of DOFs</span>
+<span class="n">num_dofs</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">get_sim_dof_count</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+
+<span class="c1"># generate a PyTorch tensor with a random force for each DOF</span>
+<span class="n">actions</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">num_dofs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span>
+
+<span class="c1"># apply the forces</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_dof_actuation_force_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">unwrap_tensor</span><span class="p">(</span><span class="n">actions</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Note that the actuation forces will only be applied for DOFs whose <code class="docutils literal notranslate"><span class="pre">driveMode</span></code> was set to <code class="docutils literal notranslate"><span class="pre">gymapi.DOF_MODE_EFFORT</span></code> using <code class="docutils literal notranslate"><span class="pre">set_actor_dof_properties</span></code>.  For prismatic (translation) DOFs, the forces are in Newtons.  For revolute (rotation) DOFs, the forces are in Nm.  The ordering of DOFs in the force tensor is the same as in the DOF state tensor.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">set_dof_position_target_tensor</span></code> can be used to set PD position targets for all DOFs in the simulation.  Note that the position targets will only take effect for DOFs whose <code class="docutils literal notranslate"><span class="pre">driveMode</span></code> was set to <code class="docutils literal notranslate"><span class="pre">gymapi.DOF_MODE_POS</span></code> using <code class="docutils literal notranslate"><span class="pre">set_actor_dof_properties</span></code>.  For prismatic (translation) DOFs, the position targets are in meters.  For revolute (rotation) DOFs, the position targets are in radians.  The ordering of DOFs in the position target tensor is the same as in the DOF state tensor.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">set_dof_velocity_target_tensor</span></code> can be used to set PD velocity targets for all DOFs in the simulation.  Note that the velocity targets will only take effect for DOFs whose <code class="docutils literal notranslate"><span class="pre">driveMode</span></code> was set to <code class="docutils literal notranslate"><span class="pre">gymapi.DOF_MODE_VEL</span></code> using <code class="docutils literal notranslate"><span class="pre">set_actor_dof_properties</span></code>.  For prismatic (translation) DOFs, the velocity targets are in meters per second.  For revolute (rotation) DOFs, the velocity targets are in radians per second.  The ordering of DOFs in the velocity target tensor is the same as in the DOF state tensor.</p>
+<p>There are indexed variants of the tensor-based control functions, which can be used to control a subset of actors specified in an index tensor, similarly to <code class="docutils literal notranslate"><span class="pre">set_dof_state_tensor_indexed</span></code>.  They are called <code class="docutils literal notranslate"><span class="pre">set_dof_actuation_force_tensor_indexed</span></code>, <code class="docutils literal notranslate"><span class="pre">set_dof_position_target_tensor_indexed</span></code>, and <code class="docutils literal notranslate"><span class="pre">set_dof_velocity_tensor_indexed</span></code>.</p>
+</section>
+<section id="body-forces">
+<h3>Body Forces<a class="headerlink" href="#body-forces" title="Permalink to this heading"></a></h3>
+<p>You can apply forces to rigid bodies using two different functions.  The function <code class="docutils literal notranslate"><span class="pre">apply_rigid_body_force_tensors</span></code> can be used to apply forces and/or torques at the center-of-mass of each rigid body in the simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># apply both forces and torques</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">apply_rigid_body_force_tensors</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">force_tensor</span><span class="p">,</span> <span class="n">torque_tensor</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">ENV_SPACE</span><span class="p">)</span>
+
+<span class="c1"># apply only forces</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">apply_rigid_body_force_tensors</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">force_tensor</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">ENV_SPACE</span><span class="p">)</span>
+
+<span class="c1"># apply only torques</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">apply_rigid_body_force_tensors</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">torque_tensor</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">ENV_SPACE</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The last argument is a <code class="docutils literal notranslate"><span class="pre">CoordinateSpace</span></code> enum, which specifies what space the force and torque vectors are in (<code class="docutils literal notranslate"><span class="pre">LOCAL_SPACE</span></code>, <code class="docutils literal notranslate"><span class="pre">ENV_SPACE</span></code> (default), or <code class="docutils literal notranslate"><span class="pre">GLOBAL_SPACE</span></code>.</p>
+<p>If you wish to apply forces or torques to only a selected subset of bodies, make sure to set the corresponding tensor entries to zero.</p>
+<p>The other function is <code class="docutils literal notranslate"><span class="pre">apply_rigid_body_force_at_pos_tensors</span></code>, which lets you apply forces to bodies at the given positions.  This function will automatically compute and apply the required torques when the force positions are not at the center-of-mass:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># apply forces at given positions</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">apply_rigid_body_force_at_pos_tensors</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">force_tensor</span><span class="p">,</span> <span class="n">pos_tensor</span><span class="p">,</span> <span class="n">gymapi</span><span class="o">.</span><span class="n">ENV_SPACE</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Please take a look at the <code class="docutils literal notranslate"><span class="pre">apply_forces.py</span></code> and <code class="docutils literal notranslate"><span class="pre">apply_forces_at_pos.py</span></code> examples for sample usage.</p>
+</section>
+</section>
+<section id="common-problems">
+<h2>Common Problems<a class="headerlink" href="#common-problems" title="Permalink to this heading"></a></h2>
+<section id="tensor-lifetime">
+<span id="id3"></span><h3>Tensor Lifetime<a class="headerlink" href="#tensor-lifetime" title="Permalink to this heading"></a></h3>
+<p>Python uses reference counting for garbage collection.  Tensors created using PyTorch are subject to garbage collection as well, just like any regular Python objects.  The Gym C++ runtime is a shared library that is not connected with the Python interpreter, so it doesn’t participate in the reference counting of objects.  When passing tensors to Gym, it is important to ensure that Python will not garbage-collect the objects while they are still in use.  This can be a source of tricky memory errors that are difficult to debug.</p>
+<p>One common situation where this can occur is when sharing index tensors with Gym.  PyTorch uses LongTensors for indexing, but Gym requires 32-bit indices.  Thus we need to convert a LongTensor to a 32-bit integer tensor before passing the indices to Gym.  Consider this code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">indices_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">42</span><span class="p">])</span>
+<span class="n">indices_gym</span> <span class="o">=</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">unwrap_tensor</span><span class="p">(</span><span class="n">indices_torch</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+<span class="n">set_actor_root_state_tensor_indexed</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">indices_gym</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The problem here is quite subtle.  The <code class="docutils literal notranslate"><span class="pre">unwrap_tensor</span></code> function gathers information about the PyTorch tensor in a descriptor that is later passed to Gym.  For efficiency, it doesn’t make a copy of the tensor’s data - it simply records the memory address of the data.  However, in the above snippet, the tensor is a temporary variable created by the call to <code class="docutils literal notranslate"><span class="pre">.to(torch.int32)</span></code>.  After the call to <code class="docutils literal notranslate"><span class="pre">unwrap_tensor</span></code>, Python doesn’t see any references to this temporary tensor, so it can garbage-collect it.  If that tensor gets garbage-collected before the call to <code class="docutils literal notranslate"><span class="pre">set_actor_root_state_tensor_indexed</span></code>, the results are undefined - a crash or data corruption are possible.</p>
+<p>There is a simple solution to avoid such situations.  Whenever you call <code class="docutils literal notranslate"><span class="pre">unwrap_tensor</span></code>, make sure that there is a Python reference to that tensor that will prevent it from being garbage-collected immediately.  We can rewrite the above code like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">indices_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">42</span><span class="p">])</span>
+<span class="n">indices_torch32</span> <span class="o">=</span> <span class="n">indices_torch</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="c1"># &lt;--- this reference will keep the tensor alive</span>
+<span class="n">set_actor_root_state_tensor_indexed</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">gymtorch</span><span class="o">.</span><span class="n">unwrap_tensor</span><span class="p">(</span><span class="n">indices_torch32</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We are planning to handle this issue more gracefully in a future release.</p>
+</section>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this heading"></a></h2>
+<p>The tensor API is currently only supported for the PhysX backend.</p>
+<p>There are also some limitations when using the tensor API with the GPU pipeline.  These don’t apply with the CPU pipeline, but it is important to keep them in mind when writing code meant to run on both CPU and GPU.</p>
+<p>A tensor “setter” function, such as <code class="docutils literal notranslate"><span class="pre">set_actor_root_state_tensor_indexed</span></code>, should be called only once per step.  In other words, there should only be one call to a specific setter function in between calls to <code class="docutils literal notranslate"><span class="pre">gym.simulate</span></code>.  Instead of calling the function multiple times for different sets of actors, combine the actor indices in such a way that they can be updated in a single call.  For example, this code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">set_actor_root_state_tensor_indexed</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">root_states</span><span class="p">,</span> <span class="n">indices1</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">set_actor_root_state_tensor_indexed</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">root_states</span><span class="p">,</span> <span class="n">indices2</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>should be expressed as a single call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">set_actor_root_state_tensor_indexed</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">root_states</span><span class="p">,</span> <span class="n">combined_indices</span><span class="p">,</span> <span class="n">n_total</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">combined_indices</span></code> is the union of <code class="docutils literal notranslate"><span class="pre">indices1</span></code> and <code class="docutils literal notranslate"><span class="pre">indices2</span></code> and <code class="docutils literal notranslate"><span class="pre">n_total</span></code> is the number of <code class="docutils literal notranslate"><span class="pre">combined_indices</span></code>.</p>
+<p>Combining state updates into a single call can also improve performance, so it is a good practice to do so.</p>
+<p>Another limitation with the GPU pipeline is that tensor “refresh” functions should be called only once per step, before any calls to tensor setter functions.  Calling a tensor refresh function after a tensor setter function may return stale data when there is no call to <code class="docutils literal notranslate"><span class="pre">gym.simulate</span></code> in between.  Consider this code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gym</span><span class="o">.</span><span class="n">set_dof_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">dof_states</span><span class="p">)</span>
+<span class="n">gym</span><span class="o">.</span><span class="n">refresh_rigid_body_state_tensor</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The call to <code class="docutils literal notranslate"><span class="pre">set_dof_state_tensor</span></code> sets new DOF states for all the actors.  Under the hood, these new values are recorded, but they do not get applied until a subsequent call to <code class="docutils literal notranslate"><span class="pre">gym.simulate</span></code>.  Thus calling <code class="docutils literal notranslate"><span class="pre">refresh_rigid_body_state_tensor</span></code> will return stale values until a call to <code class="docutils literal notranslate"><span class="pre">gym.simulate</span></code> is made.  The recommended approach is to formulate algorithms in a way that refreshes state tensors only once after each call to <code class="docutils literal notranslate"><span class="pre">gym.simulate</span></code>, and before any calls are made to tensor setter functions.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="physics.html" class="btn btn-neutral float-left" title="Physics Simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="forcesensors.html" class="btn btn-neutral float-right" title="Force Sensors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

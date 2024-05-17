@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bundled Assets &mdash; Isaac Gym  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/isaac_custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Programming" href="../programming/index.html" />
+    <link rel="prev" title="Reinforcement Learning Examples" href="rl.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Isaac Gym
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_gym.html">About Isaac Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simple.html">Programming Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl.html">Reinforcement Learning Examples</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Bundled Assets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#articulated-models">Articulated Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mjcf-models">MJCF Models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#urdf-models">URDF Models</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#textures">Textures</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming/index.html">Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Isaac Gym</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Examples</a> &raquo;</li>
+      <li>Bundled Assets</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bundled-assets">
+<h1>Bundled Assets<a class="headerlink" href="#bundled-assets" title="Permalink to this heading"></a></h1>
+<section id="articulated-models">
+<h2>Articulated Models<a class="headerlink" href="#articulated-models" title="Permalink to this heading"></a></h2>
+<p>The following color scheme is used to represent the articulated models below.</p>
+<div class="graphviz"><img src="../_images/graphviz-5073c5da15370ac3c1491b01cafffcb9b79c41fb.png" alt="digraph {
+graph [aspect=1 concentrate=true ordering=out ratio=compress];
+node [ fontname=Roboto ];
+edge [ fontname=Roboto ];
+A [label=&quot;Root Rigid Body&quot; shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#6F6F6F&quot;]
+B [label=&quot;Rigid Body&quot; shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+C [label=&quot;Rigid Body&quot; shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+D [label=&quot;Rigid Body&quot; shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+E [label=&quot;Rigid Body&quot; shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+F [label=&quot;Rigid Body&quot; shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+A -&gt; B[label=&quot;Revolute Joint&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+C -&gt; D[label=&quot;Fixed Joint&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+E -&gt; F[label=&quot;Prismatic Joint&quot; fillcolor=&quot;#C7F464&quot; color=&quot;#C7F464&quot;]
+}" class="graphviz" /></div>
+<section id="mjcf-models">
+<h3>MJCF Models<a class="headerlink" href="#mjcf-models" title="Permalink to this heading"></a></h3>
+<section id="ant-assets-mjcf-nv-ant-xml">
+<h4>Ant <code class="code docutils literal notranslate"><span class="pre">assets/mjcf/nv_ant.xml</span></code><a class="headerlink" href="#ant-assets-mjcf-nv-ant-xml" title="Permalink to this heading"></a></h4>
+<div class="graphviz"><img src="../_images/graphviz-c662e661969e842d97c460c75b15b32ccca7a6fc.png" alt="digraph {
+ graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+ node [ fontname=Roboto ];
+ edge [ fontname=Roboto ];
+ torso [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#6F6F6F&quot;]
+ front_left_leg [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+ front_left_foot [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+ front_right_leg [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+ front_right_foot [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+ left_back_leg [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+ left_back_foot [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+ right_back_leg [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+ right_back_foot [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+ torso -&gt; front_left_leg [label=&quot;hip_1&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+ front_left_leg -&gt; front_left_foot [label=&quot;ankle_1&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+ torso -&gt; front_right_leg [label=&quot;hip_2&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+ front_right_leg -&gt; front_right_foot [label=&quot;ankle_2&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+ torso -&gt; left_back_leg [label=&quot;hip_3&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+ left_back_leg -&gt; left_back_foot [label=&quot;ankle_3&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+ torso -&gt; right_back_leg [label=&quot;hip_4&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+ right_back_leg -&gt; right_back_foot [label=&quot;ankle_4&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+}" class="graphviz" /></div>
+</section>
+<hr class="docutils" />
+<section id="humanoid-assets-mjcf-nv-humanoid-xml">
+<h4>Humanoid <code class="code docutils literal notranslate"><span class="pre">assets/mjcf/nv_humanoid.xml</span></code><a class="headerlink" href="#humanoid-assets-mjcf-nv-humanoid-xml" title="Permalink to this heading"></a></h4>
+<div class="graphviz"><img src="../_images/graphviz-155c759804530a8a66c3e88877a9b6cb1a35be9b.png" alt="digraph {
+graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+node [ fontname=Roboto ];
+edge [ fontname=Roboto ];
+torso [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#6F6F6F&quot;]
+lwaist [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+pelvis [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+right_thigh [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+right_shin [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+right_foot [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+left_thigh [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+left_shin [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+left_foot [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+right_upper_arm [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+right_lower_arm [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+left_upper_arm [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+left_lower_arm [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+torso -&gt; lwaist [label=&quot;abdomen_z&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+torso -&gt; lwaist [label=&quot;abdomen_y&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+lwaist -&gt; pelvis [label=&quot;abdomen_x&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+pelvis -&gt; right_thigh [label=&quot;right_hip_x&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+pelvis -&gt; right_thigh [label=&quot;right_hip_z&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+pelvis -&gt; right_thigh [label=&quot;right_hip_y&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+right_thigh -&gt; right_shin [label=&quot;right_knee&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+right_shin -&gt; right_foot [label=&quot;right_ankle_y&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+right_shin -&gt; right_foot [label=&quot;right_ankle_x&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+pelvis -&gt; left_thigh [label=&quot;left_hip_x&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+pelvis -&gt; left_thigh [label=&quot;left_hip_z&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+pelvis -&gt; left_thigh [label=&quot;left_hip_y&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+left_thigh -&gt; left_shin [label=&quot;left_knee&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+left_shin -&gt; left_foot [label=&quot;left_ankle_y&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+left_shin -&gt; left_foot [label=&quot;left_ankle_x&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+torso -&gt; right_upper_arm [label=&quot;right_shoulder1&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+torso -&gt; right_upper_arm [label=&quot;right_shoulder2&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+right_upper_arm -&gt; right_lower_arm [label=&quot;right_elbow&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+torso -&gt; left_upper_arm [label=&quot;left_shoulder1&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+torso -&gt; left_upper_arm [label=&quot;left_shoulder2&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+left_upper_arm -&gt; left_lower_arm [label=&quot;left_elbow&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+}" class="graphviz" /></div>
+</section>
+</section>
+<section id="urdf-models">
+<h3>URDF Models<a class="headerlink" href="#urdf-models" title="Permalink to this heading"></a></h3>
+<section id="anymal-assets-urdf-anymal-b-simple-description-urdf-anymal-urdf">
+<h4>Anymal <code class="code docutils literal notranslate"><span class="pre">assets/urdf/anymal_b_simple_description/urdf/anymal.urdf</span></code><a class="headerlink" href="#anymal-assets-urdf-anymal-b-simple-description-urdf-anymal-urdf" title="Permalink to this heading"></a></h4>
+<div class="graphviz"><img src="../_images/graphviz-9ea6e68aae281f6116674bc214e7636ddfcc6e24.png" alt="digraph {
+graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+node [ fontname=Roboto ];
+edge [ fontname=Roboto ];
+base [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#6F6F6F&quot;]
+LF_HIP [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+LF_THIGH [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+LF_SHANK [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+LF_ADAPTER [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+LF_FOOT [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+LH_HIP [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+LH_THIGH [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+LH_SHANK [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+LH_ADAPTER [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+LH_FOOT [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+RF_HIP [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+RF_THIGH [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+RF_SHANK [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+RF_ADAPTER [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+RF_FOOT [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+RH_HIP [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+RH_THIGH [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+RH_SHANK [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+RH_ADAPTER [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+RH_FOOT [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+base -&gt; LF_HIP [label=&quot;LF_HAA&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+LF_HIP -&gt; LF_THIGH [label=&quot;LF_HFE&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+LF_THIGH -&gt; LF_SHANK [label=&quot;LF_KFE&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+LF_SHANK -&gt; LF_ADAPTER [label=&quot;LF_SHANK_TO_ADAPTER&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+LF_ADAPTER -&gt; LF_FOOT [label=&quot;LF_ADAPTER_TO_FOOT&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+base -&gt; LH_HIP [label=&quot;LH_HAA&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+LH_HIP -&gt; LH_THIGH [label=&quot;LH_HFE&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+LH_THIGH -&gt; LH_SHANK [label=&quot;LH_KFE&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+LH_SHANK -&gt; LH_ADAPTER [label=&quot;LH_SHANK_TO_ADAPTER&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+LH_ADAPTER -&gt; LH_FOOT [label=&quot;LH_ADAPTER_TO_FOOT&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+base -&gt; RF_HIP [label=&quot;RF_HAA&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+RF_HIP -&gt; RF_THIGH [label=&quot;RF_HFE&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+RF_THIGH -&gt; RF_SHANK [label=&quot;RF_KFE&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+RF_SHANK -&gt; RF_ADAPTER [label=&quot;RF_SHANK_TO_ADAPTER&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+RF_ADAPTER -&gt; RF_FOOT [label=&quot;RF_ADAPTER_TO_FOOT&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+base -&gt; RH_HIP [label=&quot;RH_HAA&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+RH_HIP -&gt; RH_THIGH [label=&quot;RH_HFE&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+RH_THIGH -&gt; RH_SHANK [label=&quot;RH_KFE&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+RH_SHANK -&gt; RH_ADAPTER [label=&quot;RH_SHANK_TO_ADAPTER&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+RH_ADAPTER -&gt; RH_FOOT [label=&quot;RH_ADAPTER_TO_FOOT&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+}" class="graphviz" /></div>
+<hr class="docutils" />
+</section>
+<section id="franka-panda-assets-urdf-franka-description-robots-franka-panda-urdf">
+<span id="franka-asset"></span><h4>Franka Panda <code class="code docutils literal notranslate"><span class="pre">assets/urdf/franka_description/robots/franka_panda.urdf</span></code><a class="headerlink" href="#franka-panda-assets-urdf-franka-description-robots-franka-panda-urdf" title="Permalink to this heading"></a></h4>
+<div class="graphviz"><img src="../_images/graphviz-67576ed59e6f8039c971b6bde8c1d82f21e288a7.png" alt="digraph {
+graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+node [ fontname=Roboto ];
+edge [ fontname=Roboto ];
+panda_link0 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#6F6F6F&quot;]
+panda_link1 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+panda_link2 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+panda_link3 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+panda_link4 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+panda_link5 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+panda_link6 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+panda_link7 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+panda_hand [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+panda_leftfinger [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+panda_rightfinger [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+panda_link0 -&gt; panda_link1 [label=&quot;panda_joint1&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+panda_link1 -&gt; panda_link2 [label=&quot;panda_joint2&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+panda_link2 -&gt; panda_link3 [label=&quot;panda_joint3&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+panda_link3 -&gt; panda_link4 [label=&quot;panda_joint4&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+panda_link4 -&gt; panda_link5 [label=&quot;panda_joint5&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+panda_link5 -&gt; panda_link6 [label=&quot;panda_joint6&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+panda_link6 -&gt; panda_link7 [label=&quot;panda_joint7&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+panda_link7 -&gt; panda_hand [label=&quot;panda_hand_joint&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+panda_hand -&gt; panda_leftfinger [label=&quot;panda_finger_joint1&quot; fillcolor=&quot;#C7F464&quot; color=&quot;#C7F464&quot;]
+panda_hand -&gt; panda_rightfinger [label=&quot;panda_finger_joint2&quot; fillcolor=&quot;#C7F464&quot; color=&quot;#C7F464&quot;]
+}" class="graphviz" /></div>
+</section>
+<hr class="docutils" />
+<section id="kinova-jaco-assets-urdf-kinova-description-urdf-kinova-urdf">
+<h4>Kinova Jaco <code class="code docutils literal notranslate"><span class="pre">assets/urdf/kinova_description/urdf/kinova.urdf</span></code><a class="headerlink" href="#kinova-jaco-assets-urdf-kinova-description-urdf-kinova-urdf" title="Permalink to this heading"></a></h4>
+<div class="graphviz"><img src="../_images/graphviz-f87ed2bbb35cec2e55a2b5072ce6f7bf2fab7457.png" alt="digraph {
+graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+node [ fontname=Roboto ];
+edge [ fontname=Roboto ];
+kinova_link_base [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#6F6F6F&quot;]
+kinova_link_1 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_2 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_3 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_4 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_5 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_6 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_end_effector [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_finger_1 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_finger_tip_1 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_finger_2 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_finger_tip_2 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_finger_3 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_finger_tip_3 [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+kinova_link_base -&gt; kinova_link_1 [label=&quot;kinova_joint_1&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+kinova_link_1 -&gt; kinova_link_2 [label=&quot;kinova_joint_2&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+kinova_link_2 -&gt; kinova_link_3 [label=&quot;kinova_joint_3&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+kinova_link_3 -&gt; kinova_link_4 [label=&quot;kinova_joint_4&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+kinova_link_4 -&gt; kinova_link_5 [label=&quot;kinova_joint_5&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+kinova_link_5 -&gt; kinova_link_6 [label=&quot;kinova_joint_6&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+kinova_link_6 -&gt; kinova_end_effector [label=&quot;kinova_joint_end_effector&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+kinova_link_6 -&gt; kinova_link_finger_1 [label=&quot;kinova_joint_finger_1&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+kinova_link_finger_1 -&gt; kinova_link_finger_tip_1 [label=&quot;kinova_joint_finger_tip_1&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+kinova_link_6 -&gt; kinova_link_finger_2 [label=&quot;kinova_joint_finger_2&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+kinova_link_finger_2 -&gt; kinova_link_finger_tip_2 [label=&quot;kinova_joint_finger_tip_2&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+kinova_link_6 -&gt; kinova_link_finger_3 [label=&quot;kinova_joint_finger_3&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+kinova_link_finger_3 -&gt; kinova_link_finger_tip_3 [label=&quot;kinova_joint_finger_tip_3&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+}" class="graphviz" /></div>
+</section>
+<hr class="docutils" />
+<section id="cabinet-assets-urdf-sektion-cabinet-model-urdf-sektion-cabinet-urdf">
+<h4>Cabinet <code class="code docutils literal notranslate"><span class="pre">assets/urdf/sektion_cabinet_model/urdf/sektion_cabinet.urdf</span></code><a class="headerlink" href="#cabinet-assets-urdf-sektion-cabinet-model-urdf-sektion-cabinet-urdf" title="Permalink to this heading"></a></h4>
+<div class="graphviz"><img src="../_images/graphviz-d353dcebd4616827fdc04cf9774ea48d17908841.png" alt="digraph {
+graph [aspect=1 concentrate=true ordering=out ratio=compress ];
+node [ fontname=Roboto ];
+edge [ fontname=Roboto ];
+sektion [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#6F6F6F&quot;]
+door_left_link [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+door_left_nob_link [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+door_right_link [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+door_right_nob_link [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+drawer_bottom [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+drawer_handle_bottom [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+drawer_top [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+drawer_handle_top [shape=&quot;polygon&quot; style=&quot;filled&quot; fillcolor=&quot;#76b900&quot;]
+sektion -&gt; door_left_link [label=&quot;door_left_joint&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+door_left_link -&gt; door_left_nob_link [label=&quot;door_left_nob_transform&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+sektion -&gt; door_right_link [label=&quot;door_right_joint&quot; fillcolor=&quot;#4ECDC4&quot; color=&quot;#4ECDC4&quot;]
+door_right_link -&gt; door_right_nob_link [label=&quot;door_right_nob_transform&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+sektion -&gt; drawer_bottom [label=&quot;drawer_bottom_joint&quot; fillcolor=&quot;#C7F464&quot; color=&quot;#C7F464&quot;]
+drawer_bottom -&gt; drawer_handle_bottom [label=&quot;drawer_handle_bottom_joint&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+sektion -&gt; drawer_top [label=&quot;drawer_top_joint&quot; fillcolor=&quot;#C7F464&quot; color=&quot;#C7F464&quot;]
+drawer_top -&gt; drawer_handle_top [label=&quot;drawer_handle_top_joint&quot; fillcolor=&quot;#556270&quot; color=&quot;#556270&quot;]
+}" class="graphviz" /></div>
+</section>
+</section>
+</section>
+<section id="textures">
+<h2>Textures<a class="headerlink" href="#textures" title="Permalink to this heading"></a></h2>
+<p>The following texture assets are available in gym for visualization and domain randomization purposes</p>
+<ul class="simple">
+<li><p>background_texture_metal_rust.jpg</p></li>
+<li><p>metal_wall_iron_fence.jpg</p></li>
+<li><p>particle_board_paint_aged.jpg</p></li>
+<li><p>pebble_stone_texture_nature.jpg</p></li>
+<li><p>texture_background_wall_paint_2.jpg</p></li>
+<li><p>texture_background_wall_paint_3.jpg</p></li>
+<li><p>texture_license.txt</p></li>
+<li><p>texture_stone_stone_texture_0.jpg</p></li>
+<li><p>texture_wood_brown_1033760.jpg</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="rl.html" class="btn btn-neutral float-left" title="Reinforcement Learning Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../programming/index.html" class="btn btn-neutral float-right" title="Programming" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2021, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

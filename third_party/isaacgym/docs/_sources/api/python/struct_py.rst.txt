@@ -1,0 +1,119 @@
+Python Structures
+#################
+
+
+.. autoclass:: isaacgym.gymapi.Version
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.Vec3
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.Quat
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.Transform
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.RigidBodyState
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.RigidBodyProperties
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.DofState
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.DofFrame
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.Velocity
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.Mat33
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.Mat44
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.IndexRange
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.PlaneParams
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.AttractorProperties
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.RigidShapeProperties
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.ForceSensorProperties
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.SoftMaterial
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.Tensor
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.RigidContact
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.ActionEvent
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.FlexParams
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.PhysXParams
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.SimParams
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.AssetOptions
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.CameraProperties
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.PerformanceTimers
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.VhacdParams
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.HeightFieldParams
+    :members:
+    :undoc-members:
+
+.. autoclass:: isaacgym.gymapi.TriangleMeshParams
+    :members:
+    :undoc-members:
