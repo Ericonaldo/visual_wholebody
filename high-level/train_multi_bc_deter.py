@@ -192,7 +192,7 @@ class Policy(DeterministicMixin, Model):
     
     
 def create_env(cfg, args, mode):
-    from envs import B1Z1PickMulti, B1Z1PickMultiIphone, B1Z1PickMultiTwoFinger, B1Z1PickMultiD405, B1Z1PickMultiStand, B1Z1Float
+    from envs import B1Z1PickMulti, B1Z1Float
     import utils.wrapper as wrapper
 
     cfg["sensor"]["enableCamera"] = True
@@ -334,10 +334,7 @@ def get_trainer(is_eval=False):
     teacher_action_space = env.action_space
     teacher_obs_space = env.observation_space
     # ------------------- PPO CONFIG -------------------
-    if args.task != "B1Z1Goal" and args.task != "B1Z1Cabinet":
-        cfg_ppo = PPO_DEFAULT_CONFIG.copy()
-    else:
-        cfg_ppo = ReachPPO_DEFAULT_CONFIG.copy()
+    cfg_ppo = PPO_DEFAULT_CONFIG.copy()
     cfg_ppo["rollouts"] = 24  # memory_size
     cfg_ppo["learning_epochs"] = 5
     cfg_ppo["mini_batches"] = 6  # 24 * 8192 / 32768

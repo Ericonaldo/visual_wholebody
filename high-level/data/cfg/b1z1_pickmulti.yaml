@@ -17,7 +17,7 @@ env:
   holdSteps: 25
   lastCommands: False
 
-  low_policy_path: "data/low_policy/jan17-frontfeet_terrainflat_linrew2_freq2_gaitstopzero_penelizeang_roll_fixbug_35600.pt"
+  low_policy_path: "/home/mhliu/visual_wholebody/low-level/logs/b1z1-low/SOME_YOUR_DESCRIPTION/model_0.pt" # "data/low_policy/jan17-frontfeet_terrainflat_linrew2_freq2_gaitstopzero_penelizeang_roll_fixbug_35600.pt"
 
   asset:
     assetRoot: "data/asset"

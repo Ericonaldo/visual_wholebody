@@ -19,6 +19,7 @@ from skrl.utils import set_seed
 from envs import *
 
 from utils.config import load_cfg, get_params, copy_cfg
+import utils.wrapper as wrapper
 
 set_seed(43)
 

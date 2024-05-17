@@ -11,11 +11,12 @@ The environment related code is `legged_gym/legged_gym/envs/manip_loco/manip_loc
 
 ```bash
 cd legged_gym/scripts
-python train.py --headless --exptid SOME_YOUR_DESCRIPTION --proj_name b1z1-low --task b1z1 --sim_device cuda:0 --rl_device cuda:0
+python train.py --headless --exptid SOME_YOUR_DESCRIPTION --proj_name b1z1-low --task b1z1 --sim_device cuda:0 --rl_device cuda:0 --observe_gait_commands
 ```
 - `--debug` disables wandb and set a small number of envs for faster execution.
 - `--headless` disables rendering, typically used when you train model.
 - `--proj_name` the folder containing all your logs and wandb project name. `manip-loco` as default.
+- `--observe_gait_commands` is for tracking specific gait commands and learn the trotting behavior.
 
 Check `legged_gym/legged_gym/utils/helpers.py` for all command line args.
 
@@ -23,7 +24,7 @@ Check `legged_gym/legged_gym/utils/helpers.py` for all command line args.
 Only need to specify `--exptid`. The parser will automatically find corresponding runs.
 ```bash
 cd legged_gym/scripts
-python play.py --exptid SOME_YOUR_DESCRIPTION --task b1z1 --proj_name b1z1-low --checkpoint 64000
+python play.py --exptid SOME_YOUR_DESCRIPTION --task b1z1 --proj_name b1z1-low --checkpoint 64000 --observe_gait_commands
 ```
 Use `--sim_device cpu --rl_device cpu` in case no enough gpu memory.
 
