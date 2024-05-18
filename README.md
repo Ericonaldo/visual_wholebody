@@ -59,7 +59,7 @@ Detailed code structures can be found in these directories.
 ## Codebase Contributions
 
 - [Minghuan Liu](minghuanliu.com) made efforts on improving the training efficiency, reward engineering, filling sim2real gaps, and reach expected behaviors, while cleaning and integrating the whole codebase for simplicity.
-- [Zixuan Chen](zixuan417.github.io) initialized the code base and made early progress on reward design, training, and testing, along with some baselines.
+- [Zixuan Chen](zixuan417.github.io) initialized the code base and made early progress on reward design, training, testing, and sim2real transferring, along with some baselines.
 - [Xuxin Cheng](https://chengxuxin.github.io/) shared a lot of domain knowledge and reward experience on locomotion and low-level policy training, and helped debug the code.
 - [Yandong Ji](https://yandongji.github.io/) provided several suggestions and helped debug the code.
 
