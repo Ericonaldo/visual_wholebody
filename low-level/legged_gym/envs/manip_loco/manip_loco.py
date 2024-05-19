@@ -1011,14 +1011,7 @@ class ManipLoco(LeggedRobot):
         ee_goal_local_cart = quat_rotate_inverse(self.base_quat, self.curr_ee_goal_cart_world - arm_base_pos)
         if self.stand_by:
             self.commands[:] = 0.
-        # self.commands[:, 2] = 0.
-        # if self.global_steps < 300:
-        #     self.commands[:, 0] = 0.
-        # else:
-        #     self.commands[:, 0] = 0.5
-            # self.commands[:, 2] = 0.2
-        # self.curr_ee_goal_sphere = torch.tensor([0.5, np.pi/8, 0], device=self.device).repeat(self.num_envs, 1)
-        # print("commands: ", self.commands)
+        
         if self.vel_obs:
             obs_buf = torch.cat((       self.get_body_orientation(),  # dim 2
                                         self.base_ang_vel * self.obs_scales.ang_vel,  # dim 3
