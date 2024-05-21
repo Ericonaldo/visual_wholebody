@@ -21,7 +21,7 @@ pip install torch torchvision torchaudio
 
 cd third_party/isaacgym/python && pip install -e .
 
-cd ../../..
+cd ../..
 cd rsl_rl && pip install -e .
 
 cd ../..
