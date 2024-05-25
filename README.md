@@ -24,7 +24,7 @@ cd third_party/isaacgym/python && pip install -e .
 cd ../..
 cd rsl_rl && pip install -e .
 
-cd ../..
+cd ..
 cd skrl && pip install -e .
 
 cd ../..
