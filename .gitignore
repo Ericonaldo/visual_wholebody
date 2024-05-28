@@ -11,7 +11,7 @@ IsaacGymEnvs/
 **/test_only.py
 **/test.py
 **/imgs
-**/*.png
+# **/*.png
 # **/*.jpg
 **/recorded_frames
 **events*
