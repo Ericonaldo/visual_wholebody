@@ -324,7 +324,8 @@ class ManipLoco(LeggedRobot):
         self.envs = []
         self.mass_params_tensor = torch.zeros(self.num_envs, 5, dtype=torch.float, device=self.device, requires_grad=False)
         for i in range(self.num_envs):
-            arm_kp = np.random.uniform(300,400)
+            arm_kp = 400
+            # arm_kp = np.random.uniform(300,400)
             
             dof_props_asset['driveMode'][12:].fill(gymapi.DOF_MODE_POS)  # set arm to pos control
             dof_props_asset['stiffness'][12:].fill(arm_kp)
