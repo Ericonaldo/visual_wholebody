@@ -465,20 +465,60 @@ class LeggedRobot(BaseTask):
             [torch.Tensor]: Vector of scales used to multiply a uniform distribution in [-1, 1]
         """
 
-        if self.num_actions != 12:
+        if self.num_actions != 18:
             raise NotImplementedError("Noise scale is only implemented for action space of 12")
 
         noise_vec = torch.zeros_like(self.obs_buf[0])
         self.add_noise = self.cfg.noise.add_noise
         noise_scales = self.cfg.noise.noise_scales
         noise_level = self.cfg.noise.noise_level
-        noise_vec[:3] = noise_scales.lin_vel * noise_level * self.obs_scales.lin_vel
-        noise_vec[3:6] = noise_scales.ang_vel * noise_level * self.obs_scales.ang_vel
-        noise_vec[6:9] = noise_scales.gravity * noise_level
-        noise_vec[9:12] = 0. # commands
-        noise_vec[12:24] = noise_scales.dof_pos * noise_level * self.obs_scales.dof_pos
-        noise_vec[24:36] = noise_scales.dof_vel * noise_level * self.obs_scales.dof_vel
-        noise_vec[36:48] = 0. # previous actions
+
+        idx = 0
+
+        # Body orientation (dim 2)
+        noise_vec[idx:idx+2] = 0  # Assuming no noise for body orientation
+        idx += 2
+
+        # Angular velocity (dim 3)   
+        noise_vec[idx:idx+3] = noise_scales.ang_vel * noise_level * self.obs_scales.ang_vel
+        idx += 3
+
+        # DOF positions (dim 12) b1
+        noise_vec[idx:idx+12] = noise_scales.dof_pos * noise_level * self.obs_scales.dof_pos
+        idx += 12
+
+        # DOF positions (dim 6) z1
+        noise_vec[idx:idx+6] = 0
+        idx += 6
+
+        # DOF velocities (dim 12)
+        noise_vec[idx:idx+12] = noise_scales.dof_vel * noise_level * self.obs_scales.dof_vel
+        idx += 12
+
+        # DOF velocities (dim 6)
+        noise_vec[idx:idx+6] = 0
+        idx += 6
+
+        # Action history (dim 12)
+        noise_vec[idx:idx+12] = 0  # Assuming no noise for action history
+        idx += 12
+
+        # Foot contacts (dim 4)
+        noise_vec[idx:idx+4] = 0  # Assuming no noise for foot contacts
+        idx += 4
+
+        # Commands (dim 3)
+        noise_vec[idx:idx+3] = 0  # Assuming no noise for commands
+        idx += 3
+
+        # End-effector goal position (dim 3)
+        noise_vec[idx:idx+3] = 0  # Assuming no noise for end-effector goal position
+        idx += 3
+
+        # End-effector goal orientation (dim 3)
+        noise_vec[idx:idx+3] = 0  # Assuming no noise for end-effector goal orientation
+        idx += 3
+
         if self.cfg.terrain.measure_heights:
             noise_vec[48:235] = noise_scales.height_measurements* noise_level * self.obs_scales.height_measurements
         return noise_vec

@@ -250,14 +250,11 @@ class ManipLoco(LeggedRobot):
         asset_options.disable_gravity = self.cfg.asset.disable_gravity
         asset_options.use_mesh_materials = True
 
-        # widowGo1
+        # Robot
         robot_asset = self.gym.load_asset(self.sim, asset_root, asset_file, asset_options)
         self.num_dofs = self.gym.get_asset_dof_count(robot_asset)
         self.num_bodies = self.gym.get_asset_rigid_body_count(robot_asset)
         dof_props_asset = self.gym.get_asset_dof_properties(robot_asset)
-        # dof_props_asset['driveMode'][12:].fill(gymapi.DOF_MODE_POS)  # set arm to pos control
-        # dof_props_asset['stiffness'][12:].fill(400.0)
-        # dof_props_asset['damping'][12:].fill(40.0)
         rigid_shape_props_asset = self.gym.get_asset_rigid_shape_properties(robot_asset)
         self.body_names = self.gym.get_asset_rigid_body_names(robot_asset)
         self.body_names_to_idx = self.gym.get_asset_rigid_body_dict(robot_asset)
@@ -825,7 +822,7 @@ class ManipLoco(LeggedRobot):
             return
 
         # self.commands[env_ids, 0] = torch_rand_float(self.command_ranges["lin_vel_x"][0], self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
-        if self.global_steps < 3000 * 24: # 3000 can learn forward
+        if self.global_steps < 5000 * 24: # 5000 can learn forward
             self.commands[env_ids, 0] = torch_rand_float(0, self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
         else:
             self.commands[env_ids, 0] = torch_rand_float(self.command_ranges["lin_vel_x"][0], self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)

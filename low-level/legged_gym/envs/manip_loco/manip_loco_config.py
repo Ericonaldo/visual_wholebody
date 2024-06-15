@@ -104,7 +104,7 @@ class ManipLocoCfg( LeggedRobotCfg ):
         clip_actions = 100.
 
     class env:
-        num_envs = 2048
+        num_envs = 6144
         num_actions = 12 + 6 #CAUTION
         num_torques = 12 + 6
         action_delay = -1  # -1 for no delay

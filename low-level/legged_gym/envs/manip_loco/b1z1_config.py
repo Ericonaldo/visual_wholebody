@@ -55,7 +55,7 @@ class B1Z1RoughCfg( ManipLocoCfg ):
         num_commands = 3
         resampling_time = 3. # time before command are changed[s]
 
-        lin_vel_x_schedule = [0, 1]
+        lin_vel_x_schedule = [0, 0.5]
         ang_vel_yaw_schedule = [0, 1]
         tracking_ang_vel_yaw_schedule = [0, 1]
 
@@ -64,7 +64,7 @@ class B1Z1RoughCfg( ManipLocoCfg ):
         ang_vel_pitch_clip = ang_vel_yaw_clip
 
         class ranges:
-            lin_vel_x = [-0.6, 0.6] # min max [m/s]
+            lin_vel_x = [-0.8, 0.8] # min max [m/s]
             # lin_vel_y = [0, 0]   # min max [m/s]
             ang_vel_yaw = [-1.0, 1.0]    # min max [rad/s]
             ang_vel_pitch = [-1.0, 1.0]    # min max [rad/s]
@@ -80,6 +80,7 @@ class B1Z1RoughCfg( ManipLocoCfg ):
         frequencies = 2
         observe_velocities = True
         stand_only = False
+        pitch_control = False
 
     class init_state( ManipLocoCfg.init_state ):
         pos = [0.0, 0.0, 0.5] # x,y,z [m]
@@ -142,9 +143,9 @@ class B1Z1RoughCfg( ManipLocoCfg ):
             dof_error = 0.0 # -0.06 # -0.04
             alive = 1.0
             lin_vel_z = -1.5
-            roll = -2.0
+            # roll = -2.0
             
-            tracking_ang_pitch_vel = 0.5 # New reward, only useful when pitch_control = True
+            # tracking_ang_pitch_vel = 0.5 # New reward, only useful when pitch_control = True
 
             # common rewards
             feet_air_time = 1.0
