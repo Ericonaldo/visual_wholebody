@@ -184,8 +184,8 @@ class ManipLocoCfg( LeggedRobotCfg ):
         leg_motor_strength_range = [0.7, 1.3]
         arm_motor_strength_range = [0.7, 1.3]
         
-        randomize_rigids_after_start = True
-        randomize_restitution = True
+        randomize_rigids_after_start = False # True
+        randomize_restitution = False # True
         restitution_range = [0.0, 1.0]
 
         randomize_gripper_mass = True

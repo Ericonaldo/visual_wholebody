@@ -143,7 +143,7 @@ class B1Z1RoughCfg( ManipLocoCfg ):
             dof_error = 0.0 # -0.06 # -0.04
             alive = 1.0
             lin_vel_z = -1.5
-            # roll = -2.0
+            roll = -2.0
             
             # tracking_ang_pitch_vel = 0.5 # New reward, only useful when pitch_control = True
 
