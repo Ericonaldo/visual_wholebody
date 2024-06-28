@@ -8,6 +8,14 @@ Related to paper <[Visual Whole-Body Control for Legged Loco-Manipulation](https
 <img src="./teaser.jpg" width="80%"/>
 </p>
 
+## Model learning reference
+
+Low-level learning curves: [wandb](https://wandb.ai/ericonaldo/b1z1-low)
+
+High-level learning curves: [wandb](https://wandb.ai/ericonaldo/b1-pick-multi-teacher)
+
+A low-level model weights: https://drive.google.com/file/d/17mqS3TE38uuDl4yXC8RDCtDw8Ng3HLC4/view?usp=sharing
+
 ## Set up the environment
 ```bash
 conda create -n b1z1 python=3.8 # isaacgym requires python <=3.8
