@@ -1587,9 +1587,9 @@ class ManipLoco(LeggedRobot):
         first_contact = (self.feet_air_time > 0.) * self.foot_contacts_from_sensor  #self.contact_filt
         self.feet_air_time += self.dt
         # All legs
-        # rew_airTime = torch.sum((self.feet_air_time - 0.5) * first_contact, dim=1) # reward only on first contact with the ground
+        rew_airTime = torch.sum((self.feet_air_time - 0.5) * first_contact, dim=1) # reward only on first contact with the ground
         # Only consider the front legs
-        rew_airTime = torch.sum((self.feet_air_time[:, :2] - 0.5) * first_contact[:, :2], dim=1)
+        # rew_airTime = torch.sum((self.feet_air_time[:, :2] - 0.5) * first_contact[:, :2], dim=1)
         rew_airTime *= self.get_walking_cmd_mask()  # reward for stepping for any of the 3 motions
         self.feet_air_time *= ~ self.foot_contacts_from_sensor  #self.contact_filt
         return rew_airTime, rew_airTime
