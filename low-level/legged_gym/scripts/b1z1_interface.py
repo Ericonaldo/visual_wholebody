@@ -13,6 +13,17 @@ import sys
 
 np.set_printoptions(precision=3, suppress=True)
 
+B1_FREQ = 50
+B1_STEP_TIME = 1./B1_FREQ
+LOW_HIGH_RATE = 5
+Z1_FREQ = 500
+
+LIN_VEL_X_CLIP = 0.15
+ANG_VEL_YAW_CLIP = 0.3
+ANG_VEL_PITCH_CLIP = ANG_VEL_YAW_CLIP
+
+GAIT_WAIT_TIME = 35
+
 class ManipLoco_Policy():
     def __init__(self, args) -> None:
         self.args = args
