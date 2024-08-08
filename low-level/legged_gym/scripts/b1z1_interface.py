@@ -13,17 +13,6 @@ import sys
 
 np.set_printoptions(precision=3, suppress=True)
 
-B1_FREQ = 50
-B1_STEP_TIME = 1./B1_FREQ
-LOW_HIGH_RATE = 5
-Z1_FREQ = 500
-
-LIN_VEL_X_CLIP = 0.15
-ANG_VEL_YAW_CLIP = 0.3
-ANG_VEL_PITCH_CLIP = ANG_VEL_YAW_CLIP
-
-GAIT_WAIT_TIME = 35
-
 class ManipLoco_Policy():
     def __init__(self, args) -> None:
         self.args = args
@@ -101,10 +90,7 @@ class ManipLoco_Policy():
 
         self.obs, _, rews, arm_rews, dones, infos = self.env.step(actions.detach())
 
-        # import pdb; pdb.set_trace()
         if self.timestamp % 10 == 0:
-            # print("commands:",self.obs[0, 57:66])
-            # import pdb; pdb.set_trace()
             print(self.env.ee_pos,self.env.curr_ee_goal_cart_world)
         stop_time = time.time()
         duration = stop_time - start_time
@@ -122,10 +108,3 @@ if __name__ == "__main__":
     manipLoco = ManipLoco_Policy(args)
     while True:
         manipLoco.step()
-
-
-
-
-        
-
-
