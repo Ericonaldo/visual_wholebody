@@ -101,10 +101,7 @@ class ManipLoco_Policy():
 
         self.obs, _, rews, arm_rews, dones, infos = self.env.step(actions.detach())
 
-        # import pdb; pdb.set_trace()
         if self.timestamp % 10 == 0:
-            # print("commands:",self.obs[0, 57:66])
-            # import pdb; pdb.set_trace()
             print(self.env.ee_pos,self.env.curr_ee_goal_cart_world)
         stop_time = time.time()
         duration = stop_time - start_time
@@ -122,10 +119,3 @@ if __name__ == "__main__":
     manipLoco = ManipLoco_Policy(args)
     while True:
         manipLoco.step()
-
-
-
-
-        
-
-
