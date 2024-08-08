@@ -37,89 +37,134 @@ from isaacgym import gymtorch, gymapi, gymutil
 from legged_gym.utils.math import quat_apply_yaw, wrap_to_pi, torch_rand_sqrt_float
 
 import torch
-# from torch.tensor import Tensor
 from typing import Tuple, Dict
 
 from legged_gym.envs.base.legged_robot import LeggedRobot
 from legged_gym import LEGGED_GYM_ROOT_DIR
 from legged_gym.utils.helpers import class_to_dict
 from legged_gym.utils.terrain import Terrain, Terrain_Perlin
-from .manip_loco_config import ManipLocoCfg
+from .b1z1_config import B1Z1RoughCfg
 
 import sys
 
 class ManipLoco(LeggedRobot):
     name = None
-    cfg: ManipLocoCfg
+    cfg: B1Z1RoughCfg
 
     def __init__(self, cfg, *args, **kwargs):
         if cfg.env.observe_gait_commands:
             print("||||||||||Observe gait commands!")
             cfg.env.num_proprio += 5 # gait_indices=1, clock_phase=4
-        self.vel_obs = cfg.env.observe_velocities
-        self.stand_only = cfg.env.stand_only
-        if not self.vel_obs:
-            cfg.env.num_proprio -= 21 # ang vel*3 + joint vel*18
-        cfg.env.num_observations = cfg.env.num_proprio * (cfg.env.history_len+1) + cfg.env.num_priv
-        self.num_obs = cfg.env.num_observations
+            cfg.env.num_observations = cfg.env.num_proprio * (cfg.env.history_len+1) + cfg.env.num_priv
+            self.num_obs = cfg.env.num_observations
         self.stand_by = cfg.env.stand_by
-        self.pitch_control = cfg.env.pitch_control
         super().__init__(cfg, *args, **kwargs)
 
-    def _parse_cfg(self, cfg):
-        self.num_torques = self.cfg.env.num_torques
-        self.dt = self.cfg.control.decimation * self.sim_params.dt
-        self.obs_scales = self.cfg.normalization.obs_scales
-        self.reward_scales = class_to_dict(self.cfg.rewards.scales)
-        self.arm_reward_scales = class_to_dict(self.cfg.rewards.arm_scales)
-        self.command_ranges = class_to_dict(self.cfg.commands.ranges)
-        self.goal_ee_ranges = class_to_dict(self.cfg.goal_ee.ranges)
+    def step(self, actions):
+        """ Apply actions, simulate, call self.post_physics_step()
 
-        if self.cfg.terrain.mesh_type not in ['heightfield', 'trimesh']:
-            self.cfg.terrain.curriculum = False
-        self.max_episode_length_s = self.cfg.env.episode_length_s
-        self.max_episode_length = np.ceil(self.max_episode_length_s / self.dt)
-        self.push_interval = np.ceil(self.cfg.domain_rand.push_interval_s / self.dt)
-        self.clip_actions = self.cfg.normalization.clip_actions
-        self.action_delay = self.cfg.env.action_delay
-        self.stop_update_goal = self.cfg.env.stop_update_goal
-        self.record_video = self.cfg.env.record_video
-
-    def _prepare_reward_function(self):
-        """ Prepares a list of reward functions, whcih will be called to compute the total reward.
-            Looks for self._reward_<REWARD_NAME>, where <REWARD_NAME> are names of all non zero reward scales in the cfg.
+        Args:
+            actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
-        self.reward_scales = {k:v for k,v in self.reward_scales.items() if v is not None and v != 0}
+        actions[:, 12:] = 0.
+        actions = self._reindex_all(actions)
+        actions = torch.clip(actions, -self.clip_actions, self.clip_actions).to(self.device)
+        # step physics and render each frame
+        self.render()
+        if self.action_delay != -1:
+            self.action_history_buf = torch.cat([self.action_history_buf[:, 1:], actions[:, None, :]], dim=1)
+            # actions = self.action_history_buf[:, -self.action_delay - 1] # delay for 1/50=20ms
+        if self.global_steps < 10000 * 24:
+            actions = self.action_history_buf[:, -1]
+        else:
+            actions = self.action_history_buf[:, -2]
 
-        # prepare list of functions
-        self.reward_functions = []
-        self.reward_names = []
-        for name, scale in self.reward_scales.items():
-            if name=="termination":
-                continue
-            self.reward_names.append(name)
-            name = '_reward_' + name
-            self.reward_functions.append(getattr(self, name))
+        self.actions = actions.clone()
+        
+        # arm ik actions
+        # uncomment this if needing to mask out gripper joints
+        # self.curr_ee_goal_cart[:] = sphere2cart(self.curr_ee_goal_sphere)
+        # ee_goal_cart_yaw_global = quat_apply(self.base_yaw_quat, self.curr_ee_goal_cart)
+        # curr_ee_goal_cart_world = self._get_ee_goal_spherical_center() + ee_goal_cart_yaw_global
+        
+        dpos = self.curr_ee_goal_cart_world - self.ee_pos
+        drot = orientation_error(self.ee_goal_orn_quat, self.ee_orn / torch.norm(self.ee_orn, dim=-1).unsqueeze(-1))
+        dpose = torch.cat([dpos, drot], -1).unsqueeze(-1)
+        arm_pos_targets = self._control_ik(dpose) + self.dof_pos[:, -(6 + self.cfg.env.num_gripper_joints):-self.cfg.env.num_gripper_joints]
+        all_pos_targets = torch.zeros_like(self.dof_pos)
+        all_pos_targets[:, -(6 + self.cfg.env.num_gripper_joints):-self.cfg.env.num_gripper_joints] = arm_pos_targets
 
-        self.arm_reward_scales = {k:v for k,v in self.arm_reward_scales.items() if v is not None and v != 0}
+        for t in range(self.cfg.control.decimation):
+            self.torques = self._compute_torques(self.actions)
+            self.gym.set_dof_position_target_tensor(self.sim, gymtorch.unwrap_tensor(all_pos_targets))
+            self.gym.set_dof_actuation_force_tensor(self.sim, gymtorch.unwrap_tensor(self.torques))
+            self.gym.simulate(self.sim)
+            if self.device == 'cpu':
+                self.gym.fetch_results(self.sim, True)
+            self.gym.refresh_dof_state_tensor(self.sim)
+            self.gym.refresh_jacobian_tensors(self.sim)
+            self.gym.refresh_rigid_body_state_tensor(self.sim)
+        self.post_physics_step()
 
-        # prepare list of functions
-        self.arm_reward_functions = []
-        self.arm_reward_names = []
-        for name, scale in self.arm_reward_scales.items():
-            if name=="termination":
-                continue
-            self.arm_reward_names.append(name)
-            name = '_reward_' + name
-            self.arm_reward_functions.append(getattr(self, name))
+        # return clipped obs, clipped states (None), rewards, dones and infos
+        clip_obs = self.cfg.normalization.clip_observations
+        self.obs_buf = torch.clip(self.obs_buf, -clip_obs, clip_obs)
+        if self.privileged_obs_buf is not None:
+            self.privileged_obs_buf = torch.clip(self.privileged_obs_buf, -clip_obs, clip_obs)
+        self.global_steps += 1
+        return self.obs_buf, self.privileged_obs_buf, self.rew_buf, self.arm_rew_buf, self.reset_buf, self.extras
 
-        # reward episode sums
-        self.episode_sums = {name: torch.zeros(self.num_envs, dtype=torch.float, device=self.device, requires_grad=False)
-                             for name in list(self.reward_scales.keys()) + list(self.arm_reward_scales.keys())}
+    def post_physics_step(self):
+        """ check terminations, compute observations and rewards
+            calls self._post_physics_step_callback() for common computations 
+            calls self._draw_debug_vis() if needed
+        """
+        self.gym.refresh_dof_state_tensor(self.sim)
+        self.gym.refresh_actor_root_state_tensor(self.sim)
+        self.gym.refresh_net_contact_force_tensor(self.sim)
+        self.gym.refresh_force_sensor_tensor(self.sim)
+        self.gym.refresh_rigid_body_state_tensor(self.sim)
+        self.gym.refresh_jacobian_tensors(self.sim)
+        self.episode_length_buf += 1
+        self.common_step_counter += 1
 
-        self.episode_metric_sums = {name: torch.zeros(self.num_envs, dtype=torch.float, device=self.device, requires_grad=False)
-                        for name in list(self.reward_scales.keys()) + list(self.arm_reward_scales.keys())}
+        # prepare quantities
+        self.base_quat[:] = self.root_states[:, 3:7]
+        self.base_lin_vel[:] = quat_rotate_inverse(self.base_quat, self.root_states[:, 7:10])
+        self.base_ang_vel[:] = quat_rotate_inverse(self.base_quat, self.root_states[:, 10:13])
+        base_yaw = euler_from_quat(self.base_quat)[2]
+        self.base_yaw_euler[:] = torch.cat([torch.zeros(self.num_envs, 2, device=self.device), base_yaw.view(-1, 1)], dim=1)
+        self.base_yaw_quat[:] = quat_from_euler_xyz(torch.tensor(0), torch.tensor(0), base_yaw)
+        self.projected_gravity[:] = quat_rotate_inverse(self.base_quat, self.gravity_vec)
 
+        contact = torch.norm(self.contact_forces[:, self.feet_indices], dim=-1) > 2.
+        self.contact_filt = torch.logical_or(contact, self.last_contacts) 
+        self.last_contacts = contact
+
+        self.foot_contacts_from_sensor = self.force_sensor_tensor.norm(dim=-1) > 1.5    
+
+        self._post_physics_step_callback()
+        
+        # update ee goal
+        self._update_curr_ee_goal()
+
+        # compute observations, rewards, resets, ...
+        self.check_termination()
+        self.compute_reward()
+        env_ids = self.reset_buf.nonzero(as_tuple=False).flatten()
+        self.reset_idx(env_ids, start=False)
+        self.compute_observations() # in some cases a simulation step might be required to refresh some obs (for example body positions)
+
+        self.last_actions[:] = self.actions[:]
+        self.last_dof_vel[:] = self.dof_vel[:]
+        self.last_root_vel[:] = self.root_states[:, 7:13]
+        self.last_torques[:] = self.torques[:]
+
+        if (self.viewer and self.enable_viewer_sync and self.debug_viz) or self.record_video:
+            self.gym.clear_lines(self.viewer)
+            self._draw_ee_goal_curr()
+            self._draw_ee_goal_traj()
+            self._draw_collision_bbox()
 
     def compute_reward(self):
         """ Compute rewards
@@ -165,7 +210,193 @@ class ManipLoco(LeggedRobot):
             self.episode_metric_sums["arm_termination"] += metric
 
         self.arm_rew_buf /= 100
-    
+
+    def compute_observations(self):
+        """ Computes observations
+        """
+        arm_base_pos = self.base_pos + quat_apply(self.base_yaw_quat, self.arm_base_offset)
+        ee_goal_local_cart = quat_rotate_inverse(self.base_quat, self.curr_ee_goal_cart_world - arm_base_pos)
+        if self.stand_by:
+            self.commands[:] = 0.
+
+        obs_buf = torch.cat((       self._get_body_orientation(),  # dim 2
+                                    self.base_ang_vel * self.obs_scales.ang_vel,  # dim 3
+                                    self._reindex_all((self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos)[:, :-self.cfg.env.num_gripper_joints],  # dim 18
+                                    self._reindex_all(self.dof_vel * self.obs_scales.dof_vel)[:, :-self.cfg.env.num_gripper_joints],  # dim 18
+                                    self._reindex_all(self.action_history_buf[:, -1])[:, :12],  # dim 12
+                                    self._reindex_feet(self.foot_contacts_from_sensor),  # dim 4
+                                    self.commands[:, :3] * self.commands_scale,  # dim 3
+                                    # self.curr_ee_goal_sphere,  # dim 3 position
+                                    ee_goal_local_cart,  # dim 3 position
+                                    0*self.curr_ee_goal_sphere  # dim 3 orientation
+                                    ),dim=-1)
+        if self.cfg.env.observe_gait_commands:
+            obs_buf = torch.cat((obs_buf,
+                                      self.gait_indices.unsqueeze(1), self.clock_inputs), dim=-1)
+            
+        if self.cfg.domain_rand.observe_priv:
+            priv_buf = torch.cat((
+                self.mass_params_tensor,
+                self.friction_coeffs_tensor,
+                self.motor_strength[:, :12] - 1,
+            ), dim=-1)
+            self.obs_buf = torch.cat([obs_buf, priv_buf, self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
+        
+        self.obs_history_buf = torch.where(
+            (self.episode_length_buf <= 1)[:, None, None], 
+            torch.stack([obs_buf] * self.cfg.env.history_len, dim=1),
+            torch.cat([
+                self.obs_history_buf[:, 1:],
+                obs_buf.unsqueeze(1)
+            ], dim=1)
+        )        
+
+        if self.add_noise:
+            self.obs_buf += (2 * torch.rand_like(self.obs_buf) - 1) * self.noise_scale_vec
+
+    def check_termination(self):
+        """ Check if environments need to be reset
+        """
+        termination_contact_buf = torch.any(torch.norm(self.contact_forces[:, self.termination_contact_indices, :], dim=-1) > 1., dim=1)
+
+        r, p, _ = euler_from_quat(self.base_quat) 
+        z = self.root_states[:, 2]
+
+        # r_threshold_buff = ((r > 0.2) & (self.curr_ee_goal_sphere[:, 2] >= 0)) | ((r < -0.2) & (self.curr_ee_goal_sphere[:, 2] <= 0))
+        # p_threshold_buff = ((p > 0.2) & (self.curr_ee_goal_sphere[:, 1] >= 0)) | ((p < -0.2) & (self.curr_ee_goal_sphere[:, 1] <= 0))
+        r_term = torch.abs(r) > 0.8
+        p_term = torch.abs(p) > 0.8
+        z_term = z < 0.1
+        self.time_out_buf = self.episode_length_buf > self.max_episode_length # no terminal reward for time-outs
+
+        # arm_base_local = torch.tensor([0.3, 0.0, 0.09], device=self.device).repeat(self.num_envs, 1)
+        # arm_base = quat_apply(self.base_quat, arm_base_local) + self.root_states[:, :3]
+        # curr_ee_pos_local = quat_rotate_inverse(self.root_states[:, 3:7], self.ee_pos - arm_base)
+        # ik_fail = (self.curr_ee_goal_cart[:, -1:] - curr_ee_pos_local[:, -1:]).norm(dim=-1) > 0.3
+        # self.reset_buf = termination_contact_buf | self.time_out_buf | r_term | p_term | z_term | ik_fail
+        self.reset_buf = termination_contact_buf | self.time_out_buf | r_term | p_term | z_term
+
+    def create_sim(self):
+        """ Creates simulation, terrain and evironments
+        """
+        self.up_axis_idx = 2 # 2 for z, 1 for y -> adapt gravity accordingly
+        self.sim = self.gym.create_sim(self.sim_device_id, self.graphics_device_id, self.physics_engine, self.sim_params)
+        self.terrain = Terrain(self.cfg.terrain, )
+        self._create_trimesh()
+        # self._create_ground_plane()
+        self._create_envs()
+        
+    def reset_idx(self, env_ids, start=False):
+        """ Reset some environments.
+            Calls self._reset_dofs(env_ids), self._reset_root_states(env_ids), and self._resample_commands(env_ids)
+            [Optional] calls self._update_terrain_curriculum(env_ids), self.update_command_curriculum(env_ids) and
+            Logs episode info
+            Resets some buffers
+
+        Args:
+            env_ids (list[int]): List of environment ids which must be reset
+        """
+        if len(env_ids) == 0:
+            return
+        # update curriculum
+        if self.cfg.terrain.curriculum:
+            self._update_terrain_curriculum(env_ids)
+        
+        # reset robot states
+        self._reset_dofs(env_ids)
+        self._reset_root_states(env_ids)
+
+        if start:
+            command_env_ids = env_ids
+        else:
+            command_env_ids = self.time_out_buf.nonzero(as_tuple=False).flatten()
+        self._resample_commands(command_env_ids)
+        self._resample_ee_goal(env_ids, is_init=True)
+
+        # reset buffers
+        self.last_torques[env_ids] = 0.
+        self.last_actions[env_ids] = 0.
+        self.last_dof_vel[env_ids] = 0.
+        self.feet_air_time[env_ids] = 0.
+        self.episode_length_buf[env_ids] = 0
+        self.reset_buf[env_ids] = 1
+        self.obs_history_buf[env_ids, :, :] = 0.
+        self.action_history_buf[env_ids, :, :] = 0.
+        self.goal_timer[env_ids] = 0.
+
+        # fill extras
+        self.extras["episode"] = {}
+        for key in self.episode_sums.keys():
+            self.extras["episode"]['rew_' + key] = torch.mean(self.episode_sums[key][env_ids]) / self.max_episode_length_s
+            self.episode_sums[key][env_ids] = 0.
+        
+        for key in self.episode_metric_sums.keys():
+            self.extras["episode"]['metric_' + key] = torch.mean(self.episode_metric_sums[key][env_ids]) / self.max_episode_length_s
+            self.episode_metric_sums[key][env_ids] = 0.
+
+        # send timeout info to the algorithm
+        if self.cfg.env.send_timeouts:
+            self.extras["time_outs"] = self.time_out_buf
+        
+    # ------------ callbacks ------------
+
+    def _parse_cfg(self, cfg):
+        self.num_torques = self.cfg.env.num_torques
+        self.dt = self.cfg.control.decimation * self.sim_params.dt
+        self.obs_scales = self.cfg.normalization.obs_scales
+        self.reward_scales = class_to_dict(self.cfg.rewards.scales)
+        self.arm_reward_scales = class_to_dict(self.cfg.rewards.arm_scales)
+        self.command_ranges = class_to_dict(self.cfg.commands.ranges)
+        self.goal_ee_ranges = class_to_dict(self.cfg.goal_ee.ranges)
+
+        if self.cfg.terrain.mesh_type not in ['heightfield', 'trimesh']:
+            self.cfg.terrain.curriculum = False
+        self.max_episode_length_s = self.cfg.env.episode_length_s
+        self.max_episode_length = np.ceil(self.max_episode_length_s / self.dt)
+        self.push_interval = np.ceil(self.cfg.domain_rand.push_interval_s / self.dt)
+        self.clip_actions = self.cfg.normalization.clip_actions
+        self.action_delay = self.cfg.env.action_delay
+        self.stop_update_goal = self.cfg.env.stop_update_goal
+        self.record_video = self.cfg.env.record_video
+
+    def _prepare_reward_function(self):
+        """ Prepares a list of reward functions, whcih will be called to compute the total reward.
+            Looks for self._reward_<REWARD_NAME>, where <REWARD_NAME> are names of all non zero reward scales in the cfg.
+        """
+        from legged_gym.envs.rewards.maniploco_rewards import ManipLoco_rewards 
+
+        reward_contrainers = {"maniploco_rewards": ManipLoco_rewards}
+        self.reward_container = reward_contrainers[self.cfg.rewards.reward_container_name](self)
+        self.reward_scales = {k:v for k,v in self.reward_scales.items() if v is not None and v != 0}
+
+        # prepare list of functions
+        self.reward_functions = []
+        self.reward_names = []
+        for name, scale in self.reward_scales.items():
+            if name=="termination":
+                continue
+            self.reward_names.append(name)
+            name = '_reward_' + name
+            self.reward_functions.append(getattr(self.reward_container, name))
+
+        self.arm_reward_scales = {k:v for k,v in self.arm_reward_scales.items() if v is not None and v != 0}
+
+        # prepare list of functions
+        self.arm_reward_functions = []
+        self.arm_reward_names = []
+        for name, scale in self.arm_reward_scales.items():
+            if name=="termination":
+                continue
+            self.arm_reward_names.append(name)
+            name = '_reward_' + name
+            self.arm_reward_functions.append(getattr(self.reward_container, name))
+
+        # reward episode sums
+        self.episode_sums = {name: torch.zeros(self.num_envs, dtype=torch.float, device=self.device, requires_grad=False)
+                             for name in list(self.reward_scales.keys()) + list(self.arm_reward_scales.keys())}
+
+        self.episode_metric_sums = {name: torch.zeros(self.num_envs, dtype=torch.float, device=self.device, requires_grad=False)
+                        for name in list(self.reward_scales.keys()) + list(self.arm_reward_scales.keys())}
 
     def _get_env_origins(self):
         """ Sets environment origins. On rough terrain the origins are defined by the terrain platforms.
@@ -182,16 +413,6 @@ class ManipLoco(LeggedRobot):
         self.terrain_origins = torch.from_numpy(self.terrain.env_origins).to(self.device).to(torch.float)
         self.env_origins[:] = self.terrain_origins[self.terrain_levels, self.terrain_types]
 
-    def create_sim(self):
-        """ Creates simulation, terrain and evironments
-        """
-        self.up_axis_idx = 2 # 2 for z, 1 for y -> adapt gravity accordingly
-        self.sim = self.gym.create_sim(self.sim_device_id, self.graphics_device_id, self.physics_engine, self.sim_params)
-        self.terrain = Terrain(self.cfg.terrain, )
-        self._create_trimesh()
-        # self._create_ground_plane()
-        self._create_envs()
-        
     def _create_ground_plane(self):
         plane_params = gymapi.PlaneParams()
         plane_params.normal = gymapi.Vec3(0, 0, 1)
@@ -255,6 +476,9 @@ class ManipLoco(LeggedRobot):
         self.num_dofs = self.gym.get_asset_dof_count(robot_asset)
         self.num_bodies = self.gym.get_asset_rigid_body_count(robot_asset)
         dof_props_asset = self.gym.get_asset_dof_properties(robot_asset)
+        dof_props_asset['driveMode'][12:].fill(gymapi.DOF_MODE_POS)  # set arm to pos control
+        dof_props_asset['stiffness'][12:].fill(400.0)
+        dof_props_asset['damping'][12:].fill(40.0)
         rigid_shape_props_asset = self.gym.get_asset_rigid_shape_properties(robot_asset)
         self.body_names = self.gym.get_asset_rigid_body_names(robot_asset)
         self.body_names_to_idx = self.gym.get_asset_rigid_body_dict(robot_asset)
@@ -276,9 +500,6 @@ class ManipLoco(LeggedRobot):
             if len(body_names) == 0:
                 raise Exception('No body found with name {}'.format(name))
             termination_contact_names.extend(body_names)
-            
-        self.default_friction = rigid_shape_props_asset[1].friction
-        self.default_restitution = rigid_shape_props_asset[1].restitution
 
         self.sensor_indices = []
         for name in feet_names:
@@ -321,13 +542,6 @@ class ManipLoco(LeggedRobot):
         self.envs = []
         self.mass_params_tensor = torch.zeros(self.num_envs, 5, dtype=torch.float, device=self.device, requires_grad=False)
         for i in range(self.num_envs):
-            arm_kp = 400
-            # arm_kp = np.random.uniform(300,400)
-            
-            dof_props_asset['driveMode'][12:].fill(gymapi.DOF_MODE_POS)  # set arm to pos control
-            dof_props_asset['stiffness'][12:].fill(arm_kp)
-            dof_props_asset['damping'][12:].fill(40.0)
-        
             # create env instance
             env_handle = self.gym.create_env(self.sim, env_lower, env_upper, int(np.sqrt(self.num_envs)))
             self.envs.append(env_handle)
@@ -453,30 +667,7 @@ class ManipLoco(LeggedRobot):
             rand_mass = np.zeros(1)
         
         return props, rand_mass
-    
-    def _randomize_rigid_body_props(self, env_ids):
-        if self.cfg.domain_rand.randomize_friction:
-            min_friction, max_friction = self.cfg.domain_rand.friction_range
-            self.friction_coeffs[env_ids] = torch.rand(len(env_ids), 1, 1, dtype=torch.float, device=self.device,
-                                                          requires_grad=False) * (
-                                                       max_friction - min_friction) + min_friction
 
-        if self.cfg.domain_rand.randomize_restitution:
-            min_restitution, max_restitution = self.cfg.domain_rand.restitution_range
-            self.restitutions[env_ids] = torch.rand(len(env_ids), 1, 1, dtype=torch.float, device=self.device,
-                                                    requires_grad=False) * (
-                                                 max_restitution - min_restitution) + min_restitution
-
-    def refresh_actor_rigid_shape_props(self, env_ids):
-        for env_id in env_ids:
-            rigid_shape_props = self.gym.get_actor_rigid_shape_properties(self.envs[env_id], 0)
-
-            for i in range(self.num_dofs):
-                rigid_shape_props[i].friction = self.friction_coeffs[env_id]
-                rigid_shape_props[i].restitution = self.restitutions[env_id]
-
-            self.gym.set_actor_rigid_shape_properties(self.envs[env_id], 0, rigid_shape_props)
-            
     def _process_rigid_shape_props(self, props, env_id):
         """ Callback allowing to store/change/randomize the rigid shape properties of each environment.
             Called During environment creation.
@@ -490,12 +681,12 @@ class ManipLoco(LeggedRobot):
             [List[gymapi.RigidShapeProperties]]: Modified rigid shape properties
         """
         if self.cfg.domain_rand.randomize_friction:
-            if env_id == 0:
+            if env_id==0:
                 # prepare friction randomization
                 friction_range = self.cfg.domain_rand.friction_range
                 num_buckets = 1000
                 bucket_ids = torch.randint(0, num_buckets, (self.num_envs, 1))
-                friction_buckets = torch_rand_float(friction_range[0], friction_range[1], (num_buckets, 1), device=self.device)
+                friction_buckets = torch_rand_float(friction_range[0], friction_range[1], (num_buckets, 1), device='cpu')
                 self.friction_coeffs = friction_buckets[bucket_ids]
 
             for s in range(len(props)):
@@ -504,22 +695,6 @@ class ManipLoco(LeggedRobot):
         else:
             if env_id == 0:
                 self.friction_coeffs = torch.ones((self.num_envs, 1, 1)) 
-    
-        # Do not use restitution randomization            
-        # if self.cfg.domain_rand.randomize_restitution:
-        #     if env_id == 0:
-        #         # prepare restitution randomization
-        #         restitution_range = self.cfg.domain_rand.restitution_range
-        #         num_buckets = 1000
-        #         bucket_ids = torch.randint(0, num_buckets, (self.num_envs, 1))
-        #         restitution_buckets = torch_rand_float(restitution_range[0], restitution_range[1], (num_buckets, 1), device=self.device)
-        #         self.restitutions = restitution_buckets[bucket_ids]
-            
-        #     for s in range(len(props)):
-        #         props[s].restitution = self.restitutions[env_id]
-        # else:
-        #     if env_id == 0:
-        #         self.restitution = torch.ones((self.num_envs, 1, 1)) 
         
         return props
 
@@ -609,6 +784,10 @@ class ManipLoco(LeggedRobot):
         self.init_start_ee_sphere = torch.tensor(self.cfg.goal_ee.ranges.init_pos_start, device=self.device).unsqueeze(0)
         self.init_end_ee_sphere = torch.tensor(self.cfg.goal_ee.ranges.init_pos_end, device=self.device).unsqueeze(0)
         
+        #noise
+        self.noise_scale_vec = self._get_noise_scale_vec(self.cfg)
+        self.add_noise = self.cfg.noise.add_noise
+
         self.collision_lower_limits = torch.tensor(self.cfg.goal_ee.collision_lower_limits, device=self.device, dtype=torch.float)
         self.collision_upper_limits = torch.tensor(self.cfg.goal_ee.collision_upper_limits, device=self.device, dtype=torch.float)
         self.underground_limit = self.cfg.goal_ee.underground_limit
@@ -622,7 +801,7 @@ class ManipLoco(LeggedRobot):
                                                    self.cfg.goal_ee.sphere_center.z_invariant_offset], 
                                                    device=self.device).repeat(self.num_envs, 1)
         
-        self.curr_ee_goal_cart_world = self.get_ee_goal_spherical_center() + quat_apply(self.base_yaw_quat, self.curr_ee_goal_cart)
+        self.curr_ee_goal_cart_world = self._get_ee_goal_spherical_center() + quat_apply(self.base_yaw_quat, self.curr_ee_goal_cart)
 
         print('------------------------------------------------------')
         print(f'root_states shape: {self.root_states.shape}')
@@ -653,7 +832,7 @@ class ManipLoco(LeggedRobot):
         self.last_torques = torch.zeros_like(self.torques)
 
         self.commands = torch.zeros(self.num_envs, self.cfg.commands.num_commands, dtype=torch.float, device=self.device, requires_grad=False) # x vel, y vel, yaw vel, heading
-        self.commands_scale = torch.tensor([self.obs_scales.lin_vel, self.obs_scales.ang_vel, self.obs_scales.ang_vel],
+        self.commands_scale = torch.tensor([self.obs_scales.lin_vel, self.obs_scales.lin_vel, self.obs_scales.ang_vel],
                                            device=self.device, requires_grad=False, )[:self.cfg.commands.num_commands]
         # Refer to <walk these ways>, only useful when `self.cfg.env.observe_gait_commands` is True
         self.desired_contact_states = torch.zeros(self.num_envs, 4, dtype=torch.float, device=self.device,
@@ -699,63 +878,6 @@ class ManipLoco(LeggedRobot):
         self.default_dof_pos_wo_gripper = self.default_dof_pos[:-self.cfg.env.num_gripper_joints]
         
         self.global_steps = 0
-
-    def reset_idx(self, env_ids, start=False):
-        """ Reset some environments.
-            Calls self._reset_dofs(env_ids), self._reset_root_states(env_ids), and self._resample_commands(env_ids)
-            [Optional] calls self._update_terrain_curriculum(env_ids), self.update_command_curriculum(env_ids) and
-            Logs episode info
-            Resets some buffers
-
-        Args:
-            env_ids (list[int]): List of environment ids which must be reset
-        """
-        if len(env_ids) == 0:
-            return
-        # update curriculum
-        if self.cfg.terrain.curriculum:
-            self._update_terrain_curriculum(env_ids)
-            
-        # if self.cfg.domain_rand.randomize_rigids_after_start:
-        #     self._randomize_rigid_body_props(env_ids)
-        #     self.refresh_actor_rigid_shape_props(env_ids)
-        
-        # reset robot states
-        self._reset_dofs(env_ids)
-        self._reset_root_states(env_ids)
-
-        if start:
-            command_env_ids = env_ids
-        else:
-            command_env_ids = self.time_out_buf.nonzero(as_tuple=False).flatten()
-        self._resample_commands(command_env_ids)
-        self._resample_ee_goal(env_ids, is_init=True)
-
-        # reset buffers
-        self.last_torques[env_ids] = 0.
-        self.last_actions[env_ids] = 0.
-        self.last_dof_vel[env_ids] = 0.
-        self.feet_air_time[env_ids] = 0.
-        self.episode_length_buf[env_ids] = 0
-        self.reset_buf[env_ids] = 1
-        self.obs_history_buf[env_ids, :, :] = 0.
-        self.action_history_buf[env_ids, :, :] = 0.
-        self.goal_timer[env_ids] = 0.
-
-        # fill extras
-        self.extras["episode"] = {}
-        for key in self.episode_sums.keys():
-            self.extras["episode"]['rew_' + key] = torch.mean(self.episode_sums[key][env_ids]) / self.max_episode_length_s
-            self.episode_sums[key][env_ids] = 0.
-        
-        for key in self.episode_metric_sums.keys():
-            self.extras["episode"]['metric_' + key] = torch.mean(self.episode_metric_sums[key][env_ids]) / self.max_episode_length_s
-            self.episode_metric_sums[key][env_ids] = 0.
-
-        # send timeout info to the algorithm
-        if self.cfg.env.send_timeouts:
-            self.extras["time_outs"] = self.time_out_buf
-        
 
     def _reset_root_states(self, env_ids):
         """ Resets ROOT states position and velocities of selected environmments
@@ -803,14 +925,11 @@ class ManipLoco(LeggedRobot):
             env_ids (List[int]): Environemnt ids
         """
         self.dof_pos[env_ids] = self.default_dof_pos * torch_rand_float(0.8, 1.2, (len(env_ids), self.num_dofs), device=self.device)
-        if self.stand_only:
-            self.dof_pos[env_ids] = torch.clamp(self.dof_pos[env_ids], -2.6, 10)
         self.dof_vel[env_ids] = 0.
 
         self.gym.set_dof_state_tensor(self.sim, gymtorch.unwrap_tensor(self.dof_state))
         self.gym.refresh_rigid_body_state_tensor(self.sim)
         
-
     def _resample_commands(self, env_ids):
         """ Randommly select commands of some environments
 
@@ -818,82 +937,18 @@ class ManipLoco(LeggedRobot):
             env_ids (List[int]): Environments ids for which new commands are needed
         """
 
-        if self.cfg.env.teleop_mode or self.stand_only:
+        if self.cfg.env.teleop_mode:
             return
 
-        # self.commands[env_ids, 0] = torch_rand_float(self.command_ranges["lin_vel_x"][0], self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
         if self.global_steps < 5000 * 24: # 5000 can learn forward
             self.commands[env_ids, 0] = torch_rand_float(0, self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
         else:
             self.commands[env_ids, 0] = torch_rand_float(self.command_ranges["lin_vel_x"][0], self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
-        # self.commands[env_ids, 0] = torch.where(self.episode_length_buf[env_ids] % 2 == 0,
-        #     torch_rand_float(self.command_ranges["lin_vel_x"][0], 0, (len(env_ids), 1), device=self.device).squeeze(1),
-        #     torch_rand_float(0, self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1))
-        
-        if self.pitch_control:
-            self.commands[env_ids, 1] = torch_rand_float(self.command_ranges["ang_vel_pitch"][0], self.command_ranges["ang_vel_pitch"][1], (len(env_ids), 1), device=self.device).squeeze(1)
-        else:
-            self.commands[env_ids, 1] = 0.0
-        
+
+        self.commands[env_ids, 1] = 0
         self.commands[env_ids, 2] = torch_rand_float(self.command_ranges["ang_vel_yaw"][0], self.command_ranges["ang_vel_yaw"][1], (len(env_ids), 1), device=self.device).squeeze(1)
-        
         # set small commands to zero
-        non_stop_sign = (torch.logical_or(torch.abs(self.commands[env_ids, 0]) > self.cfg.commands.lin_vel_x_clip, torch.abs(self.commands[env_ids, 2]) > self.cfg.commands.ang_vel_yaw_clip))
-        if self.pitch_control:
-            non_stop_sign = torch.logical_or(non_stop_sign, torch.abs(self.commands[env_ids, 1]) > self.cfg.commands.ang_vel_pitch_clip)
-        self.commands[env_ids, :] *= non_stop_sign.unsqueeze(1)
-
-    def post_physics_step(self):
-        """ check terminations, compute observations and rewards
-            calls self._post_physics_step_callback() for common computations 
-            calls self._draw_debug_vis() if needed
-        """
-        self.gym.refresh_dof_state_tensor(self.sim)
-        self.gym.refresh_actor_root_state_tensor(self.sim)
-        self.gym.refresh_net_contact_force_tensor(self.sim)
-        self.gym.refresh_force_sensor_tensor(self.sim)
-        self.gym.refresh_rigid_body_state_tensor(self.sim)
-        self.gym.refresh_jacobian_tensors(self.sim)
-        self.episode_length_buf += 1
-        self.common_step_counter += 1
-
-        # prepare quantities
-        self.base_quat[:] = self.root_states[:, 3:7]
-        self.base_lin_vel[:] = quat_rotate_inverse(self.base_quat, self.root_states[:, 7:10])
-        self.base_ang_vel[:] = quat_rotate_inverse(self.base_quat, self.root_states[:, 10:13])
-        base_yaw = euler_from_quat(self.base_quat)[2]
-        self.base_yaw_euler[:] = torch.cat([torch.zeros(self.num_envs, 2, device=self.device), base_yaw.view(-1, 1)], dim=1)
-        self.base_yaw_quat[:] = quat_from_euler_xyz(torch.tensor(0), torch.tensor(0), base_yaw)
-        self.projected_gravity[:] = quat_rotate_inverse(self.base_quat, self.gravity_vec)
-
-        contact = torch.norm(self.contact_forces[:, self.feet_indices], dim=-1) > 2.
-        self.contact_filt = torch.logical_or(contact, self.last_contacts) 
-        self.last_contacts = contact
-
-        self.foot_contacts_from_sensor = self.force_sensor_tensor.norm(dim=-1) > 1.5    
-
-        self._post_physics_step_callback()
-        
-        # update ee goal
-        self.update_curr_ee_goal()
-
-        # compute observations, rewards, resets, ...
-        self.check_termination()
-        self.compute_reward()
-        env_ids = self.reset_buf.nonzero(as_tuple=False).flatten()
-        self.reset_idx(env_ids, start=False)
-        self.compute_observations() # in some cases a simulation step might be required to refresh some obs (for example body positions)
-
-        self.last_actions[:] = self.actions[:]
-        self.last_dof_vel[:] = self.dof_vel[:]
-        self.last_root_vel[:] = self.root_states[:, 7:13]
-        self.last_torques[:] = self.torques[:]
-
-        if (self.viewer and self.enable_viewer_sync and self.debug_viz) or self.record_video:
-            self.gym.clear_lines(self.viewer)
-            self._draw_ee_goal_curr()
-            self._draw_ee_goal_traj()
-            self._draw_collision_bbox()
+        self.commands[env_ids, :] *= (torch.logical_or(torch.abs(self.commands[env_ids, 0]) > self.cfg.commands.lin_vel_x_clip, torch.abs(self.commands[env_ids, 2]) > self.cfg.commands.ang_vel_yaw_clip)).unsqueeze(1)
 
     def _step_contact_targets(self):
         if self.cfg.env.observe_gait_commands:
@@ -903,7 +958,7 @@ class ManipLoco(LeggedRobot):
             bounds = 0
             durations = 0.5
             self.gait_indices = torch.remainder(self.gait_indices + self.dt * frequencies, 1.0)
-            self.gait_indices[~self.get_walking_cmd_mask()] = 0
+            self.gait_indices[~self._get_walking_cmd_mask()] = 0
 
             foot_indices = [self.gait_indices + phases + offsets + bounds,
                             self.gait_indices + offsets,
@@ -970,112 +1025,95 @@ class ManipLoco(LeggedRobot):
         """ Callback called before computing terminations, rewards, and observations
             Default behaviour: Compute ang vel command based on target and heading, compute measured terrain heights and randomly push robots
         """
-        # 
         command_env_ids = (self.episode_length_buf % int(self.cfg.commands.resampling_time / self.dt)==0).nonzero(as_tuple=False).flatten()
-        # target_ee_env_ids = (self.episode_length_buf % int(self.cfg.target_ee.resampling_time / self.dt)==0).nonzero(as_tuple=False).flatten()
-
         self._resample_commands(command_env_ids)
         self._step_contact_targets()
 
         if self.cfg.domain_rand.push_robots and (self.common_step_counter % self.push_interval == 0):
             self._push_robots()
     
-    def check_termination(self):
-        """ Check if environments need to be reset
+    def _get_noise_scale_vec(self, cfg):
+        """ Sets a vector used to scale the noise added to the observations.
+            [NOTE]: Must be adapted when changing the observations structure
+        Args:
+            cfg (Dict): Environment config file
+        Returns:
+            [torch.Tensor]: Vector of scales used to multiply a uniform distribution in [-1, 1]
         """
-        termination_contact_buf = torch.any(torch.norm(self.contact_forces[:, self.termination_contact_indices, :], dim=-1) > 1., dim=1)
 
-        r, p, _ = euler_from_quat(self.base_quat) 
-        z = self.root_states[:, 2]
+        if self.num_actions != 18:
+            raise NotImplementedError("Noise scale is only implemented for action space of 12")
 
-        # r_threshold_buff = ((r > 0.2) & (self.curr_ee_goal_sphere[:, 2] >= 0)) | ((r < -0.2) & (self.curr_ee_goal_sphere[:, 2] <= 0))
-        # p_threshold_buff = ((p > 0.2) & (self.curr_ee_goal_sphere[:, 1] >= 0)) | ((p < -0.2) & (self.curr_ee_goal_sphere[:, 1] <= 0))
-        r_term = torch.abs(r) > 0.8
-        p_term = torch.abs(p) > 0.8
-        z_term = z < 0.1
-        self.time_out_buf = self.episode_length_buf > self.max_episode_length # no terminal reward for time-outs
-        self.reset_buf = termination_contact_buf | self.time_out_buf | r_term | p_term | z_term
+        noise_vec = torch.zeros_like(self.obs_buf[0])
+        self.add_noise = self.cfg.noise.add_noise
+        noise_scales = self.cfg.noise.noise_scales
+        noise_level = self.cfg.noise.noise_level
 
-        # arm_base_local = torch.tensor([0.3, 0.0, 0.09], device=self.device).repeat(self.num_envs, 1)
-        # arm_base = quat_apply(self.base_quat, arm_base_local) + self.root_states[:, :3]
-        # curr_ee_pos_local = quat_rotate_inverse(self.root_states[:, 3:7], self.ee_pos - arm_base)
-        # ik_fail = (self.curr_ee_goal_cart[:, -1:] - curr_ee_pos_local[:, -1:]).norm(dim=-1) > 0.3
-        # self.reset_buf = self.reset_buf | ik_fail
+        idx = 0
 
-    def compute_observations(self):
-        """ Computes observations
-        """
-        arm_base_pos = self.base_pos + quat_apply(self.base_yaw_quat, self.arm_base_offset)
-        ee_goal_local_cart = quat_rotate_inverse(self.base_quat, self.curr_ee_goal_cart_world - arm_base_pos)
-        if self.stand_by:
-            self.commands[:] = 0.
-        
-        if self.vel_obs:
-            obs_buf = torch.cat((       self.get_body_orientation(),  # dim 2
-                                        self.base_ang_vel * self.obs_scales.ang_vel,  # dim 3
-                                        self.reindex_all((self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos)[:, :-self.cfg.env.num_gripper_joints],  # dim 18
-                                        self.reindex_all(self.dof_vel * self.obs_scales.dof_vel)[:, :-self.cfg.env.num_gripper_joints],  # dim 18
-                                        self.reindex_all(self.action_history_buf[:, -1])[:, :12],  # dim 12
-                                        self.reindex_feet(self.foot_contacts_from_sensor),  # dim 4
-                                        self.commands[:, :3] * self.commands_scale,  # dim 3
-                                        # self.curr_ee_goal_sphere,  # dim 3 position
-                                        ee_goal_local_cart,  # dim 3 position
-                                        0*self.curr_ee_goal_sphere  # dim 3 orientation
-                                        ),dim=-1)
-        elif self.stand_only:
-            obs_buf = torch.cat((       self.get_body_orientation(),  # dim 2
-                                        self.reindex_all((self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos)[:, :-self.cfg.env.num_gripper_joints],  # dim 18
-                                        self.reindex_all(self.action_history_buf[:, -1])[:, :12],  # dim 12
-                                        self.reindex_feet(self.foot_contacts_from_sensor),  # dim 4
-                                        # self.curr_ee_goal_sphere,  # dim 3 position
-                                        ee_goal_local_cart,  # dim 3 position
-                                        0*self.curr_ee_goal_sphere  # dim 3 orientation
-                                        ),dim=-1)
-        else:
-            obs_buf = torch.cat((       self.get_body_orientation(),  # dim 2
-                                        self.reindex_all((self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos)[:, :-self.cfg.env.num_gripper_joints],  # dim 18
-                                        self.reindex_all(self.action_history_buf[:, -1])[:, :12],  # dim 12
-                                        self.reindex_feet(self.foot_contacts_from_sensor),  # dim 4
-                                        self.commands[:, :3] * self.commands_scale,  # dim 3
-                                        # self.curr_ee_goal_sphere,  # dim 3 position
-                                        ee_goal_local_cart,  # dim 3 position
-                                        0*self.curr_ee_goal_sphere  # dim 3 orientation
-                                        ),dim=-1)
-        if self.cfg.env.observe_gait_commands:
-            obs_buf = torch.cat((obs_buf,
-                                      self.gait_indices.unsqueeze(1), self.clock_inputs), dim=-1)
-            
-        if self.cfg.domain_rand.observe_priv:
-            priv_buf = torch.cat((
-                self.mass_params_tensor,
-                self.friction_coeffs_tensor,
-                self.motor_strength[:, :12] - 1,
-            ), dim=-1)
-            self.obs_buf = torch.cat([obs_buf, priv_buf, self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
-        
-        self.obs_history_buf = torch.where(
-            (self.episode_length_buf <= 1)[:, None, None], 
-            torch.stack([obs_buf] * self.cfg.env.history_len, dim=1),
-            torch.cat([
-                self.obs_history_buf[:, 1:],
-                obs_buf.unsqueeze(1)
-            ], dim=1)
-        )        
+        # Body orientation (dim 2)
+        noise_vec[idx:idx+2] = 0  # Assuming no noise for body orientation
+        idx += 2
 
-    def reindex_feet(self, vec):
+        # Angular velocity (dim 3)   
+        noise_vec[idx:idx+3] = noise_scales.ang_vel * noise_level * self.obs_scales.ang_vel
+        idx += 3
+
+        # DOF positions (dim 12) b1
+        noise_vec[idx:idx+12] = noise_scales.dof_pos * noise_level * self.obs_scales.dof_pos
+        idx += 12
+
+        # DOF positions (dim 6) z1
+        noise_vec[idx:idx+6] = 0
+        idx += 6
+
+        # DOF velocities (dim 12)
+        noise_vec[idx:idx+12] = noise_scales.dof_vel * noise_level * self.obs_scales.dof_vel
+        idx += 12
+
+        # DOF velocities (dim 6)
+        noise_vec[idx:idx+6] = 0
+        idx += 6
+
+        # Action history (dim 12)
+        noise_vec[idx:idx+12] = 0  # Assuming no noise for action history
+        idx += 12
+
+        # Foot contacts (dim 4)
+        noise_vec[idx:idx+4] = 0  # Assuming no noise for foot contacts
+        idx += 4
+
+        # Commands (dim 3)
+        noise_vec[idx:idx+3] = 0  # Assuming no noise for commands
+        idx += 3
+
+        # End-effector goal position (dim 3)
+        noise_vec[idx:idx+3] = 0  # Assuming no noise for end-effector goal position
+        idx += 3
+
+        # End-effector goal orientation (dim 3)
+        noise_vec[idx:idx+3] = 0  # Assuming no noise for end-effector goal orientation
+        idx += 3
+
+        if self.cfg.terrain.measure_heights:
+            noise_vec[48:235] = noise_scales.height_measurements* noise_level * self.obs_scales.height_measurements
+
+        return noise_vec
+    
+    def _reindex_feet(self, vec):
         # raisim_order = ["FR_foot", "FL_foot", "RR_foot", "RL_foot"]
         # ig_order = ['FL_foot', 'FR_foot', 'RL_foot', 'RR_foot']
         if self.cfg.env.reorder_dofs:
             return vec[:, [1, 0, 3, 2]]
         return vec
 
-    def reindex_all(self, vec):
+    def _reindex_all(self, vec):
         return torch.hstack((vec[:, [3, 4, 5, 0, 1, 2, 9, 10, 11, 6, 7, 8]], vec[:, 12:]))
     
-    def reindex_dog(self, vec):
+    def _reindex_dog(self, vec):
         return vec[:, [3, 4, 5, 0, 1, 2, 9, 10, 11, 6, 7, 8]]
     
-    def get_body_orientation(self, return_yaw=False):
+    def _get_body_orientation(self, return_yaw=False):
         r, p, y = euler_from_quat(self.base_quat)
         body_angles = torch.stack([r, p, y], dim=-1)
 
@@ -1085,12 +1123,6 @@ class ManipLoco(LeggedRobot):
             return body_angles
 
     def _draw_collision_bbox(self):
-        # center = self.get_ee_goal_spherical_center()
-        # bbox0 = center + quat_apply(self.base_yaw_quat, self.collision_upper_limits)
-        # bbox1 = center + quat_apply(self.base_yaw_quat, self.collision_lower_limits)
-        # bboxes = torch.stack([bbox0, bbox1], dim=1)
-        # sphere_geom = gymutil.WireframeSphereGeometry(0.05, 4, 4, None, color=(1, 1, 0))
-        # import ipdb; ipdb.set_trace()
 
         center = self.ee_goal_center_offset
         bbox0 = center + self.collision_upper_limits
@@ -1105,20 +1137,14 @@ class ManipLoco(LeggedRobot):
             pose0 = gymapi.Transform(gymapi.Vec3(self.root_states[i, 0], self.root_states[i, 1], 0), r=r)
             gymutil.draw_lines(bbox_geom, self.gym, self.viewer, self.envs[i], pose=pose0) 
 
-            # pose0 = gymapi.Transform(gymapi.Vec3(bboxes[i, ww 0, 0], bboxes[i, 0, 1], bboxes[i, 0, 2]))    
-            # pose1 = gymapi.Transform(gymapi.Vec3(bboxes[i, 1, 0], bboxes[i, 1, 1], bboxes[i, 1, 2]))
-            # gymutil.draw_lines(sphere_geom, self.gym, self.viewer, self.envs[i], pose=pose0)
-            # gymutil.draw_lines(sphere_geom, self.gym, self.viewer, self.envs[i], pose=pose1)
-
     def _draw_ee_goal_curr(self):
         """ Draws visualizations for dubugging (slows down simulation a lot).
             Default behaviour: draws height measurement points
         """
-        # self.gym.refresh_rigid_body_state_tensor(self.sim)
         sphere_geom = gymutil.WireframeSphereGeometry(0.05, 4, 4, None, color=(1, 1, 0))
 
         sphere_geom_3 = gymutil.WireframeSphereGeometry(0.05, 16, 16, None, color=(0, 1, 1))
-        upper_arm_pose = self.get_ee_goal_spherical_center()
+        upper_arm_pose = self._get_ee_goal_spherical_center()
 
         sphere_geom_2 = gymutil.WireframeSphereGeometry(0.05, 4, 4, None, color=(0, 0, 1))
         ee_pose = self.rigid_body_state[:, self.gripper_idx, :3]
@@ -1153,79 +1179,16 @@ class ManipLoco(LeggedRobot):
         for i in range(10):
             ee_target_cart = sphere2cart(ee_target_all_sphere[..., i])
             ee_target_all_cart_world[..., i] = quat_apply(self.base_yaw_quat, ee_target_cart)
-        ee_target_all_cart_world += self.get_ee_goal_spherical_center()[:, :, None]
-        # curr_ee_goal_cart_world = quat_apply(self.base_yaw_quat, self.curr_ee_goal_cart) + self.root_states[:, :3]
+        ee_target_all_cart_world += self._get_ee_goal_spherical_center()[:, :, None]
         for i in range(self.num_envs):
             for j in range(10):
                 pose = gymapi.Transform(gymapi.Vec3(ee_target_all_cart_world[i, 0, j], ee_target_all_cart_world[i, 1, j], ee_target_all_cart_world[i, 2, j]), r=None)
                 gymutil.draw_lines(sphere_geom, self.gym, self.viewer, self.envs[i], pose)
-            # pose_curr = gymapi.Transform(gymapi.Vec3(curr_ee_goal_cart_world[i, 0], curr_ee_goal_cart_world[i, 1], curr_ee_goal_cart_world[i, 2]), r=None)
-            # gymutil.draw_lines(sphere_geom_yellow, self.gym, self.viewer, self.envs[i], pose_curr)
-            
 
-    def step(self, actions):
-        """ Apply actions, simulate, call self.post_physics_step()
-
-        Args:
-            actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
-        """
-        actions[:, 12:] = 0.
-        actions = self.reindex_all(actions)
-        actions = torch.clip(actions, -self.clip_actions, self.clip_actions).to(self.device)
-        # step physics and render each frame
-        self.render()
-        if self.action_delay != -1:
-            self.action_history_buf = torch.cat([self.action_history_buf[:, 1:], actions[:, None, :]], dim=1)
-            # actions = self.action_history_buf[:, -self.action_delay - 1] # delay for 1/50=20ms
-        if self.global_steps < 10000 * 24:
-            actions = self.action_history_buf[:, -1]
-        else:
-            actions = self.action_history_buf[:, -2]
-        # actions = self.action_history_buf[:, -4]
-
-        self.actions = actions.clone()
-        
-        # arm ik actions
-        # uncomment this if needing to mask out gripper joints
-        # self.curr_ee_goal_cart[:] = sphere2cart(self.curr_ee_goal_sphere)
-        # ee_goal_cart_yaw_global = quat_apply(self.base_yaw_quat, self.curr_ee_goal_cart)
-        # curr_ee_goal_cart_world = self.get_ee_goal_spherical_center() + ee_goal_cart_yaw_global
-        
-        dpos = self.curr_ee_goal_cart_world - self.ee_pos
-        drot = orientation_error(self.ee_goal_orn_quat, self.ee_orn / torch.norm(self.ee_orn, dim=-1).unsqueeze(-1))
-        dpose = torch.cat([dpos, drot], -1).unsqueeze(-1)
-        # print(self.ee_goal_orn_quat[0], self.ee_orn[0])
-        arm_pos_targets = self.control_ik(dpose) + self.dof_pos[:, -(6 + self.cfg.env.num_gripper_joints):-self.cfg.env.num_gripper_joints]
-        all_pos_targets = torch.zeros_like(self.dof_pos)
-        all_pos_targets[:, -(6 + self.cfg.env.num_gripper_joints):-self.cfg.env.num_gripper_joints] = arm_pos_targets
-        # all_pos_targets[:, -8:-2] = self.default_dof_pos[-8:-2]
-        # self.gym.set_dof_position_target_tensor(self.sim, gymtorch.unwrap_tensor(all_pos_targets))
-
-        for t in range(self.cfg.control.decimation):
-            self.torques = self._compute_torques(self.actions)
-            self.gym.set_dof_position_target_tensor(self.sim, gymtorch.unwrap_tensor(all_pos_targets))
-            self.gym.set_dof_actuation_force_tensor(self.sim, gymtorch.unwrap_tensor(self.torques))
-            self.gym.simulate(self.sim)
-            if self.device == 'cpu':
-                self.gym.fetch_results(self.sim, True)
-            self.gym.refresh_dof_state_tensor(self.sim)
-            self.gym.refresh_jacobian_tensors(self.sim)
-            self.gym.refresh_rigid_body_state_tensor(self.sim)
-        self.post_physics_step()
-
-        # return clipped obs, clipped states (None), rewards, dones and infos
-        clip_obs = self.cfg.normalization.clip_observations
-        self.obs_buf = torch.clip(self.obs_buf, -clip_obs, clip_obs)
-        if self.privileged_obs_buf is not None:
-            self.privileged_obs_buf = torch.clip(self.privileged_obs_buf, -clip_obs, clip_obs)
-        self.global_steps += 1
-        return self.obs_buf, self.privileged_obs_buf, self.rew_buf, self.arm_rew_buf, self.reset_buf, self.extras
-
-    def control_ik(self, dpose):
+    def _control_ik(self, dpose):
         # solve damped least squares
         j_eef_T = torch.transpose(self.ee_j_eef, 1, 2)
         lmbda = torch.eye(6, device=self.device) * (0.05 ** 2)
-        # u = (j_eef_T @ torch.inverse(self.ee_j_eef @ j_eef_T + lmbda) @ dpose).view(self.num_envs, 6)
         A = torch.bmm(self.ee_j_eef, j_eef_T) + lmbda[None, ...]
         u = torch.bmm(j_eef_T, torch.linalg.solve(A, dpose))#.view(self.num_envs, 6)
         return u.squeeze(-1)
@@ -1249,12 +1212,6 @@ class ManipLoco(LeggedRobot):
         
         return torch.clip(torques, -self.torque_limits, self.torque_limits)
     
-    # def _get_init_start_ee_sphere(self):
-    #     init_start_ee_cart = torch.zeros(self.num_envs, 3, dtype=torch.float, device=self.device, requires_grad=False)
-    #     init_start_ee_cart[:, 0] = 0.15
-    #     init_start_ee_cart[:, 2] = 0.15
-    #     self.init_start_ee_sphere = cart2sphere(init_start_ee_cart)
-
     def _resample_ee_goal_sphere_once(self, env_ids):
         self.ee_goal_sphere[env_ids, 0] = torch_rand_float(self.goal_ee_ranges["pos_l"][0], self.goal_ee_ranges["pos_l"][1], (len(env_ids), 1), device=self.device).squeeze(1)
         self.ee_goal_sphere[env_ids, 1] = torch_rand_float(self.goal_ee_ranges["pos_p"][0], self.goal_ee_ranges["pos_p"][1], (len(env_ids), 1), device=self.device).squeeze(1)
@@ -1270,7 +1227,7 @@ class ManipLoco(LeggedRobot):
         if self.cfg.env.teleop_mode and is_init:
             self.curr_ee_goal_sphere[:] = self.init_start_ee_sphere[:]
             return
-        elif self.cfg.env.teleop_mode or self.stand_only:
+        elif self.cfg.env.teleop_mode:
             return
 
         if len(env_ids) > 0:
@@ -1285,54 +1242,80 @@ class ManipLoco(LeggedRobot):
                 self.ee_start_sphere[env_ids] = self.ee_goal_sphere[env_ids].clone()
                 for i in range(10):
                     self._resample_ee_goal_sphere_once(env_ids)
-                    collision_mask = self.collision_check(env_ids)
+                    collision_mask = self._collision_check(env_ids)
                     env_ids = env_ids[collision_mask]
                     if len(env_ids) == 0:
                         break
             self.ee_goal_cart[init_env_ids, :] = sphere2cart(self.ee_goal_sphere[init_env_ids, :])
             self.goal_timer[init_env_ids] = 0.0
 
-        # self.ee_goal_cart[env_ids, :] = sphere2cart(self.ee_goal_sphere[env_ids, :])
-        # self.goal_timer[env_ids] = 0.0
-
-    def collision_check(self, env_ids):
+    def _collision_check(self, env_ids):
         ee_target_all_sphere = torch.lerp(self.ee_start_sphere[env_ids, ..., None], self.ee_goal_sphere[env_ids, ...,  None], self.collision_check_t).squeeze(-1)
         ee_target_cart = sphere2cart(torch.permute(ee_target_all_sphere, (2, 0, 1)).reshape(-1, 3)).reshape(self.num_collision_check_samples, -1, 3)
         collision_mask = torch.any(torch.logical_and(torch.all(ee_target_cart < self.collision_upper_limits, dim=-1), torch.all(ee_target_cart > self.collision_lower_limits, dim=-1)), dim=0)
         underground_mask = torch.any(ee_target_cart[..., 2] < self.underground_limit, dim=0)
         return collision_mask | underground_mask
 
-    def update_curr_ee_goal(self):
+    def _update_curr_ee_goal(self):
         if not self.cfg.env.teleop_mode:
             t = torch.clip(self.goal_timer / self.traj_timesteps, 0, 1)
             self.curr_ee_goal_sphere[:] = torch.lerp(self.ee_start_sphere, self.ee_goal_sphere, t[:, None])
 
+        # TODO: for the teleop mode, we need to directly update self.curr_ee_goal_cart using VR controller.
         self.curr_ee_goal_cart[:] = sphere2cart(self.curr_ee_goal_sphere)
         ee_goal_cart_yaw_global = quat_apply(self.base_yaw_quat, self.curr_ee_goal_cart)
-        # TODO: add twisting motion by fixing yaw at traj start
-        self.curr_ee_goal_cart_world = self.get_ee_goal_spherical_center() + ee_goal_cart_yaw_global
+        self.curr_ee_goal_cart_world = self._get_ee_goal_spherical_center() + ee_goal_cart_yaw_global
         
+        # TODO: for the teleop mode, we need to directly update self.ee_goal_orn_quat using VR controller.
         default_yaw = torch.atan2(ee_goal_cart_yaw_global[:, 1], ee_goal_cart_yaw_global[:, 0])
         default_pitch = -self.curr_ee_goal_sphere[:, 1] + self.cfg.goal_ee.arm_induced_pitch
         self.ee_goal_orn_quat = quat_from_euler_xyz(self.ee_goal_orn_delta_rpy[:, 0] + np.pi / 2, default_pitch + self.ee_goal_orn_delta_rpy[:, 1], self.ee_goal_orn_delta_rpy[:, 2] + default_yaw)
+        
         self.goal_timer += 1
         resample_id = (self.goal_timer > self.traj_total_timesteps).nonzero(as_tuple=False).flatten()
         
         if len(resample_id) > 0 and self.stop_update_goal:
             # set these env commands as 0
             self.commands[resample_id, 0] = 0
-            self.commands[resample_id, 1] = 0
             self.commands[resample_id, 2] = 0
-            
-            # stop_cmd_mask = ~self.get_walking_cmd_mask(env_ids=resample_id, return_all=True)[0]
-            # resample_id = resample_id[torch.logical_and(stop_cmd_mask, stop_mask)]
-            
+
         self._resample_ee_goal(resample_id)
     
-    def get_ee_goal_spherical_center(self):
+    def _get_ee_goal_spherical_center(self):
         center = torch.cat([self.root_states[:, :2], torch.zeros(self.num_envs, 1, device=self.device)], dim=1)
         center = center + quat_apply(self.base_yaw_quat, self.ee_goal_center_offset)
         return center
+
+    def _get_walking_cmd_mask(self, env_ids=None, return_all=False):
+        if env_ids is None:
+            env_ids = torch.arange(self.num_envs, device=self.device)
+        walking_mask0 = torch.abs(self.commands[env_ids, 0]) > self.cfg.commands.lin_vel_x_clip
+        walking_mask1 = torch.abs(self.commands[env_ids, 1]) > self.cfg.commands.lin_vel_x_clip
+        walking_mask2 = torch.abs(self.commands[env_ids, 2]) > self.cfg.commands.ang_vel_yaw_clip
+        walking_mask = walking_mask0 | walking_mask1 | walking_mask2
+        if return_all:
+            return walking_mask0, walking_mask1, walking_mask2, walking_mask
+        return walking_mask
+    
+
+   # -------------- IssacGym render and viewer functions ----------------
+
+    def render_record(self, mode="rgb_array"):
+        if self.global_steps % 2 == 0:
+            self.gym.step_graphics(self.sim)
+            self.gym.render_all_camera_sensors(self.sim)
+            imgs = []
+            for i in range(self.num_envs):
+                cam = self._rendering_camera_handles[i]
+                root_pos = self.root_states[i, :3].cpu().numpy()
+                cam_pos = root_pos + np.array([0, 2, 1])
+                self.gym.set_camera_location(cam, self.envs[i], gymapi.Vec3(*cam_pos), gymapi.Vec3(*root_pos))
+                
+                img = self.gym.get_camera_image(self.sim, self.envs[i], cam, gymapi.IMAGE_COLOR)
+                w, h = img.shape
+                imgs.append(img.reshape([w, h // 4, 4]))
+            return imgs
+        return None
 
     def subscribe_viewer_keyboard_events(self):
         super().subscribe_viewer_keyboard_events()
@@ -1352,12 +1335,18 @@ class ManipLoco(LeggedRobot):
             self.gym.subscribe_viewer_keyboard_event(self.viewer, gymapi.KEY_I, "increase_eef_goal_y")
             self.gym.subscribe_viewer_keyboard_event(self.viewer, gymapi.KEY_K, "decrease_eef_goal_y")
 
+            self.gym.subscribe_viewer_keyboard_event(self.viewer, gymapi.KEY_Z, "increase_eef_goal_dr")
+            self.gym.subscribe_viewer_keyboard_event(self.viewer, gymapi.KEY_X, "decrease_eef_goal_dr")
+            self.gym.subscribe_viewer_keyboard_event(self.viewer, gymapi.KEY_C, "increse_eef_goal_dp")
+            self.gym.subscribe_viewer_keyboard_event(self.viewer, gymapi.KEY_V, "decrease_eef_goal_dp")
+            self.gym.subscribe_viewer_keyboard_event(self.viewer, gymapi.KEY_B, "increase_eef_goal_dy")
+            self.gym.subscribe_viewer_keyboard_event(self.viewer, gymapi.KEY_N, "decrease_eef_goal_dy")
+
     def handle_viewer_action_event(self, evt):
         super().handle_viewer_action_event(evt)
 
         if evt.value <= 0:
             return
-        
         if evt.action == "stop_linear":
             self.commands[:, 0] = 0
         elif evt.action == "forward":
@@ -1372,427 +1361,55 @@ class ManipLoco(LeggedRobot):
         elif evt.action == "turn_right":
             self.commands[:, 2] -= 0.05
 
+
+
+
+        # Sphere position
+        # if evt.action == "increase_eef_goal_l":
+        #     self.curr_ee_goal_sphere[:, 0] += 0.05
+        # elif evt.action == "decrease_eef_goal_l":
+        #     self.curr_ee_goal_sphere[:, 0] -= 0.05
+
+        # if evt.action == "increase_eef_goal_p":
+        #     self.curr_ee_goal_sphere[:, 1] += 0.05
+        # elif evt.action == "decrease_eef_goal_p":
+        #     self.curr_ee_goal_sphere[:, 1] -= 0.05
+
+        # if evt.action == "increase_eef_goal_y":
+        #     self.curr_ee_goal_sphere[:, 2] += 0.05
+        # elif evt.action == "decrease_eef_goal_y":
+        #     self.curr_ee_goal_sphere[:, 2] -= 0.05
+
+        # cartesian position
         if evt.action == "increase_eef_goal_l":
-            self.curr_ee_goal_sphere[:, 0] += 0.05
+            self.curr_ee_goal_cart[:, 0] += 0.05
         elif evt.action == "decrease_eef_goal_l":
-            self.curr_ee_goal_sphere[:, 0] -= 0.05
+            self.curr_ee_goal_cart[:, 0] -= 0.05
 
         if evt.action == "increase_eef_goal_p":
-            self.curr_ee_goal_sphere[:, 1] += 0.05
+            self.curr_ee_goal_cart[:, 1] += 0.05
         elif evt.action == "decrease_eef_goal_p":
-            self.curr_ee_goal_sphere[:, 1] -= 0.05
+            self.curr_ee_goal_cart[:, 1] -= 0.05
 
         if evt.action == "increase_eef_goal_y":
-            self.curr_ee_goal_sphere[:, 2] += 0.05
+            self.curr_ee_goal_cart[:, 2] += 0.05
         elif evt.action == "decrease_eef_goal_y":
-            self.curr_ee_goal_sphere[:, 2] -= 0.05
+            self.curr_ee_goal_cart[:, 2] -= 0.05
 
-    def get_walking_cmd_mask(self, env_ids=None, return_all=False):
-        if env_ids is None:
-            env_ids = torch.arange(self.num_envs, device=self.device)
-        walking_mask0 = torch.abs(self.commands[env_ids, 0]) > self.cfg.commands.lin_vel_x_clip
-        walking_mask1 = torch.abs(self.commands[env_ids, 1]) > self.cfg.commands.ang_vel_pitch_clip
-        walking_mask2 = torch.abs(self.commands[env_ids, 2]) > self.cfg.commands.ang_vel_yaw_clip
-        walking_mask = walking_mask0 | walking_mask1 | walking_mask2
-        if return_all:
-            return walking_mask0, walking_mask1, walking_mask2, walking_mask
-        return walking_mask
-    
-    def render_record(self, mode="rgb_array"):
-        if self.global_steps % 2 == 0:
-            self.gym.step_graphics(self.sim)
-            self.gym.render_all_camera_sensors(self.sim)
-            imgs = []
-            for i in range(self.num_envs):
-                cam = self._rendering_camera_handles[i]
-                root_pos = self.root_states[i, :3].cpu().numpy()
-                cam_pos = root_pos + np.array([0, 2, 1])
-                self.gym.set_camera_location(cam, self.envs[i], gymapi.Vec3(*cam_pos), gymapi.Vec3(*root_pos))
-                
-                img = self.gym.get_camera_image(self.sim, self.envs[i], cam, gymapi.IMAGE_COLOR)
-                w, h = img.shape
-                imgs.append(img.reshape([w, h // 4, 4]))
-            return imgs
-        return None
-
-    # ------------------ Rewards ------------------
-    # Functions return a tuple (reward, metric). In most cases, the metric and reward are the same. However, in some cases,
-    # one metric is used for logging purposes, while a slightly different reward is used for training.
-    def _reward_tracking_ee_sphere(self):
-        ee_pos_local = quat_rotate_inverse(self.base_yaw_quat, self.ee_pos - self.get_ee_goal_spherical_center())
-        ee_pos_error = torch.sum(torch.abs(cart2sphere(ee_pos_local) - self.curr_ee_goal_sphere) * self.sphere_error_scale, dim=1)
-        return torch.exp(-ee_pos_error/self.cfg.rewards.tracking_ee_sigma), ee_pos_error
-
-    def _reward_tracking_ee_world(self):
-        ee_pos_error = torch.sum(torch.abs(self.ee_pos - self.curr_ee_goal_cart_world), dim=1)
-        rew = torch.exp(-ee_pos_error/self.cfg.rewards.tracking_ee_sigma * 2)
-        return rew, ee_pos_error
-    
-    def _reward_tracking_ee_cart(self):
-        target_ee = self.get_ee_goal_spherical_center() + quat_apply(self.base_yaw_quat, self.curr_ee_goal_cart)
-        ee_pos_error = torch.sum(torch.abs(self.ee_pos - target_ee), dim=1)
-        return torch.exp(-ee_pos_error/self.cfg.rewards.tracking_ee_sigma), ee_pos_error
-    
-    def _reward_tracking_ee_orn(self):
-        ee_orn_euler = torch.stack(euler_from_quat(self.ee_orn), dim=-1)
-        orn_err = torch.sum(torch.abs(torch_wrap_to_pi_minuspi(self.ee_goal_orn_euler - ee_orn_euler)) * self.orn_error_scale, dim=1)
-        return torch.exp(-orn_err/self.cfg.rewards.tracking_ee_sigma), orn_err
-
-    def _reward_hip_action_l2(self):
-        action_l2 = torch.sum(self.actions[:, [0, 3, 6, 9]] ** 2, dim=1)
-        return action_l2, action_l2
-
-    def _reward_tracking_ee_orn_ry(self):
-        ee_orn_euler = torch.stack(euler_from_quat(self.ee_orn), dim=-1)
-        orn_err = torch.sum(torch.abs((torch_wrap_to_pi_minuspi(self.ee_goal_orn_euler - ee_orn_euler) * self.orn_error_scale)[:, [0, 2]]), dim=1)
-        return torch.exp(-orn_err/self.cfg.rewards.tracking_ee_sigma), orn_err
-
-    def _reward_leg_energy_abs_sum(self):
-        energy = torch.sum(torch.abs(self.torques[:, :12] * self.dof_vel[:, :12]), dim = 1)
-        return energy, energy
-
-    def _reward_leg_energy_sum_abs(self):
-        energy = torch.abs(torch.sum(self.torques[:, :12] * self.dof_vel[:, :12], dim = 1))
-        return energy, energy
-    
-    def _reward_leg_action_l2(self):
-        action_l2 = torch.sum(self.actions[:, :12] ** 2, dim=1)
-        return action_l2, action_l2
-    
-    def _reward_leg_energy(self):
-        energy = torch.sum(self.torques[:, :12] * self.dof_vel[:, :12], dim = 1)
-        return energy, energy
-    
-    def _reward_arm_energy_abs_sum(self):
-        energy = torch.sum(torch.abs(self.torques[:, 12:-self.cfg.env.num_gripper_joints] * self.dof_vel[:, 12:-self.cfg.env.num_gripper_joints]), dim = 1)
-        return energy, energy
-
-    def _reward_tracking_lin_vel(self):
-        # Tracking of linear velocity commands (xy axes)
-        lin_vel_error = torch.sum(torch.square(self.commands[:, :2] - self.base_lin_vel[:, :2]), dim=1)
-        return torch.exp(-lin_vel_error/self.cfg.rewards.tracking_sigma), lin_vel_error
-
-    def _reward_tracking_lin_vel_x_l1(self):
-        zero_cmd_indices = torch.abs(self.commands[:, 0]) < 1e-5
-        error = torch.abs(self.commands[:, 0] - self.base_lin_vel[:, 0])
-        rew = 0*error
-        rew_x = -error + torch.abs(self.commands[:, 0])
-        rew[~zero_cmd_indices] = rew_x[~zero_cmd_indices] / (torch.abs(self.commands[~zero_cmd_indices, 0]) + 0.01)
-        rew[zero_cmd_indices] = 0
-        return rew, error
-
-    def _reward_tracking_lin_vel_x_exp(self):
-        error = torch.abs(self.commands[:, 0] - self.base_lin_vel[:, 0])
-        return torch.exp(-error/self.cfg.rewards.tracking_sigma), error
-
-    def _reward_tracking_ang_vel_yaw_l1(self):
-        error = torch.abs(self.commands[:, 2] - self.base_ang_vel[:, 2])
-        return - error + torch.abs(self.commands[:, 2]), error
-    
-    def _reward_tracking_ang_vel_yaw_exp(self):
-        error = torch.abs(self.commands[:, 2] - self.base_ang_vel[:, 2])
-        return torch.exp(-error/self.cfg.rewards.tracking_sigma), error
-
-    def _reward_tracking_lin_vel_y_l2(self):
-        squared_error = (self.commands[:, 1] - self.base_lin_vel[:, 1]) ** 2
-        return squared_error, squared_error
-    
-    def _reward_tracking_lin_vel_z_l2(self):
-        squared_error = (self.commands[:, 2] - self.base_lin_vel[:, 2]) ** 2
-        return squared_error, squared_error
-    
-    def _reward_tracking_contacts_shaped_force(self):
-        if not self.cfg.env.observe_gait_commands:
-            return 0,0
-        foot_forces = torch.norm(self.contact_forces[:, self.feet_indices, :], dim=-1)
-        desired_contact = self.desired_contact_states
-
-        reward = 0
-        for i in range(4):
-            reward += - (1 - desired_contact[:, i]) * (
-                        1 - torch.exp(-1 * foot_forces[:, i] ** 2 / self.cfg.rewards.gait_force_sigma))
+        self.curr_ee_goal_sphere = cart2sphere(self.curr_ee_goal_cart)
         
-        # cmd_stop_flag = ~self.get_walking_cmd_mask()
-        # reward[cmd_stop_flag] = 0
+        # orientation
+        if evt.action == "increase_eef_goal_dr":
+            self.ee_goal_orn_delta_rpy[:, 0] += 0.05
+        elif evt.action == "decrease_eef_goal_dr":
+            self.ee_goal_orn_delta_rpy[:, 0] -= 0.05
+
+        if evt.action == "increse_eef_goal_dp":
+            self.ee_goal_orn_delta_rpy[:, 1] += 0.05
+        elif evt.action == "decrease_eef_goal_dp":
+            self.ee_goal_orn_delta_rpy[:, 1] -= 0.05
         
-        return reward / 4, reward / 4
-
-    def _reward_tracking_contacts_shaped_vel(self):
-        if not self.cfg.env.observe_gait_commands:
-            return 0,0
-        foot_velocities = torch.norm(self.foot_velocities, dim=2).view(self.num_envs, -1)
-        desired_contact = self.desired_contact_states
-        reward = 0
-        for i in range(4):
-            reward += - (desired_contact[:, i] * (
-                        1 - torch.exp(-1 * foot_velocities[:, i] ** 2 / self.cfg.rewards.gait_vel_sigma)))
-            
-        # cmd_stop_flag = ~self.get_walking_cmd_mask()
-        # reward[cmd_stop_flag] = 0
-        
-        return reward / 4, reward / 4
-    
-    def _reward_survive(self):
-        survival_reward = torch.ones(self.num_envs, device=self.device)
-        return survival_reward, survival_reward
-
-    def _reward_foot_contacts_z(self):
-        foot_contacts_z = torch.square(self.force_sensor_tensor[:, :, 2]).sum(dim=-1)
-        return foot_contacts_z, foot_contacts_z
-
-    def _reward_torques(self):
-        # Penalize torques
-        torque = torch.sum(torch.square(self.torques), dim=1)
-        return torque, torque
-    
-    def _reward_energy_square(self):
-        energy = torch.sum(torch.square(self.torques[:, :12] * self.dof_vel[:, :12]), dim=1)
-        return energy, energy
-
-    def _reward_tracking_lin_vel_y(self):
-        cmd = self.commands[:, 1].clone()
-        lin_vel_y_error = torch.square(cmd - self.base_lin_vel[:, 1])
-        rew = torch.exp(-lin_vel_y_error/self.cfg.rewards.tracking_sigma)
-        return rew, lin_vel_y_error
-    
-    def _reward_lin_vel_z(self):
-        rew = torch.square(self.base_lin_vel[:, 2])
-        return rew, rew
-    
-    def _reward_ang_vel_xy(self):
-        rew = torch.sum(torch.square(self.base_ang_vel[:, :2]), dim=1)
-        return rew, rew
-    
-    def _reward_tracking_ang_vel(self):
-        ang_vel_error = torch.square(self.commands[:, 2] - self.base_ang_vel[:, 2])
-        return torch.exp(-ang_vel_error/self.cfg.rewards.tracking_sigma), ang_vel_error
-    
-    def _reward_tracking_ang_pitch_vel(self):
-        if not self.pitch_control:
-            return 0, 0
-        ang_vel_error = torch.square(self.commands[:, 1] - self.base_ang_vel[:, 1])
-        return torch.exp(-ang_vel_error/self.cfg.rewards.tracking_sigma), ang_vel_error
-    
-    def _reward_feet_height(self):
-        # feet_height = self.rigid_body_state[:, self.feet_indices, 2] # All feet
-        feet_height = self.rigid_body_state[:, self.feet_indices[:2], 2] # Only front feet
-        rew = torch.clamp(torch.norm(feet_height, dim=-1) - 0.3, max=0)
-        cmd_stop_flag = ~self.get_walking_cmd_mask()
-        rew[cmd_stop_flag] = 0
-        return rew, rew
-
-    def _reward_feet_air_time(self):
-        # Reward long steps
-        # Need to filter the contacts because the contact reporting of PhysX is unreliable on meshes
-        first_contact = (self.feet_air_time > 0.) * self.foot_contacts_from_sensor  #self.contact_filt
-        self.feet_air_time += self.dt
-        # All legs
-        rew_airTime = torch.sum((self.feet_air_time - 0.5) * first_contact, dim=1) # reward only on first contact with the ground
-        # Only consider the front legs
-        # rew_airTime = torch.sum((self.feet_air_time[:, :2] - 0.5) * first_contact[:, :2], dim=1)
-        rew_airTime *= self.get_walking_cmd_mask()  # reward for stepping for any of the 3 motions
-        self.feet_air_time *= ~ self.foot_contacts_from_sensor  #self.contact_filt
-        return rew_airTime, rew_airTime
-
-    def _reward_work(self):
-        work = self.torques * self.dof_vel
-        abs_sum_work = torch.abs(torch.sum(work[:, :12], dim = 1))
-        return abs_sum_work, abs_sum_work
-    
-    def _reward_dof_acc(self):
-        rew = torch.sum(torch.square((self.last_dof_vel - self.dof_vel)[:, :12] / self.dt), dim=1)
-        return rew, rew
-    
-    def _reward_action_rate(self):
-        action_rate = torch.sum(torch.square(self.last_actions - self.actions)[:, :12], dim=1)
-        return action_rate, action_rate
-    
-    def _reward_dof_pos_limits(self):
-        out_of_limits = -(self.dof_pos - self.dof_pos_limits[:, 0]).clip(max=0.) # lower limit
-        out_of_limits += (self.dof_pos - self.dof_pos_limits[:, 1]).clip(min=0.) # upper limit
-        rew = torch.sum(out_of_limits[:, :12], dim=1)
-        return rew, rew
-    
-    def _reward_delta_torques(self):
-        rew = torch.sum(torch.square(self.torques - self.last_torques)[:, :12], dim=1)
-        return rew, rew
-    
-    def _reward_collision(self):
-        rew = torch.sum(1.*(torch.norm(self.contact_forces[:, self.penalized_contact_indices, :], dim=-1) > 0.1), dim=1)
-        return rew, rew
-        
-    def _reward_stand_still(self):
-        # Penalize motion at zero commands
-        dof_error = torch.sum(torch.abs(self.dof_pos - self.default_dof_pos)[:, :12], dim=1)
-        rew = torch.exp(-dof_error*0.05)
-        rew[self.get_walking_cmd_mask()] = 0.
-        # print(rew, dof_error, torch.abs(self.dof_pos - self.default_dof_pos)[:, :12])
-        return rew, rew
-
-    def _reward_walking_dof(self):
-        # Penalize motion at zero commands
-        dof_error = torch.sum(torch.abs(self.dof_pos - self.default_dof_pos)[:, :12], dim=1)
-        rew = torch.exp(-dof_error*0.05)
-        rew[~self.get_walking_cmd_mask()] = 0.
-        # print(rew, dof_error, torch.abs(self.dof_pos - self.default_dof_pos)[:, :12])
-        return rew, rew
-
-    def _reward_hip_pos(self):
-        rew = torch.sum(torch.square(self.dof_pos[:, self.hip_indices] - self.default_dof_pos[self.hip_indices]), dim=1)
-        return rew, rew
-
-    def _reward_feet_jerk(self):
-        if not hasattr(self, "last_contact_forces"):            
-            result = torch.zeros(self.num_envs).to(self.device)
-        else:
-            result = torch.sum(torch.norm(self.force_sensor_tensor - self.last_contact_forces, dim=-1), dim=-1)
-        
-        self.last_contact_forces = self.force_sensor_tensor.clone()
-        result[self.episode_length_buf<50] = 0.
-        return result, result
-    
-    def _reward_alive(self):
-        return 1., 1.
-    
-    def _reward_feet_drag(self):
-        feet_xyz_vel = torch.abs(self.rigid_body_state[:, self.feet_indices, 7:10]).sum(dim=-1)
-        dragging_vel = self.foot_contacts_from_sensor * feet_xyz_vel
-        rew = dragging_vel.sum(dim=-1)
-        return rew, rew
-
-    def _reward_feet_contact_forces(self):
-        reset_flag = (self.episode_length_buf > 2./self.dt).type(torch.float)
-        forces = torch.sum((torch.norm(self.force_sensor_tensor, dim=-1) - self.cfg.rewards.max_contact_force).clip(min=0), dim=-1)
-        rew = reset_flag * forces
-        return rew, rew
-    
-    def _reward_orientation(self):
-        # Penalize non flat base orientation
-        error = torch.sum(torch.square(self.projected_gravity[:, :2]), dim=1)
-        return error, error
-    
-    def _reward_roll(self):
-        # Penalize non flat base orientation
-        roll = self.get_body_orientation()[:, 0]
-        error = torch.abs(roll)
-        return error, error
-    
-    def _reward_base_height(self):
-        # Penalize base height away from target
-        base_height = torch.mean(self.root_states[:, 2].unsqueeze(1), dim=1)
-        return torch.abs(base_height - self.cfg.rewards.base_height_target), base_height
-    
-    def _reward_orientation_walking(self):
-        reward, metric = self._reward_orientation()
-        walking_mask = self.get_walking_cmd_mask()
-        reward[~walking_mask] = 0
-        metric[~walking_mask] = 0
-        return reward, metric
-    
-    def _reward_orientation_standing(self):
-        reward, metric = self._reward_orientation()
-        walking_mask = self.get_walking_cmd_mask()
-        reward[walking_mask] = 0
-        metric[walking_mask] = 0
-        return reward, metric
-
-    def _reward_torques_walking(self):
-        reward, metric = self._reward_torques()
-        walking_mask = self.get_walking_cmd_mask()
-        reward[~walking_mask] = 0
-        metric[~walking_mask] = 0
-        return reward, metric
-
-    def _reward_torques_standing(self):
-        reward, metric = self._reward_torques()
-        walking_mask = self.get_walking_cmd_mask()
-        reward[walking_mask] = 0
-        metric[walking_mask] = 0
-        return reward, metric
-    
-    def _reward_energy_square_walking(self):
-        reward, metric = self._reward_energy_square()
-        walking_mask = self.get_walking_cmd_mask()
-        reward[~walking_mask] = 0
-        metric[~walking_mask] = 0
-        return reward, metric
-    
-    def _reward_energy_square_standing(self):
-        reward, metric = self._reward_energy_square()
-        walking_mask = self.get_walking_cmd_mask()
-        reward[walking_mask] = 0
-        metric[walking_mask] = 0
-        return reward, metric
-
-    def _reward_tracking_ee_sphere_walking(self):
-        reward, metric = self._reward_tracking_ee_sphere()
-        walking_mask = self.get_walking_cmd_mask()
-        reward[~walking_mask] = 0
-        metric[~walking_mask] = 0
-        return reward, metric
-
-    def _reward_tracking_ee_sphere_standing(self):
-        reward, metric = self._reward_tracking_ee_sphere()
-        walking_mask = self.get_walking_cmd_mask()
-        reward[walking_mask] = 0
-        metric[walking_mask] = 0
-        return reward, metric
-
-    def _reward_base_height_walking(self):
-        reward, metric = self._reward_base_height()
-        walking_mask = self.get_walking_cmd_mask()
-        reward[~walking_mask] = 0
-        metric[~walking_mask] = 0
-        return reward, metric
-
-    def _reward_base_height_standing(self):
-        reward, metric = self._reward_base_height()
-        walking_mask = self.get_walking_cmd_mask()
-        reward[walking_mask] = 0
-        metric[walking_mask] = 0
-        return reward, metric
-    
-    def _reward_dof_default_pos(self):
-        dof_error = torch.sum(torch.abs(self.dof_pos - self.default_dof_pos)[:, :12], dim=1)
-        rew = torch.exp(-dof_error*0.05)
-        
-        return rew, rew
-    
-    def _reward_dof_error(self):
-        dof_error = torch.sum(torch.square(self.dof_pos - self.default_dof_pos)[:, :12], dim=1)
-        return dof_error, dof_error
-    
-    def _reward_tracking_lin_vel_max(self):
-        rew = torch.where(self.commands[:, 0] > 0, torch.minimum(self.base_lin_vel[:, 0], self.commands[:, 0]) / (self.commands[:, 0] + 1e-5), \
-                          torch.minimum(-self.base_lin_vel[:, 0], -self.commands[:, 0]) / (-self.commands[:, 0] + 1e-5))
-        zero_cmd_indices = torch.abs(self.commands[:, 0]) < self.cfg.commands.lin_vel_x_clip
-        rew[zero_cmd_indices] = torch.exp(-torch.abs(self.base_lin_vel[:, 0]))[zero_cmd_indices]
-        # rew[zero_cmd_indices] = -torch.abs(self.base_lin_vel[:, 0])[zero_cmd_indices]
-        return rew, rew
-    
-    def _reward_penalty_lin_vel_y(self):
-        rew = torch.abs(self.base_lin_vel[:, 1])
-        rot_indices = torch.abs(self.commands[:, 2]) > self.cfg.commands.ang_vel_yaw_clip
-        rew[rot_indices] = 0.
-        return rew, rew
-    
-    def _reward_penalty_lin_vel_p(self):
-        rew = torch.abs(self.base_lin_vel[:, 1])
-        rot_indices = torch.abs(self.commands[:, 2]) > self.cfg.commands.ang_vel_yaw_clip
-        rew[rot_indices] = 0.
-        return rew, rew
-
-    def _reward_dof_stand_up_pos_tracking(self):
-        # tracking_error range: 0 - 3.14 -> exp(-range^2 * 12): exp(- 0 - 100/coeff) = 1 - 0.37
-        b1_stand_up_joint_pos = [-0.1, 0.67, -1.3, 0.1, 0.67, -1.3, -0.1, 0.67, -1.3, 0.1, 0.67, -1.3]
-        position_error = torch.sum(torch.square(self.dof_pos[:, :12] - torch.tensor(b1_stand_up_joint_pos, device=self.device, requires_grad=False)), dim=1)
-        position_coeff = 1/100
-        rew = torch.exp(-position_coeff*position_error)
-        return rew, rew
-    
-    def _reward_body_height_tracking(self):
-        b1_stand_up_height = 0.54
-        tracking_error = torch.square(self.base_pos[:, 2] - b1_stand_up_height)
-        height_coeff = 1.0
-        rew = torch.exp(-height_coeff*tracking_error)
-        return rew, rew
+        if evt.action == "increase_eef_goal_dy":
+            self.ee_goal_orn_delta_rpy[:, 2] += 0.05
+        elif evt.action == "decrease_eef_goal_dy":
+            self.ee_goal_orn_delta_rpy[:, 2] -= 0.05
