@@ -89,11 +89,9 @@ class B1Z1PickMulti(B1Z1Base):
         col_filter = 0
         i = env_i
         
-        # table_pos = [0.0, 0.0, np.random.uniform(-0.2, 0.3) + 0.5 * self.table_dims.z]
-        table_pos = [0.0, 0.0, 0.5 * self.table_dims.z]
-        # table_pos = [0.0, 0.0, np.random.uniform(-0.2, 0.3) + 0.5 * self.table_dims.z + 0.05]
-        # table_pos = [0.0, 0.0, 0.5 * table_dims.z + np.random.uniform(0.2, 0.3)]
-        self.table_heights[i] = table_pos[-1] + 0.5 * self.table_dims.z
+        table_pos = [0.0, 0.0, self.table_dims.z / 2]
+        self.table_heights[i] = table_pos[-1] + self.table_dims.z / 2
+
         obj_idx = i % len(self.obj_list)
         obj_asset = self.ycb_asset_list[obj_idx]
         obj_height = self.obj_height[obj_idx]
@@ -106,10 +104,10 @@ class B1Z1PickMulti(B1Z1Base):
         cube_start_pose = gymapi.Transform()
         cube_start_pose.p.x = table_start_pose.p.x + np.random.uniform(-0.1, 0.1)
         cube_start_pose.p.y = table_start_pose.p.y + np.random.uniform(-0.1, 0.1)
-        cube_start_pose.p.z = table_pos[-1] + obj_height #table_dims.z + 0.03 * 3 / 2#0.018
+        cube_start_pose.p.z = self.table_heights[i] + obj_height
         # cube_start_pose.r = quat_mul(gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 0, 1), np.random.uniform(-np.pi, np.pi)), gymapi.Quat(*self.obj_orn[obj_idx]))
         cube_handle = self.gym.create_actor(env_ptr, obj_asset, cube_start_pose, "cube", col_group, col_filter, 2)
-        
+
         if not self.no_feature:
             self.feature_obs[i, :] = self.features[obj_idx, :]
         self.init_height[i] = obj_height
@@ -150,13 +148,7 @@ class B1Z1PickMulti(B1Z1Base):
             ycb_asset_props[0].friction = 2.0
             self.gym.set_asset_rigid_shape_properties(ycb_asset, ycb_asset_props)
             self.ycb_asset_list.append(ycb_asset)
-        
-        # cube_size = 0.03
-        # cube_dims = [cube_size, cube_size, 3*cube_size]
-        # ycb_asset = self.gym.create_box(self.sim, cube_dims[0], cube_dims[1], cube_dims[2], ycb_opts)
-            
-        # table_pos = [0.0, 0.0, 0.3 * table_dims.z]
-        
+
         self.table_handles, self.cube_handles = [], []
         
         if not self.no_feature:
@@ -235,6 +227,9 @@ class B1Z1PickMulti(B1Z1Base):
                 print("Total success rate", success_rate)
                 
     def _reset_objs(self, env_ids):
+        if len(env_ids)==0:
+            return
+        
         # self._cube_root_states[env_ids] = self._initial_cube_root_states[env_ids]
         self._cube_root_states[env_ids, 0] = 0.0
         self._cube_root_states[env_ids, 0] += torch_rand_float(-0.15, 0.15, (len(env_ids), 1), device=self.device).squeeze(1)
@@ -253,19 +248,22 @@ class B1Z1PickMulti(B1Z1Base):
         self._cube_root_states[env_ids, 7:13] = 0.
         
     def _reset_table(self, env_ids):
+        if len(env_ids)==0:
+            return
+        
         self._table_root_states[env_ids] = self._initial_table_root_states[env_ids]
         if self.table_heights_fix is None:
-            rand_heights = torch_rand_float(-0.25, 0.35, (len(env_ids), 1), device=self.device)
+            rand_heights = torch_rand_float(0, 0.5, (len(env_ids), 1), device=self.device)
         else:
-            rand_heights = torch.ones((len(env_ids), 1), device=self.device, dtype=torch.float)*self.table_heights_fix - self.table_dimz
+            rand_heights = torch.ones((len(env_ids), 1), device=self.device, dtype=torch.float)*self.table_heights_fix - self.table_dimz / 2
         
-        self._table_root_states[env_ids, 2] += rand_heights.squeeze(1)
+        self._table_root_states[env_ids, 2] = rand_heights.squeeze(1) - self.table_dimz / 2.0
         self.table_heights[env_ids] = self._table_root_states[env_ids, 2] + self.table_dimz / 2.0
     
     def _reset_actors(self, env_ids):
-        super()._reset_actors(env_ids)
         self._reset_table(env_ids)
         self._reset_objs(env_ids)
+        super()._reset_actors(env_ids)
 
         return
     
@@ -401,7 +399,8 @@ class B1Z1PickMulti(B1Z1Base):
         self.lifted_object = torch.logical_and((cube_height - self.table_heights - self.init_height) > (self.lifted_success_threshold), d1 < 0.1)
 
         z_cube = self._cube_root_states[:, 2]
-        cube_falls = (z_cube < (self.table_heights + 0.03 / 2 - 0.05))
+        # cube_falls = (z_cube < (self.table_heights + 0.03 / 2 - 0.05))
+        cube_falls = z_cube < self.table_heights # Fall or model glitch
         self.reset_buf[:] = self.reset_buf | cube_falls
         # print("cube falls", cube_falls[0])
         

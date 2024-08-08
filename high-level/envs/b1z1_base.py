@@ -397,8 +397,8 @@ class B1Z1Base(RewardVecTask):
                 )))
         
     def _init_camera(self):
-        cam_pos = gymapi.Vec3(4, 3, 2)
-        cam_target = gymapi.Vec3(-4, -3, 0)
+        cam_pos = gymapi.Vec3(10, 3, 0.4)
+        cam_target = gymapi.Vec3(10, 0, 0)
         self.gym.viewer_camera_look_at(self.viewer, None, cam_pos, cam_target)
         return
     
