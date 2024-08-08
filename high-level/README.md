@@ -23,6 +23,7 @@ This code base only includes the task of picking multiple objects.
 python train_multistate.py --rl_device "cuda:0" --sim_device "cuda:0" --timesteps 60000 --headless --task B1Z1PickMulti --experiment_dir b1-pick-multi-teacher --wandb --wandb_project "b1-pick-multi-teacher" --wandb_name "some descriptions" --roboinfo --observe_gait_commands --small_value_set_zero --rand_control --stop_pick
 ```
 Arguments explanation:
+
 `--task` should be the full name of the environment, with every first letter of each word capitalized. 
 
 `--timesteps` total training steps. 
