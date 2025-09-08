@@ -1,5 +1,5 @@
 env:
-  numEnvs: 10240
+  numEnvs: 5120
   numAgents: 1
   envSpacing: 5.0
   enableDebugVis: False
@@ -11,14 +11,15 @@ env:
   controlFrequencyLow: 8
   imgDelayFrame: 4
 
-  liftedSuccessThreshold: 0.35
+  liftedSuccessThreshold: 0.35 # 物体被抬起多少米才算成功
   liftedInitThreshold: 0.05
   baseObjectDisThreshold: 0.6
   holdSteps: 25
   lastCommands: False
 
-  low_policy_path: "/data/mhliu/visual_wholebody/high-level/data/low_policy/publiccheckrollrew_42000.pt" # "data/low_policy/jan17-frontfeet_terrainflat_linrew2_freq2_gaitstopzero_penelizeang_roll_fixbug_35600.pt"
-
+  low_policy_path: "/home/wang/Desktop/visual_wholebody/low-level/logs/b1z1-low/gait_reference/model_37000.pt"
+    # "data/low_policy/jan17-frontfeet_terrainflat_linrew2_freq2_gaitstopzero_penelizeang_roll_fixbug_35600.pt"
+    # "/home/wang/Desktop/visual_wholebody/low-level/logs/b1z1-low/gait_tuning_v2/model_13000.pt"
   asset:
     assetRoot: "data/asset"
     assetFileRobot: "b1z1-col/urdf/b1z1.urdf"
@@ -216,7 +217,7 @@ sim:
     solver_type: 1
     num_position_iterations: 8
     num_velocity_iterations: 0
-    contact_offset: 0.02
+    contact_offset: 0.04
     rest_offset: 0.0
     bounce_threshold_velocity: 0.2
     max_depenetration_velocity: 50.0
@@ -233,15 +234,15 @@ reward:
     acc_penalty: -0.001
     command_penalty: -1.0
     command_reward: 0.25
-    standpick: 0.25
+    standpick: 0.25 # no found in reward_vec_task.py #
     action_rate: -0.001
-    ee_orn: 0.01
+    ee_orn: 0.01 # 0.01
     base_dir: 0.25
     rad_penalty: 0.0
     base_ang_pen: 0.0
     base_approaching: 0.01 # 0.05
-    grasp_base_height: 0.5
-    gripper_rate: 0.0 # -0.1
+    grasp_base_height: 0.5 # no found in reward_vec_task.py
+    gripper_rate: -0.0 # -0.1
 
 sensor:
   depth_clip_lower: 0.15

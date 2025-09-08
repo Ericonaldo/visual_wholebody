@@ -1,0 +1,50 @@
+Visual Whole-Body Control for Legged Loco-Manipulation
+
+├── b1-pick-multi-teacher       == policy
+├── data                        == robot model; object_model(.obj,.npy点云特征数据,.urdf.visual.py)；cfg配置
+├── envs                        == b1z1_pickmulti.py
+├── experiments
+├── learning
+├── modules
+├── play_multi_bc_deter.py
+├── play_multistate.py
+├── __pycache__
+├── README.md
+├── test_pointcloud.py
+├── train_multi_bc_deter.py
+├── train_multistate_asym.py
+├── train_multistate.py
+├── utils
+└── wandb
+
+Reward
+_reward_base_height：它测量机器人根部的当前高度跟一个给定目标高度的差异，然后根据这个差异计算一个奖励，距离目标越近奖励越大， 且奖励以指数的形式衰减。
+
+_reward_approaching:比之前更靠近方块了，给奖励，奖励数值根据你靠近的幅度变化，但不会无限增大。如果你距离太远了，就不给奖励。
+_reward_lifting: 如果成功把物体举得比之前更高，给奖励，奖励根据提升的高度大小变化，但不会无限大。一旦物体已经举起来了，就不再发奖励。
+_reward_pick_up: 该 _reward_pick_up 函数确保机器人获得明确的成功奖励，且通过“持物计数器”机制保证所称的“成功拾取”是稳定的抓取行为，从而引导机器人学会稳健的推出物体执行策略，最终实现论文中较高的抓取成功率和灵活多次尝试能力
+_reward_acc_penalty ： 衡量机械臂运动中的速度变化率（即加速度），并对高加速度动作进行惩罚，促进机械臂动作平滑和稳定性。
+
+_reward_command_reward： 只对机器人距离物体较近（小于0.6米）的位置赋予奖励。奖励数值是对机器人执行的第一个指令分量（常是线速度或位移等命令）的绝对
+
+_reward_command_penalty ： 值取负，再做指数函数，意味着命令越小（越接近0），奖励越大，鼓励机器人在接近物体时保持命令输入平稳或较小。
+该函数用于惩罚机器人在接近物体时施加过大的动作命令，促使动作更加平滑和节制。
+
+_reward_action_rate: 动作变化越大，奖励越大 动作中线速度和偏航角速度变化越大，奖励越大
+
+_reward_ee_orn ： 算机器人“手”的朝向和目标物体之间的对齐程度，奖励机器人“手臂的方向越对着目标，奖励越高”
+ 
+_reward_base_dir ： 该函数根据机器人基座的朝向和目标物体相对位置方向，计算两者的方向一致度并返回对应奖励。奖励越高表示机器人越“正对”目标物体，这对于基座调整朝向、朝向目标物体抓取等任务极为关键。
+
+_reward_rad_penalty ：这个函数对应机器人的奖励设计，目的是通过对距离的软限制引导机器人让末端执行器位置保持在理想的半径周围，避免过近或过远，保证机械臂动作既有效又安全。
+
+_reward_base_ang_pen ： 这个函数计算一个与机器人的“基座角速度”相关的奖励，用于惩罚基座的旋转速度，鼓励机器人保持稳定。
+
+_reward_base_approaching ： 它是计算机器人“身体底座”（base）与目标物体在平面上的距离接近度，并基于距离的接近程度给出奖励。距离越接近一个预设目标距离，奖励越高。
+
+_reward_gripper_rate: 该函数衡量并奖励夹爪动作的变化速度，以促使机器人在操作过程中灵活调整夹爪开合，提升操控精度和抓取成功率。同时，训练初期奖励关闭，保证训练稳定，防止夹爪动作变化过早产生不必要的影响。
+
+_reward_standpick ： 机器人如果靠近目标物体（距离够近），并且它的移动速度不是太快（在设定限制内），就奖励1分。靠近目标物体（增加成功概率），保持合理的移动速度（稳健动作）且训练初期不急于给奖励，让机器人先积累经验。
+_reward_grasp_base_height ： 用于奖励机器人抬起物体的能力。它依赖于一个更基础的奖励 _reward_base_height，可能衡量抬起来的高度。
+
+

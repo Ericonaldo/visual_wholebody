@@ -18,19 +18,19 @@ import torchvision.transforms as transforms
 
 class B1Z1PickMulti(B1Z1Base):
     def __init__(self, table_height=None, *args, **kwargs):
-        self.num_actors = 3
+        self.num_actors = 3 # 环境里会有 3 个 actor（可理解为仿真里的“主要对象”）。一个是 机器人 (B1)，一个是 桌子 (Z1)，一个是 要抓的物体 (Pick target)
         super().__init__(*args, **kwargs)
-        self.near_goal_stop = self.cfg["env"].get("near_goal_stop", False)
-        self.obj_move_prob = self.cfg["env"].get("obj_move_prob", 0.0)
+        self.near_goal_stop = self.cfg["env"].get("near_goal_stop", False) # 当机器人接近目标时，停止移动基座，以便更好地抓取物体
+        self.obj_move_prob = self.cfg["env"].get("obj_move_prob", 0.0) # 物体可能被随机移动的概率（扰动）。用于增加环境随机性，提高策略的 鲁棒性。
         self.table_heights_fix = table_height
 
     def update_roboinfo(self):
         super().update_roboinfo()
         base_obj_dis = self._cube_root_states[:, :2] - self.arm_base[:, :2]
-        self.base_obj_dis = torch.norm(base_obj_dis, dim=-1)
+        self.base_obj_dis = torch.norm(base_obj_dis, dim=-1) # 基座到物体的距离，物体与机械臂基座之间的 2D 平面向量差。
         
     def _setup_obs_and_action_info(self):
-        super()._setup_obs_and_action_info(removed_dim=9, num_action=9, num_obs=38+self.num_features-1)
+        super()._setup_obs_and_action_info(removed_dim=9, num_action=9, num_obs=38+self.num_features-1) # removed_dim=9：在 observation 里移除了 9 个维度，可能是一些无关或冗余的状态（比如某些 joint states）。num_action=9：对应 9 个控制信号，机械臂 6 自由度关节控制 + 抓手控制（~7-9个）；num_obs=38+self.num_features-1：总的 observation 维度，38 是基础信息，self.num_features 是物体特征维度（如果有的话），-1 可能是因为某个特征被移除了。
         
     def _extra_env_settings(self):
         self.multi_obj = self.cfg["env"]["asset"]["asset_multi"]
@@ -39,7 +39,7 @@ class B1Z1PickMulti(B1Z1Base):
         self.obj_orn = [self.multi_obj[obj]["orientation"] for obj in self.obj_list]
         self.obj_scale = [self.multi_obj[obj]["scale"] for obj in self.obj_list]
         obj_dir = os.path.join(self.cfg["env"]["asset"]["assetRoot"], self.cfg["env"]["asset"]["assetFileObj"])
-        if not self.no_feature:
+        if not self.no_feature: # feature is used
             features = []
             for obj_name in self.obj_list:
                 feature_path = os.path.join(obj_dir, obj_name, "features.npy")
@@ -210,8 +210,46 @@ class B1Z1PickMulti(B1Z1Base):
                     "SuccessRate / Bottle": bottle_success_rate,
                     "SuccessRate / Cup": cup_success_rate,
                     "SuccessRate / Drill": drill_success_rate,
-                }
+                },
             }
+            
+            base_height_reward , _ = self._reward_base_height()
+            reward_approaching , _ = self._reward_approaching()
+            reward_lifting, _ = self._reward_lifting()
+            reward_pick_up, _ = self._reward_pick_up()
+            reward_acc_penalty, _ = self._reward_action_penalty()
+            reward_command_reward, _ = self._reward_command_reward()
+            reward_command_penalty, _ = self._reward_command_penalty()
+            reward_action_rate, _ = self._reward_action_rate()
+            reward_ee_orn, _ = self._reward_ee_orn()
+            reward_base_dir, _ = self._reward_base_dir()
+            reward_rad_penalty, _ = self._reward_rad_penalty()
+            reward_base_ang_pen, _ = self._reward_base_ang_pen()
+            reward_base_approaching, _ = self._reward_base_approaching()
+            reward_standpick, _ = self._reward_standpick()
+            reward_grasp_base_height, _ = self._reward_grasp_base_height()
+
+            if self.cfg["env"]["wandb"]:
+                wandb.log({
+                    "Reward / BaseHeight_mean": base_height_reward.mean().item(),
+                    "Reward / Approaching_mean": reward_approaching.mean().item(),
+                    "Reward / Lifting_mean": reward_lifting.mean().item(),
+                    "Reward / PickUp_mean": reward_pick_up.mean().item(),
+                    "Reward / ActionPenalty_mean": reward_acc_penalty.mean().item(),
+                    "Reward / CommandReward_mean": reward_command_reward,
+                    "Reward / CommandPenalty_mean": reward_command_penalty,
+                    "Reward / ActionRate_mean": reward_action_rate.mean().item(),
+                    "Reward / EEOrientation_mean": reward_ee_orn.mean().item(),
+                    "Reward / BaseDir_mean": reward_base_dir.mean().item(),
+                    "Reward / RadiusPenalty_mean": reward_rad_penalty.mean().item(),
+                    "Reward / BaseAngPenalty_mean": reward_base_ang_pen.mean().item(),
+                    "Reward / BaseApproaching_mean": reward_base_approaching.mean().item(),
+                    "Reward / StandPick_mean": reward_standpick,
+                    "Reward / GraspBaseHeight_mean": reward_grasp_base_height.mean().item(),
+                }, step=self.global_step_counter)
+
+            
+            
             if self.pred_success:
                 predlift_success_rate = 0 if self.global_step_counter==0 else (self.predlift_success_counter / self.local_step_counter).mean().item()
                 wandb_dict["success_rate"]["SuccessRate / PredLifted"] = predlift_success_rate
@@ -257,7 +295,7 @@ class B1Z1PickMulti(B1Z1Base):
         else:
             rand_heights = torch.ones((len(env_ids), 1), device=self.device, dtype=torch.float)*self.table_heights_fix - self.table_dimz / 2
         
-        self._table_root_states[env_ids, 2] = rand_heights.squeeze(1) - self.table_dimz / 2.0
+        self._table_root_states[env_ids, 2] = self.table_dimz / 2.0
         self.table_heights[env_ids] = self._table_root_states[env_ids, 2] + self.table_dimz / 2.0
     
     def _reset_actors(self, env_ids):
@@ -314,6 +352,10 @@ class B1Z1PickMulti(B1Z1Base):
                 self.obs_buf[env_ids] = torch.cat([obs, self.command_history_buf[env_ids, -1]], dim=-1)
             else:
                 self.obs_buf[env_ids] = torch.cat([obs, self.action_history_buf[env_ids, -1]], dim=-1)
+                
+
+
+    
     
     def _compute_robot_obs(self, env_ids=None):
         if env_ids is None:
@@ -420,7 +462,7 @@ class B1Z1PickMulti(B1Z1Base):
             self.reset_buf = self.reset_buf | deviate_much | too_close_table
 
     # --------------------------------- reward functions ---------------------------------
-    def _reward_standpick(self):
+    def _reward_standpick(self): # 引导 agent 在抓取前先稳稳靠近物体
         reward = torch.zeros(self.num_envs, device=self.device, dtype=torch.float)
         reward[(self.base_obj_dis < self.base_object_distace_threshold) & (self.commands[:, 0] < LIN_VEL_X_CLIP)] = 1.0
         
@@ -429,7 +471,7 @@ class B1Z1PickMulti(B1Z1Base):
             
         return reward, reward
     
-    def _reward_grasp_base_height(self):
+    def _reward_grasp_base_height(self): # 鼓励 agent 把物体抬到一定高度
         cube_height = self._cube_root_states[:, 2]
         box_pos = self._cube_root_states[:, :3]
         d1 = torch.norm(box_pos - self.ee_pos, dim=-1)
@@ -439,7 +481,7 @@ class B1Z1PickMulti(B1Z1Base):
         
         return reward, reward
     
-    def _reward_approaching(self):
+    def _reward_approaching(self): # 在 抬起前奖励靠近物体，抬起后不重复奖励
         """Change the reward function to be effective only when the object is lifted
         """
         reward, _ = super()._reward_approaching()
@@ -469,6 +511,14 @@ class B1Z1PickMulti(B1Z1Base):
     # --------------------------------- reward functions ---------------------------------
 
 # --------------------------------- jit functions ---------------------------------
+
+# 最终 obs 维度组合：
+    # Cube pos + orn (3+3)
+    # EE pos + orn (3+3)
+    # Arm DOF pos + vel
+    # commands
+    # EE goal pos + orn
+    # Robot base velocity
 
 @torch.jit.script
 def compute_robot_observations(robot_root_state, table_root_state, cube_root_state, body_pos, 

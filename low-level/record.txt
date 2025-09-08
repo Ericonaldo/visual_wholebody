@@ -1,0 +1,20 @@
+﻿Observation (obs):
+    Joint positions, velocities
+    Contact sensors or gait phase info
+    Command targets (if --observe_gait_commands)
+    Possibly noise from _get_noise_scale_vec()
+
+
+
+Reward:
+Tracks performance: velocity tracking, foot clearance, energy cost
+Done condition: falls, too far from goal, etc.
+
+Command:
+python scripts/train.py --headless --exptid gait_tunning_v2 --proj_name b1z1-low --task b1z1 --sim_device cuda:0 --rl_device cuda:0 --observe_gait_commands --debug
+
+
+python play.py --exptid gait_tunning_v2 --task b1z1 --proj_name b1z1-low --checkpoint 13000 --observe_gait_commands
+
+
+

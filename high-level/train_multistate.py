@@ -21,26 +21,31 @@ from envs import *
 from utils.config import load_cfg, get_params, copy_cfg
 import utils.wrapper as wrapper
 
-set_seed(43)
+set_seed(101)
 
 def create_env(cfg, args):
     cfg["env"]["enableDebugVis"] = args.debugvis
     cfg["env"]["cameraMode"] = "full"
     cfg["env"]["smallValueSetZero"] = args.small_value_set_zero
     if args.last_commands:
-        cfg["env"]["lastCommands"] = True
+        cfg["env"]["lastCommands"] = True # 让观测里包含上一时刻的命令（可帮助策略记忆控制惯性）。
     if args.record_video:
         cfg["record_video"] = True
     if args.control_freq is not None:
         cfg["env"]["controlFrequencyLow"] = int(args.control_freq)
-    robot_start_pose = (-2.00, 0, 0.55)
+    robot_start_pose = (-2.00, 0, 0.55) # 训练时机器人在场景左侧 (-2.0 m)。
     if args.eval:
-        robot_start_pose = (-0.85, 0, 0.55)
+        robot_start_pose = (-0.85, 0, 0.55) # 评估时机器人在场景中间 (-0.85 m)，方便观察。
+                
+    # python train_multistate.py --rl_device "cuda:0" --sim_device "cuda:0" --timesteps 60000 --headless --task B1Z1PickMulti --experiment_dir b1-pick-multi-teacher --wandb --wandb_project "b1-pick-multi-teacher" --wandb_name "some descriptions" --roboinfo --observe_gait_commands --small_value_set_zero --rand_control --stop_pick
+
+    # 这里直接把任务名字符串（比如 "B1Z1PickMulti"）当成类名执行！ → 所以你在 envs/下必然有class B1Z1PickMulti(...)`。
     _env = eval(args.task)(cfg=cfg, rl_device=args.rl_device, sim_device=args.sim_device, 
                          graphics_device_id=args.graphics_device_id, headless=args.headless, 
                          use_roboinfo=args.roboinfo, observe_gait_commands=args.observe_gait_commands, no_feature=args.no_feature, mask_arm=args.mask_arm, pitch_control=args.pitch_control,
                          rand_control=args.rand_control, arm_delay=args.arm_delay, robot_start_pose=robot_start_pose,
                          rand_cmd_scale=args.rand_cmd_scale, rand_depth_clip=args.rand_depth_clip, stop_pick=args.stop_pick, table_height=args.table_height, eval=args.eval)
+    
     wrapped_env = wrapper.IsaacGymPreview3Wrapper(_env)
     return wrapped_env
 
@@ -110,8 +115,61 @@ def get_trainer(is_eval=False):
     args = get_params()
     args.eval = is_eval
     args.wandb = args.wandb and (not args.eval) and (not args.debug)
-    cfg_file = "b1z1_" + args.task[4:].lower() + ".yaml"
+    cfg_file = "b1z1_" + args.task[4:].lower() + ".yaml" # B1Z1PickMulti -> b1z1_pick_multi.yaml
     file_path = "data/cfg/" + cfg_file
+
+    print("Arguments passed to get_trainer:")
+    
+    # Arguments passed to get_trainer:
+    # task: B1Z1PickMulti
+    # timesteps: 60000
+    # control_freq: None
+    # rl_device: cuda:0
+    # sim_device: cuda:0
+    # graphics_device_id: -1
+    # headless: True
+    # wandb: True
+    # wandb_project: b1-pick-multi-teacher
+    # wandb_name: some descriptions
+    # checkpoint: 
+    # experiment_dir: b1-pick-multi-teacher
+    # debugvis: False
+    # save_image: False
+    # debug: False
+    # wrist_seg: False
+    # front_only: False
+    # seperate: False
+    # teacher_ckpt_path: 
+    # resume: False
+    # roboinfo: True
+    # observe_gait_commands: True
+    # small_value_set_zero: True
+    # fixed_base: False
+    # use_tanh: False
+    # reach_only: False
+    # record_video: False
+    # last_commands: False
+    # no_feature: False
+    # mask_arm: False
+    # mlp_stu: False
+    # depth_random: False
+    # pitch_control: False
+    # pred_success: False
+    # near_goal_stop: False
+    # obj_move_prob: 0.0
+    # rand_control: True
+    # arm_delay: False
+    # rand_cmd_scale: False
+    # rand_depth_clip: False
+    # stop_pick: True
+    # arm_kp: 40
+    # arm_kd: 2
+    # table_height: None
+    # seed: 43
+    # eval: False
+    
+    for key, value in vars(args).items():
+        print(f"{key}: {value}")
     
     if args.resume:
         experiment_dir = os.path.join(args.experiment_dir, args.wandb_name)
@@ -130,7 +188,7 @@ def get_trainer(is_eval=False):
             file_path = os.path.join(experiment_dir, cfg_file)
         
         print("Find the latest checkpoint: ", args.checkpoint)
-    print("Using config file: ", file_path)
+    print("Using config file: ", file_path) # data/cfg/b1z1_pickmulti.yaml
         
     cfg = load_cfg(file_path)
     cfg['env']['wandb'] = args.wandb
@@ -226,3 +284,4 @@ if __name__ == "__main__":
     trainer = get_trainer()
     trainer.train()
     
+
