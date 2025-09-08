@@ -783,7 +783,7 @@ class LeggedRobot(BaseTask):
             self.env_origins[:, 1] = spacing * yy.flatten()[:self.num_envs]
             self.env_origins[:, 2] = 0.
 
-    def _parse_cfg(self, cfg):
+    def _parse_cfg(self, cfg): # load legged_robot_config.py
         self.dt = self.cfg.control.decimation * self.sim_params.dt
         self.obs_scales = self.cfg.normalization.obs_scales
         self.reward_scales = class_to_dict(self.cfg.rewards.scales)

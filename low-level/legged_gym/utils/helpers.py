@@ -30,11 +30,11 @@
 
 import os
 import copy
-import torch
 import numpy as np
 import random
 from isaacgym import gymapi
 from isaacgym import gymutil
+import torch
 
 from legged_gym import LEGGED_GYM_ROOT_DIR, LEGGED_GYM_ENVS_DIR
 

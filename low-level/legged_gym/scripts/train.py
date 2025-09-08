@@ -49,7 +49,7 @@ def train(args):
         mode = "disabled"
         args.rows = 6
         args.cols = 2
-        args.num_envs = 128
+        args.num_envs = 1
     else:
         mode = "online"
     wandb.init(project=args.proj_name, name=args.exptid, mode=mode, dir=LEGGED_GYM_ENVS_DIR +"/logs")

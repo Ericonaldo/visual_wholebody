@@ -122,7 +122,7 @@ class B1Z1PickMulti(B1Z1Base):
         
         self.table_heights = torch.zeros(self.num_envs, device=self.device, dtype=torch.float)
         # table
-        self.table_dimz = 0.25
+        self.table_dimz = 0.45
         self.table_dims = gymapi.Vec3(0.6, 1.0, self.table_dimz)
         table_options = gymapi.AssetOptions()
         table_options.fix_base_link = True
@@ -257,7 +257,7 @@ class B1Z1PickMulti(B1Z1Base):
         else:
             rand_heights = torch.ones((len(env_ids), 1), device=self.device, dtype=torch.float)*self.table_heights_fix - self.table_dimz / 2
         
-        self._table_root_states[env_ids, 2] = rand_heights.squeeze(1) - self.table_dimz / 2.0
+        self._table_root_states[env_ids, 2] = self.table_dimz / 2.0
         self.table_heights[env_ids] = self._table_root_states[env_ids, 2] + self.table_dimz / 2.0
     
     def _reset_actors(self, env_ids):
